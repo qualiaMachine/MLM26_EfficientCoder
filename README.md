@@ -8,13 +8,13 @@ September–December 2026. Two tracks. Real prizes. Open to anyone.
 
 ## Why this challenge
 
-Frontier coding assistants like Claude Code, Cursor, and Aider assume an API call to a frontier model. They are excellent. They also send your code to a third party, cost real money per task, and don't work when the data can't leave your environment.
+Frontier coding assistants like Claude Code, Cursor, and Aider assume an API call to a frontier model. They are excellent. They also send your code to a third party, cost real money per task, and raise security concerns when the data can't leave your environment.
 
-A growing class of users — researchers with sensitive data, organizations on tight compute budgets, anyone working on infrastructure that can't phone home — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. But "plausible" and "actually good" are different things, and nobody has run a serious public bake-off of what the best *local* coding agent looks like under realistic constraints.
+A growing class of users — researchers with sensitive data, organizations on tight compute budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. But "plausible" and "actually good" are different things, and nobody has run a competition of what the best *local* coding agent looks like under realistic constraints.
 
-That's what MLM26 is. Build the best local coding agent you can within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
+In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
 
-UW–Madison is running this partly because we want to know the answer. The university is actively building out on-prem AI infrastructure, and the outputs of this hackathon feed directly into how we deploy AI for researchers.
+The outputs of this hackathon feed directly into how we deploy AI for researchers.
 
 ### Why Terminal-Bench
 
@@ -46,7 +46,7 @@ You pick one track at registration. You can switch once, before the Week 6 mid-c
 
 Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤48 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
-Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale, plus a writeup explaining what you built and why.
+Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Local MLM26 participants must also submit a writeup explaining what they built and why.
 
 **This track suits you if:** you like building systems, you enjoy prompt engineering and agent design, you want to climb a leaderboard the field watches.
 
