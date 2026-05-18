@@ -1,6 +1,6 @@
-# MLM26: Local Coding Agent Challenge
+# BYOA-Coding 2026 — Bring Your Own Agent
 
-A Machine Learning Marathon track for building the best local coding agent — measured on Terminal-Bench. Hosted by ML+X at UW–Madison.
+An MLM26 challenge: build the best *local* coding agent — measured on Terminal-Bench. Hosted by ML+X at UW–Madison.
 
 September–December 2026. Two tracks. Real prizes. Open to anyone.
 
@@ -12,7 +12,7 @@ Frontier coding assistants like Claude Code, Cursor, and Aider assume an API cal
 
 A growing class of users — researchers with sensitive data, organizations on tight compute budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. But "plausible" and "actually good" are different things, and nobody has run a competition of what the best *local* coding agent looks like under realistic constraints.
 
-In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
+In this MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
 
 The outputs of this hackathon feed directly into how we deploy AI for researchers.
 
