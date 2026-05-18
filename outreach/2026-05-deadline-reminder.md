@@ -8,7 +8,9 @@
 
 Hi all,
 
-Quick nudge — the interest form (original note below) closes **June 1**, about two weeks out. If you've been meaning to sign up as a challenge organizer, advisor, presenter, or general volunteer, now's the time. Challenge organizers especially: earlier is better so we can scope together before kickoff.
+Quick nudge — the interest form (original note below) closes **June 1**, about two weeks out. If you've been meaning to sign up as a challenge organizer, advisor, presenter, or general volunteer, now's the time.
+
+**Challenge organizers:** June 1 is just the *interest* deadline — you don't need a polished problem yet. You'll have until **August** to finalize the project description, evaluation metrics, and dataset, and we'll work through all of that with you over the summer. The earlier you raise your hand, the more scoping help you get.
 
 **Sneak peek at this year's premiere challenge.** I'm drafting a Kaggle Community Hackathon called the **Local Coding Agent Challenge**. Teams will compete to build the best coding agent that runs entirely on a single ≤48 GB GPU with open-weight models, scored on [Terminal-Bench](https://tbench.ai) — the industry-standard benchmark for terminal coding agents, co-developed by Stanford, the Laude Institute, Anthropic, Snorkel, and contributors here at UW. Two tracks:
 
