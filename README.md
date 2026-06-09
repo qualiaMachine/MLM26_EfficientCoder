@@ -26,7 +26,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ## At a glance
 
-- **Format:** Kaggle Community Competition, semester-long, two tracks
+- **Format:** Kaggle Community Hackathon, semester-long, two tracks
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
 - **Eval backbone:** Terminal-Bench (`tb` CLI, Docker-per-task, outcome-based scoring)
@@ -127,7 +127,7 @@ Twelve sprint weeks plus kickoff and finale.
 
 ## Submission format
 
-Same shape for both tracks. Modeled on Kaggle's community competition format.
+Same shape for both tracks. Modeled on Kaggle's community hackathon format.
 
 1. **Kaggle Writeup.** Public, in your team's name. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, limitations, what you'd do with another month. Markdown. Quality > length.
 2. **Video demo.** 5–8 minutes. Show the agent working (or your methodology in action). Voiceover. Clear > polished.
@@ -254,7 +254,7 @@ Terminal-Bench runs each task in a fresh Docker container with no host access. T
 ### What you still need to think about
 
 - **Don't undo the sandbox.** Don't mount your home directory in. Don't bind your `~/.gitconfig` or SSH keys. Don't disable network restrictions to "just try something quick."
-- **Don't bake real credentials into the container image.** Use throwaway API keys for the competition. If your agent needs an OpenAI-compatible key, point it at your local endpoint or a hackathon-specific key.
+- **Don't bake real credentials into the container image.** Use throwaway API keys for the hackathon. If your agent needs an OpenAI-compatible key, point it at your local endpoint or a hackathon-specific key.
 - **Be cautious with your own development loop.** When debugging locally *outside* the Terminal-Bench sandbox, your agent has access to whatever you give it. Develop in a scratch directory, not your home directory. Don't run "let me see what it does" against a real repo you care about.
 - **Resource quotas.** Use Docker's built-in CPU/memory limits during dev. The Terminal-Bench harness sets task-level time limits but a runaway agent on your dev machine is still a problem.
 
@@ -365,7 +365,7 @@ Hosted open-weight APIs are cheap for development. Reference hardware at the fin
 Welcome. The challenge is open. Sprints are hybrid. Prizes don't care.
 
 **Will Track A get an automated leaderboard during the semester?**
-Self-reported scores against the public set are submitted via the Kaggle competition page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
+Self-reported scores against the public set are submitted via the Kaggle hackathon page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users, contributors, and (hopefully) collaborators — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers. Strong Track B submissions may be proposed upstream, subject to their review.
@@ -383,7 +383,7 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Build the red team sample agent
 - [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)
 - [ ] Set up Discord
-- [ ] Coordinate with Kaggle on Community Competition setup
+- [ ] Coordinate with Kaggle on Community Hackathon setup
 - [ ] Final pass on safety doc with UW research-IT
 - [ ] Decide finale held-out task selection process — entirely public TB tasks, or include some Track B contributions, or some upstream-unreleased tasks?
 
