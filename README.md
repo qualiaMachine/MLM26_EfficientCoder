@@ -14,7 +14,7 @@ A growing class of users — researchers with sensitive data, organizations on t
 
 In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
 
-The outputs of this hackathon feed directly into how we deploy AI for researchers.
+The outputs of this competition feed directly into how we deploy AI for researchers.
 
 ### Why Terminal-Bench
 
@@ -26,11 +26,11 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ## At a glance
 
-- **Format:** Kaggle Community Hackathon, semester-long, two tracks
+- **Format:** Kaggle Community Competition, semester-long, two tracks
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
 - **Eval backbone:** Terminal-Bench (`tb` CLI, Docker-per-task, outcome-based scoring)
-- **Hardware constraint:** Single GPU ≤48 GB VRAM
+- **Hardware constraint:** Single GPU ≤96 GB VRAM
 - **Per-task budget:** ≤100 turns (Terminal-Bench default), ≤5 minutes wall-clock
 - **Models:** Open weights only. Bring-your-own endpoint (Ollama, vLLM, hosted open-weight API). RunAI-hosted endpoints available on request for UW participants.
 - **Submission:** Kaggle Writeup + video demo + public repo link
@@ -44,7 +44,7 @@ You pick one track at registration. You can switch once, before the Week 6 mid-c
 
 ### Track A — Best Local Coding Agent
 
-Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤48 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
+Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
 Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Local MLM26 participants must also submit a writeup explaining what they built and why.
 
@@ -72,7 +72,7 @@ These exist to make this a *local* coding agent competition rather than "whoever
 
 ### Hardware
 
-- **Single GPU with ≤48 GB VRAM.** Verified at finale on reference hardware.
+- **Single GPU with ≤96 GB VRAM.** Verified at finale on reference hardware (e.g. A100-80GB, H100).
 - **Quantization allowed.** fp16, int8, int4, AWQ, GGUF — we only care that it fits.
 - **Dense or MoE both fine.** As long as it fits in the VRAM budget.
 - **No multi-GPU agents.** Tensor parallelism across two GPUs disqualifies.
@@ -127,7 +127,7 @@ Twelve sprint weeks plus kickoff and finale.
 
 ## Submission format
 
-Same shape for both tracks. Modeled on Kaggle's Vibe Coding hackathon format.
+Same shape for both tracks. Modeled on Kaggle's community competition format.
 
 1. **Kaggle Writeup.** Public, in your team's name. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, limitations, what you'd do with another month. Markdown. Quality > length.
 2. **Video demo.** 5–8 minutes. Show the agent working (or your methodology in action). Voiceover. Clear > polished.
@@ -254,7 +254,7 @@ Terminal-Bench runs each task in a fresh Docker container with no host access. T
 ### What you still need to think about
 
 - **Don't undo the sandbox.** Don't mount your home directory in. Don't bind your `~/.gitconfig` or SSH keys. Don't disable network restrictions to "just try something quick."
-- **Don't bake real credentials into the container image.** Use throwaway API keys for the hackathon. If your agent needs an OpenAI-compatible key, point it at your local endpoint or a hackathon-specific key.
+- **Don't bake real credentials into the container image.** Use throwaway API keys for the competition. If your agent needs an OpenAI-compatible key, point it at your local endpoint or a hackathon-specific key.
 - **Be cautious with your own development loop.** When debugging locally *outside* the Terminal-Bench sandbox, your agent has access to whatever you give it. Develop in a scratch directory, not your home directory. Don't run "let me see what it does" against a real repo you care about.
 - **Resource quotas.** Use Docker's built-in CPU/memory limits during dev. The Terminal-Bench harness sets task-level time limits but a runaway agent on your dev machine is still a problem.
 
@@ -304,7 +304,7 @@ This list ages fast. Treat it as a starting point.
 - **Qwen2.5-Coder 32B / Qwen3-Coder** variants — strong coding baselines, fit in 24 GB at 4-bit
 - **DeepSeek-Coder V2** family — strong on harder tasks
 - **GLM-4.5** — recent, well-regarded for agent work
-- **Llama 3.3 70B** — needs 48 GB at 4-bit, dense
+- **Llama 3.3 70B** — fits comfortably at fp16 with 96 GB, or 4-bit on smaller cards
 - **Mixtral-style MoEs** — high active-to-total ratio, useful when total params aren't the constraint
 
 A 32B-class Qwen-Coder agent has already cracked the Terminal-Bench leaderboard above some larger MoE setups — careful agent design matters more than parameter count.
@@ -365,7 +365,7 @@ Hosted open-weight APIs are cheap for development. Reference hardware at the fin
 Welcome. The challenge is open. Sprints are hybrid. Prizes don't care.
 
 **Will Track A get an automated leaderboard during the semester?**
-Self-reported scores against the public set + scores from the public Terminal-Bench leaderboard if you choose to submit there. No internal leaderboard automation.
+Self-reported scores against the public set are submitted via the Kaggle competition page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users, contributors, and (hopefully) collaborators — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers. Strong Track B submissions may be proposed upstream, subject to their review.
@@ -383,7 +383,7 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Build the red team sample agent
 - [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)
 - [ ] Set up Discord
-- [ ] Coordinate with Kaggle on Community Hackathon setup
+- [ ] Coordinate with Kaggle on Community Competition setup
 - [ ] Final pass on safety doc with UW research-IT
 - [ ] Decide finale held-out task selection process — entirely public TB tasks, or include some Track B contributions, or some upstream-unreleased tasks?
 
