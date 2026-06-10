@@ -18,7 +18,7 @@ The outputs of this competition feed directly into how we deploy AI for research
 
 ### Why Terminal-Bench
 
-We're not building a new benchmark from scratch. [Terminal-Bench](https://tbench.ai) is the industry-standard benchmark for evaluating coding agents in terminal environments — joint work from Stanford, the Laude Institute, Anthropic, Snorkel, and many others (including UW–Madison contributors). It's open source, it has an active leaderboard, and it's the same yardstick used to evaluate Claude Code, Codex, Devin, Cursor, and friends.
+We're not building a new benchmark from scratch. [Terminal-Bench](https://tbench.ai) is the industry-standard benchmark for evaluating coding agents in terminal environments — joint work from Stanford, the Laude Institute, Anthropic, Snorkel, and many others (including UW–Madison contributors). It's open source, it has an active leaderboard, and it's the same yardstick used to evaluate Claude Code, Codex, Devin, Cursor, and friends. [Harbor](https://www.harborframework.com/) is the official harness for running Terminal-Bench 2.0.
 
 By building on Terminal-Bench, your work is comparable to public leaderboard entries from day one, and strong submissions have a post-MLM life as contributions to a benchmark the field actually cares about.
 
@@ -29,7 +29,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 - **Format:** Kaggle Community Hackathon, semester-long, two tracks
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
-- **Eval backbone:** Terminal-Bench (`tb` CLI, Docker-per-task, outcome-based scoring)
+- **Eval backbone:** Terminal-Bench 2.0 via [Harbor](https://www.harborframework.com/) (Docker-per-task, outcome-based scoring)
 - **Hardware constraint:** Single GPU ≤96 GB VRAM
 - **Per-task budget:** ≤100 turns (Terminal-Bench default), ≤5 minutes wall-clock
 - **Models:** Open weights only. Bring-your-own endpoint (Ollama, vLLM, hosted open-weight API). RunAI-hosted endpoints available on request for UW participants.
@@ -163,9 +163,10 @@ This section is your fast path from "I registered" to "I have a working baseline
 
 ### Prerequisites
 
-- Python 3.11+
-- Docker (or Podman) — required by Terminal-Bench
-- A model endpoint you can call. Options:
+- **Python 3.11+**
+- **[uv](https://docs.astral.sh/uv/)** — fast Python package manager (recommended over pip)
+- **Docker** — required by Harbor / Terminal-Bench (must be running)
+- **A model endpoint.** Options:
   - **Local Ollama.** Easiest, runs on most laptops with a GPU. Recommended for first-week setup.
   - **Local vLLM.** Higher throughput, more setup. Recommended for serious work.
   - **Hosted open-weight API.** Together, Fireworks, Groq, etc. Easy for development if you don't have local hardware yet.
@@ -173,15 +174,41 @@ This section is your fast path from "I registered" to "I have a working baseline
 
 ### Quickstart
 
+**1. Install uv** (if you don't have it):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**2. Clone and set up your environment:**
+
 ```bash
 git clone https://github.com/mlplusx/mlm26-coding-agent-starter.git
 cd mlm26-coding-agent-starter
-pip install terminal-bench         # the `tb` CLI
-cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL
-./scripts/run_baseline.sh sample-task
+
+# Create a virtual environment and install dependencies
+uv venv                            # creates .venv/
+source .venv/bin/activate          # activate it (on Windows: .venv\Scripts\activate)
+uv pip install -r requirements.txt # install dependencies (includes harbor)
 ```
 
-You should see the baseline agent receive a Terminal-Bench task instruction, run inside a fresh Docker container, take actions, and have its result graded by the task's test suite. If you get something different, see `docs/troubleshooting.md`.
+**3. Verify Harbor + Terminal-Bench works** by running the oracle agent (solves tasks using the known answer — confirms your setup is correct):
+
+```bash
+harbor run -d terminal-bench/terminal-bench-2 -a oracle
+```
+
+**4. Run the baseline agent** against a sample task:
+
+```bash
+cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
+harbor run \
+  -d terminal-bench/terminal-bench-2 \
+  -a ./agent \
+  -n 1
+```
+
+You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. If you get something different, see `docs/troubleshooting.md`.
 
 ### What's in the starter repo
 
@@ -192,12 +219,6 @@ mlm26-coding-agent-starter/
 │   ├── tools.py            # Tool definitions (shell, read, write, done)
 │   ├── llm.py              # OpenAI-compatible client wrapper
 │   └── prompts.py          # System prompts (modify freely)
-├── tb_integration/
-│   ├── adapter.py          # Wraps our agent as a Terminal-Bench agent
-│   └── README.md           # How tb invokes our agent
-├── eval/
-│   ├── run_subset.py       # Runs `tb` against a configured subset
-│   └── scoring.py          # Aggregates scores, generates report
 ├── scripts/
 │   ├── run_baseline.sh     # Single-task runner
 │   └── run_subset.sh       # Run the public starter subset
@@ -205,12 +226,13 @@ mlm26-coding-agent-starter/
 │   ├── safety.md
 │   ├── troubleshooting.md
 │   ├── byo_model.md        # How to point at your own endpoint
-│   └── terminal_bench.md   # Quick orientation to the tb framework
+│   └── harbor.md           # Harbor orientation + custom agent guide
 ├── .env.example
+├── requirements.txt
 └── README.md
 ```
 
-The agent and its loop are *yours to modify*. The Terminal-Bench adapter layer in `tb_integration/` is the glue — you generally won't need to touch it.
+The agent code is *yours to modify*. Harbor handles container lifecycle, scoring, and result aggregation — you focus on the agent logic.
 
 ### The agent loop, briefly
 
@@ -237,7 +259,11 @@ Each Terminal-Bench task ships with:
 
 Your agent gets the instruction and a shell-like interface to the container. It works on the task. When it declares done (or the budget runs out), the tests run. Pass or fail.
 
-The `tb` CLI handles container lifecycle, scoring, and result aggregation. Read `docs/terminal_bench.md` for a quick orientation, or go straight to [tbench.ai](https://tbench.ai) for the upstream docs.
+Harbor handles container lifecycle, scoring, and result aggregation. See `docs/harbor.md` for a quick orientation, or go straight to [harborframework.com/docs](https://www.harborframework.com/docs) and [tbench.ai](https://tbench.ai) for the upstream docs.
+
+### Submitting to the Terminal-Bench leaderboard
+
+Leaderboard logs are stored in [this HuggingFace repo](https://huggingface.co/datasets/alexgshaw/terminal-bench-2-leaderboard). To submit your results, open a PR there following the instructions in its README. View the live leaderboard at [tbench.ai/leaderboard](https://tbench.ai/leaderboard).
 
 ---
 
@@ -279,12 +305,21 @@ Participants are responsible for their own machines and accounts. UW provides sa
 
 ## Bring-your-own model
 
-The baseline talks to any OpenAI-compatible endpoint. Configure via `.env`:
+The baseline agent talks to any OpenAI-compatible endpoint. Configure via `.env`:
 
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1   # Ollama default
 LLM_MODEL=qwen2.5-coder:32b
 LLM_API_KEY=ollama                       # Anything non-empty for Ollama
+```
+
+Harbor also supports passing model config directly:
+
+```bash
+harbor run \
+  -d terminal-bench/terminal-bench-2 \
+  -m ollama/qwen2.5-coder:32b \
+  -a ./agent
 ```
 
 Tested endpoints (community-maintained list — additions welcome):
@@ -378,7 +413,7 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Confirm finale reference hardware spec
 - [ ] Identify the UW–Madison contributor(s) to Terminal-Bench 2.0; reach out for collaboration
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (finale judge from their side? early heads-up on upstream tasks?)
-- [ ] Build the starter repo (`mlplusx/mlm26-coding-agent-starter`) — much smaller now that we're using `tb` for eval
+- [ ] Build the starter repo (`mlplusx/mlm26-coding-agent-starter`) — much smaller now that Harbor handles eval
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Build the red team sample agent
 - [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)
