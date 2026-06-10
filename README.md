@@ -102,7 +102,7 @@ Twelve sprint weeks plus kickoff and finale.
 
 **Phase 1 — Foundations (Weeks 1–3)**
 
-- **Week 1 — Kickoff & team formation.** Challenge brief, Terminal-Bench walkthrough, baseline demo, endpoint setup. Teams form by end of week.
+- **Week 1 — Kickoff & team formation.** Challenge brief, Terminal-Bench walkthrough, **live Docker + Harbor setup workshop** (bring your laptop — this is the #1 place people get stuck), baseline demo, endpoint setup. Teams form by end of week.
 - **Week 2 — Baseline replication.** Get the reference agent running. Score it against a public Terminal-Bench subset. Deliverable: working baseline with score.
 - **Week 3 — Failure analysis.** Classify where your baseline fails on Terminal-Bench tasks. Deliverable: failure taxonomy writeup.
 
@@ -165,12 +165,82 @@ This section is your fast path from "I registered" to "I have a working baseline
 
 - **Python 3.11+**
 - **[uv](https://docs.astral.sh/uv/)** — fast Python package manager (recommended over pip)
-- **Docker** — required by Harbor / Terminal-Bench (must be running)
+- **Docker** — required by Harbor / Terminal-Bench (see setup below)
 - **A model endpoint.** Options:
   - **Local Ollama.** Easiest, runs on most laptops with a GPU. Recommended for first-week setup.
   - **Local vLLM.** Higher throughput, more setup. Recommended for serious work.
   - **Hosted open-weight API.** Together, Fireworks, Groq, etc. Easy for development if you don't have local hardware yet.
   - **RunAI-hosted endpoint.** UW participants can request access via the kickoff form. Capacity is limited.
+
+### Why Docker, and how to set it up
+
+Terminal-Bench runs every task inside a **fresh Docker container** — that's both the sandbox (the agent can't touch your real filesystem) and the reproducibility guarantee (everyone's agent sees the identical environment). There is no way to run Terminal-Bench without Docker, so getting it installed and running is step zero. We'll do a live Docker setup walkthrough at the Week 1 kickoff — if you get stuck, bring your laptop.
+
+After installing (instructions per-OS below), verify with:
+
+```bash
+docker --version          # should print a version
+docker run hello-world    # should print "Hello from Docker!"
+```
+
+<details>
+<summary><strong>🍎 macOS</strong></summary>
+
+1. Install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/). Choose **Apple Silicon** or **Intel** to match your machine (check  → About This Mac).
+2. Open the downloaded `.dmg`, drag Docker to Applications, and launch it.
+3. Docker Desktop must be **running** (whale icon in the menu bar) whenever you use Harbor.
+
+Alternative for the homebrew-inclined: `brew install --cask docker`, then launch Docker from Applications.
+
+</details>
+
+<details>
+<summary><strong>🐧 Linux (Ubuntu/Debian)</strong></summary>
+
+Install Docker Engine (no Desktop app needed):
+
+```bash
+# Official convenience script
+curl -fsSL https://get.docker.com | sh
+
+# Let your user run docker without sudo
+sudo usermod -aG docker $USER
+newgrp docker   # or log out and back in
+
+# Docker starts automatically on most distros; verify:
+docker run hello-world
+```
+
+For other distros, see [Docker Engine install docs](https://docs.docker.com/engine/install/).
+
+</details>
+
+<details>
+<summary><strong>🪟 Windows</strong></summary>
+
+Docker on Windows requires **WSL2** (Windows Subsystem for Linux). Do everything below **inside WSL2**, not in PowerShell — the whole challenge toolchain (uv, Harbor, the starter repo) assumes a Unix shell.
+
+1. Install WSL2: open PowerShell **as Administrator** and run:
+   ```powershell
+   wsl --install
+   ```
+   Reboot when prompted. This installs Ubuntu by default.
+2. Install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/). During setup, ensure **"Use WSL 2 based engine"** is checked.
+3. In Docker Desktop → Settings → Resources → WSL Integration, enable integration for your Ubuntu distro.
+4. Open the Ubuntu terminal (search "Ubuntu" in the Start menu) and verify:
+   ```bash
+   docker run hello-world
+   ```
+
+Common gotcha: if `docker` isn't found inside Ubuntu, WSL integration (step 3) isn't enabled.
+
+</details>
+
+**Common issues (all platforms):**
+
+- *"Cannot connect to the Docker daemon"* → Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux).
+- *Permission denied on Linux* → you skipped the `usermod -aG docker` step.
+- *Disk space* — Terminal-Bench task images add up. Give Docker ≥30 GB. `docker system prune` reclaims space (careful: deletes stopped containers and unused images).
 
 ### Quickstart
 
@@ -204,7 +274,7 @@ harbor run -d terminal-bench/terminal-bench-2 -a oracle
 cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
 harbor run \
   -d terminal-bench/terminal-bench-2 \
-  -a ./agent \
+  --agent-import-path agent.agent:MLMBaselineAgent \
   -n 1
 ```
 
@@ -215,7 +285,7 @@ You should see the baseline agent receive a task instruction, work inside a fres
 ```
 mlm26-coding-agent-starter/
 ├── agent/
-│   ├── agent.py            # Main agent loop (~200 lines, read it)
+│   ├── agent.py            # MLMBaselineAgent (Harbor BaseAgent) — main loop, read it
 │   ├── tools.py            # Tool definitions (shell, read, write, done)
 │   ├── llm.py              # OpenAI-compatible client wrapper
 │   └── prompts.py          # System prompts (modify freely)
@@ -223,6 +293,7 @@ mlm26-coding-agent-starter/
 │   ├── run_baseline.sh     # Single-task runner
 │   └── run_subset.sh       # Run the public starter subset
 ├── docs/
+│   ├── docker_setup.md     # Per-OS Docker install + troubleshooting
 │   ├── safety.md
 │   ├── troubleshooting.md
 │   ├── byo_model.md        # How to point at your own endpoint
@@ -232,17 +303,32 @@ mlm26-coding-agent-starter/
 └── README.md
 ```
 
-The agent code is *yours to modify*. Harbor handles container lifecycle, scoring, and result aggregation — you focus on the agent logic.
+The agent code is *yours to modify*. Harbor handles container lifecycle, scoring, and result aggregation — you focus on the agent logic in `agent/agent.py`, which implements Harbor's `BaseAgent` interface.
+
+### How agents plug into Harbor
+
+Harbor supports custom agents without modifying Harbor itself. Two integration styles:
+
+1. **External agents** — implement Harbor's `BaseAgent` interface (`name`, `version`, `setup`, `run`). Your agent runs on your machine and drives the task container through Harbor's `BaseEnvironment` interface (executing bash via `exec`). **The starter baseline is an external agent** — it's the simplest place to start.
+2. **Installed agents** — implement `BaseInstalledAgent`. Your agent is installed *into* the task container and runs headless inside it. More setup, but lets you bring custom tools into the environment. Worth considering once your agent matures.
+
+Either way, you run it the same way:
+
+```bash
+harbor run -d terminal-bench/terminal-bench-2 --agent-import-path agent.agent:MLMBaselineAgent
+```
+
+Harbor also ships with pre-integrated agents (Terminus-2, Claude Code, Codex CLI, OpenHands, Mini-SWE-Agent, and more — see `harbor run --help`). These are useful reference points, but remember: closed-weight agents are out of scope for Track A scoring. Running Terminus-2 with your local model is a legitimate baseline to beat.
 
 ### The agent loop, briefly
 
-The baseline is intentionally minimal. ReAct-style:
+The baseline is intentionally minimal. ReAct-style, inside the `run()` method of a `BaseAgent`:
 
-1. Read the task instruction from Terminal-Bench
+1. Receive the task instruction from Harbor
 2. Ask the LLM what to do next, with the current state
 3. Parse the response for a tool call (shell, read, write, done)
-4. Execute the tool inside the Terminal-Bench-provided container
-5. Loop until "done" or budget exhausted
+4. Execute the tool inside the task container via the `environment` interface
+5. Loop until "done" or budget exhausted, populating the agent context as you go
 
 ~200 lines of Python. No frameworks. Read it before you modify it.
 
