@@ -163,7 +163,7 @@ This section is your fast path from "I registered" to "I have a working baseline
 
 ### Prerequisites
 
-- **Python 3.11+**
+- **Python 3.12+** (required by Harbor)
 - **[uv](https://docs.astral.sh/uv/)** — fast Python package manager (recommended over pip)
 - **Docker** — required by Harbor / Terminal-Bench (see setup below)
 - **A model endpoint.** Options:
@@ -256,29 +256,26 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone https://github.com/mlplusx/mlm26-coding-agent-starter.git
 cd mlm26-coding-agent-starter
 
-# Create a virtual environment and install dependencies
-uv venv                            # creates .venv/
-source .venv/bin/activate          # activate it (on Windows: .venv\Scripts\activate)
-uv pip install -r requirements.txt # install dependencies (includes harbor)
+# Create a virtual environment (best practice: one venv per project)
+uv venv --python 3.12              # creates .venv/; uv fetches Python 3.12 if missing
+source .venv/bin/activate          # activate it (on Windows/WSL2 same command)
+uv pip install -e .                # installs harbor + the agent package (editable)
 ```
 
-**3. Verify Harbor + Terminal-Bench works** by running the oracle agent (solves tasks using the known answer — confirms your setup is correct):
+**3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set (the oracle replays each task's known solution — it confirms your Docker/Harbor setup without needing a model):
 
 ```bash
-harbor run -d terminal-bench/terminal-bench-2 -a oracle
+harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-**4. Run the baseline agent** against a sample task:
+**4. Run the baseline agent** against a single sample task:
 
 ```bash
 cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
-harbor run \
-  -d terminal-bench/terminal-bench-2 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
-  -n 1
+./scripts/run_baseline.sh build-cython-ext
 ```
 
-You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. If you get something different, see `docs/troubleshooting.md`.
+You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. Results land in `jobs/`. If you get something different, see `docs/troubleshooting.md`.
 
 ### What's in the starter repo
 
@@ -286,12 +283,14 @@ You should see the baseline agent receive a task instruction, work inside a fres
 mlm26-coding-agent-starter/
 ├── agent/
 │   ├── agent.py            # MLMBaselineAgent (Harbor BaseAgent) — main loop, read it
-│   ├── tools.py            # Tool definitions (shell, read, write, done)
+│   ├── tools.py            # Action parsing + shell execution helpers
 │   ├── llm.py              # OpenAI-compatible client wrapper
 │   └── prompts.py          # System prompts (modify freely)
+├── eval/
+│   └── public_subset.txt   # Official MLM26 public task subset (announced at kickoff)
 ├── scripts/
-│   ├── run_baseline.sh     # Single-task runner
-│   └── run_subset.sh       # Run the public starter subset
+│   ├── run_baseline.sh     # Single-task runner (sample set)
+│   └── run_subset.sh       # Run the official public subset
 ├── docs/
 │   ├── docker_setup.md     # Per-OS Docker install + troubleshooting
 │   ├── safety.md
@@ -299,7 +298,7 @@ mlm26-coding-agent-starter/
 │   ├── byo_model.md        # How to point at your own endpoint
 │   └── harbor.md           # Harbor orientation + custom agent guide
 ├── .env.example
-├── requirements.txt
+├── pyproject.toml          # `uv pip install -e .` makes the agent importable by Harbor
 └── README.md
 ```
 
@@ -315,8 +314,10 @@ Harbor supports custom agents without modifying Harbor itself. Two integration s
 Either way, you run it the same way:
 
 ```bash
-harbor run -d terminal-bench/terminal-bench-2 --agent-import-path agent.agent:MLMBaselineAgent
+harbor run -d terminal-bench@2.0 --agent-import-path agent.agent:MLMBaselineAgent
 ```
+
+Useful flags: `-i <task-name>` to include specific tasks (repeatable, supports globs), `-x` to exclude, `-n` to control how many tasks run concurrently, `-m` to record the model used.
 
 Harbor also ships with pre-integrated agents (Terminus-2, Claude Code, Codex CLI, OpenHands, Mini-SWE-Agent, and more — see `harbor run --help`). These are useful reference points, but remember: closed-weight agents are out of scope for Track A scoring. Running Terminus-2 with your local model is a legitimate baseline to beat.
 
@@ -349,7 +350,7 @@ Harbor handles container lifecycle, scoring, and result aggregation. See `docs/h
 
 ### Submitting to the Terminal-Bench leaderboard
 
-Leaderboard logs are stored in [this HuggingFace repo](https://huggingface.co/datasets/alexgshaw/terminal-bench-2-leaderboard). To submit your results, open a PR there following the instructions in its README. View the live leaderboard at [tbench.ai/leaderboard](https://tbench.ai/leaderboard).
+Leaderboard logs are stored in [this HuggingFace repo](https://huggingface.co/datasets/harborframework/terminal-bench-2-leaderboard). To submit your results, run with `--n-attempts 5` and open a PR there following the instructions in its README (a validation bot checks ≥5 trials per task). View the live leaderboard at [tbench.ai/leaderboard](https://tbench.ai/leaderboard).
 
 ---
 
@@ -403,9 +404,9 @@ Harbor also supports passing model config directly:
 
 ```bash
 harbor run \
-  -d terminal-bench/terminal-bench-2 \
+  -d terminal-bench@2.0 \
   -m ollama/qwen2.5-coder:32b \
-  -a ./agent
+  --agent-import-path agent.agent:MLMBaselineAgent
 ```
 
 Tested endpoints (community-maintained list — additions welcome):
@@ -499,7 +500,7 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Confirm finale reference hardware spec
 - [ ] Identify the UW–Madison contributor(s) to Terminal-Bench 2.0; reach out for collaboration
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (finale judge from their side? early heads-up on upstream tasks?)
-- [ ] Build the starter repo (`mlplusx/mlm26-coding-agent-starter`) — much smaller now that Harbor handles eval
+- [ ] Build the starter repo (`mlplusx/mlm26-coding-agent-starter`) — scaffold drafted in `starter/` in this repo; split it out, set the real public-subset task list in `eval/public_subset.txt`, and cold-start test before publishing
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Build the red team sample agent
 - [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)
