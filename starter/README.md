@@ -82,6 +82,7 @@ Constraints that always apply (full rules in the [challenge README](https://gith
 
 | Doc | What's in it |
 |---|---|
+| [docs/walkthrough.md](docs/walkthrough.md) | **Start here.** End-to-end guide: Docker → uv → Harbor → model → first score → making changes |
 | [docs/docker_setup.md](docs/docker_setup.md) | Per-OS Docker install + common failures |
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
 | [docs/byo_model.md](docs/byo_model.md) | Ollama / vLLM / hosted endpoints, `.env` config |

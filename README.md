@@ -159,7 +159,7 @@ Judging panel includes ML+X organizers plus invited reviewers — we're aiming f
 
 ## Getting started
 
-This section is your fast path from "I registered" to "I have a working baseline scoring on Terminal-Bench."
+This section is your fast path from "I registered" to "I have a working baseline scoring on Terminal-Bench." For a detailed step-by-step walkthrough with expected output at every stage (Docker → uv → Harbor → model setup → first score → making changes), see [`docs/walkthrough.md`](https://github.com/mlplusx/mlm26-coding-agent-starter/blob/main/docs/walkthrough.md) in the starter repo.
 
 ### Prerequisites
 
