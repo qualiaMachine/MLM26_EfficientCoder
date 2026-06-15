@@ -390,13 +390,26 @@ What this command does:
 
 > **About task difficulty:** Terminal-Bench tasks span easy/medium/hard across categories like software-engineering, security, data-processing, scientific-computing, and system-administration. You can browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/). The 10-task sample set (`terminal-bench-sample@2.0`) is handy for quick iteration but contains no easy tasks — so for this first demo we use the full dataset with a single easy task.
 
-**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). First run may take longer as Harbor downloads the task definition.
+**Expect:** ~5–10 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). First run may take longer as Harbor downloads the task definition.
 
-You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail).
+Expected output (with the 14B model):
 
-> **Don't panic if it scores 0.0** — that's expected with the baseline. In our testing, the 7B model actually *solved* `fix-git` by turn 8 (found the detached commit, created a temp branch, merged it into master) but then kept going — it tried to `git push` to a nonexistent remote, failed, and spent 30+ turns in a loop generating SSH keys. The correct solution was already done, but the agent didn't know to stop. **This is exactly why orchestration matters** — a smarter agent loop with better stopping logic, loop detection, or self-verification ("did I already solve this?") would have scored 1.0 with the same model. That's the competition.
+```
+  1/1 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:08:49 0:00:00
 
-> **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
+terminal-bench • mlm26-baseline
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      1 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+```
+
+If you see `Mean: 1.000`, your agent just solved a real Terminal-Bench task — it found orphaned git changes via `git reflog`, merged them into master, resolved a merge conflict, verified the result, and declared done. All autonomously, with a local 14B model.
+
+> **Scoring 0.0?** Check `job.log` in the job directory (see [Reading your results](#reading-your-results) below) to see what the model actually did. Common failure modes: the model gets stuck in a loop repeating the same command, tries to push to a remote that doesn't exist, or uses `sed` on files with special characters and mangles them. Smaller models (7B) will fail most tasks — that's the starting line. The competition is about improving the agent orchestration to get more tasks passing.
+
+> **Why only 15 turns?** The competition default is 100 turns per task, but small models tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
 
 ### Reading your results
 
