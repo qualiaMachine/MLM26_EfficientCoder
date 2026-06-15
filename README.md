@@ -296,6 +296,7 @@ This design also means you can swap in *any* OpenAI-compatible endpoint later â€
 
 ```bash
 # Install Ollama (if you don't have it)
+sudo apt-get update && sudo apt-get install -y zstd   # required by the Ollama installer
 curl -fsSL https://ollama.com/install.sh | sh
 
 # Pull a model â€” pick one that fits your hardware:
