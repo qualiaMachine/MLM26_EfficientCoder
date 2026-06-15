@@ -251,9 +251,13 @@ uv pip install -e starter/         # installs harbor + the agent package (editab
 
 **3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set.
 
-What this does: Harbor downloads 10 task definitions (~first run only), then for each task it builds a Docker image, runs the **oracle agent** inside it (the oracle just replays the known solution — no LLM needed), grades the result, and destroys the container. No GPU, no model endpoint, no API key required — this purely tests that Docker + Harbor are wired up correctly.
+**Background:** Terminal-Bench tasks are software engineering challenges — things like "build this Cython extension," "find the best chess move," or "configure a git webserver." Each task ships as a Docker image containing source code, instructions, and a test suite that grades the final state of the container. Your agent's job (eventually) is to read the instructions, figure out what to do, and execute bash commands inside the container until the task is solved.
 
-**Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. You should see each task pass with `reward: 1.0` and an aggregate score of 100%.
+[Harbor](https://www.harborframework.com/) is the official harness that orchestrates all of this — it pulls task definitions, spins up Docker containers, runs your agent inside them, grades results against the test suite, and tears everything down.
+
+**What this step does:** Harbor downloads 10 sample task definitions (~first run only, cached after), then for each task it builds a Docker container and runs the **oracle agent** inside it. The oracle is a cheat — it just replays each task's known solution step-by-step instead of thinking. It exists so you can verify your Docker + Harbor setup without needing a GPU, a model endpoint, or an API key. If the oracle scores 100%, your plumbing works.
+
+**Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. Everything runs on CPU.
 
 ```bash
 cd starter
@@ -276,18 +280,52 @@ Total runtime: 3m 5s
 Results written to jobs/2026-06-15__13-39-11/result.json
 ```
 
-If you see `Mean: 1.000` with 0 exceptions, you're good. If tasks fail here, the problem is Docker, not your agent. See `starter/docs/troubleshooting.md`.
+If you see `Mean: 1.000` with 0 exceptions, Docker and Harbor are working correctly. If tasks fail, it's a Docker or network issue — see `starter/docs/troubleshooting.md`.
 
 **4. Run the baseline agent** against a single sample task.
 
 What this does: unlike the oracle, this runs **your actual agent** — it sends the task instruction to an LLM, the LLM generates bash commands, the agent executes them inside the Docker container, and the loop repeats until the agent declares done or hits the turn limit. The task's test suite then grades the final container state.
 
-**Requires:** a running model endpoint (see `starter/docs/byo_model.md`). The easiest option is [Ollama](https://ollama.com/download) with a local model. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). Expect ~2–5 minutes per task depending on model speed.
+**Requires:** a running LLM that the agent can talk to. The quickest way to get one is [Ollama](https://ollama.com/download), which runs open-weight models locally. For other options (vLLM, hosted endpoints), see `starter/docs/byo_model.md`.
+
+**Set up Ollama:**
 
 ```bash
-cp .env.example .env               # edit this: set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
+# Install Ollama (if you don't have it)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull a model — pick one that fits your hardware:
+#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b          (~2 GB, slow but works)
+#   8 GB VRAM:             ollama pull qwen2.5-coder:7b-q8_0     (~8 GB, 8-bit quantized)
+#   16 GB VRAM:            ollama pull qwen2.5-coder:14b         (~9 GB)
+#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b         (~20 GB)
+ollama pull qwen2.5-coder:7b-q8_0
+
+# Verify the endpoint is running
+curl http://localhost:11434/v1/models
+```
+
+You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` first.
+
+**Configure and run:**
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` to match the model you pulled:
+```bash
+LLM_BASE_URL=http://localhost:11434/v1
+LLM_MODEL=qwen2.5-coder:7b-q8_0
+LLM_API_KEY=ollama
+```
+
+Now run the baseline agent on one task:
+```bash
 ./scripts/run_baseline.sh build-cython-ext
 ```
+
+**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB).
 
 You should see the agent read the task, explore the container, attempt commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line. Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
