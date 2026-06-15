@@ -117,10 +117,11 @@ Modeled on Kaggle's community hackathon format.
 
 ## Judging
 
-- **Terminal-Bench score (30%)** — Performance across Terminal-Bench tasks. All 89 tasks are public — participants can see descriptions, test suites, and run any task at any time. This is by design: the benchmark tests whether your agent *generalizes* across diverse tasks, not whether you can memorize solutions. Hardcoding task-specific hacks for 89 tasks is more work than building a good general agent, which is the point.
-- **Engineering depth (25%)** — Is the work technically substantive? Does the writeup show real understanding of the tradeoffs? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
-- **Reproducibility (20%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
-- **Clarity & presentation (25%)** — Writeup and demo quality. Can a reader understand what you built, why, and what you learned?
+- **Terminal-Bench score (25%)** — Raw performance across Terminal-Bench tasks.
+- **Generalizability (25%)** — Does your agent use a single general-purpose architecture, or did you hardcode task-specific hacks? Judges will evaluate this by reading your code and by testing your agent on tasks outside your reported set. All 89 Terminal-Bench tasks are public — participants can see descriptions, test suites, and solutions. A team that scores 60% with one general agent beats a team that scores 70% with 89 task-specific prompt templates.
+- **Engineering depth (20%)** — Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
+- **Reproducibility (15%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
+- **Clarity & presentation (15%)** — Writeup and demo quality. Can a reader understand what you built, why, and what you learned?
 
 Judging panel includes ML+X organizers plus invited reviewers — we're aiming for at least one reviewer from the Terminal-Bench community.
 
