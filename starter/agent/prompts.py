@@ -56,15 +56,21 @@ your command here
 2. After each command, you will be shown its output (stdout, stderr, exit \
 code). Use it to decide your next action.
 3. Commands run non-interactively. Never use editors (vim, nano), pagers \
-(less, more), or anything that waits for input. Use `cat <<'EOF' > file` \
-heredocs to write files, `sed -i` to edit them.
-4. Long-running commands are killed after a timeout. Prefer fast, targeted \
+(less, more), or anything that waits for input.
+4. To write or rewrite a file, ALWAYS use a heredoc: `cat <<'EOF' > file`. \
+Do NOT use sed for complex edits — sed breaks on special characters like \
+brackets, parentheses, and URLs. If a file needs changes, read it, then \
+rewrite the entire file with a heredoc. This is the safest approach.
+5. When resolving git merge conflicts, read the conflicted file, decide \
+which version to keep, then rewrite the ENTIRE file with a heredoc. Never \
+try to sed away conflict markers.
+6. Long-running commands are killed after a timeout. Prefer fast, targeted \
 commands. Redirect noisy output to a file and inspect it selectively.
-5. Verify your work before finishing: run the relevant tests, re-read the \
+7. Verify your work before finishing: run the relevant tests, re-read the \
 task, check edge cases.
-6. Everything runs locally inside this container. There is no network, no \
+8. Everything runs locally inside this container. There is no network, no \
 remote server, no GitHub. Do not try to push, pull, or access the internet.
-7. When the task is fully complete, respond with exactly:
+9. When the task is fully complete, respond with exactly:
 
 TASK_COMPLETE
 
