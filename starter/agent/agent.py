@@ -11,7 +11,7 @@ A minimal ReAct-style external agent for Harbor / Terminal-Bench 2.0:
 Run it with:
 
     harbor run -d terminal-bench-sample@2.0 \
-        --agent-import-path agent.agent:MLMBaselineAgent
+        --agent-import-path agent.agent:BaselineAgent
 
 This is a floor, not a ceiling. Read it, understand it, then make it yours:
 planning, context management, error recovery, self-critique, retrieval —
@@ -33,7 +33,7 @@ MAX_TURNS = int(os.environ.get("AGENT_MAX_TURNS", "100"))
 COMMAND_TIMEOUT_SEC = int(os.environ.get("AGENT_COMMAND_TIMEOUT_SEC", "60"))
 
 
-class MLMBaselineAgent(BaseAgent):
+class BaselineAgent(BaseAgent):
     @staticmethod
     def name() -> str:
         return "mlm26-baseline"

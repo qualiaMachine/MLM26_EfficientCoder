@@ -15,7 +15,7 @@ TASK="${1:-}"
 
 harbor run \
   -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   ${TASK:+-i "$TASK"} \
   -n "${N_CONCURRENT:-1}" \
   "$@"

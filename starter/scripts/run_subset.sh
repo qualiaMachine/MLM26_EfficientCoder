@@ -23,7 +23,7 @@ fi
 
 harbor run \
   -d terminal-bench@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   "${include_flags[@]}" \
   -n "${N_CONCURRENT:-2}" \
   "$@"

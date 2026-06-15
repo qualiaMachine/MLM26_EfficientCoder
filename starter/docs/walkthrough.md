@@ -216,13 +216,13 @@ LLM_API_KEY=ollama
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -i build-cython-ext
 ```
 
 Breaking down the flags:
 - `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
-- `--agent-import-path agent.agent:MLMBaselineAgent` — run your agent (from `agent/agent.py`, the `MLMBaselineAgent` class)
+- `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
 - `-i build-cython-ext` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
@@ -267,7 +267,7 @@ Now run all 10 tasks:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent
+  --agent-import-path agent.agent:BaselineAgent
 ```
 
 Or use the convenience script:
@@ -282,7 +282,7 @@ This takes longer (10 tasks × ~5 min max each). At the end you'll get an aggreg
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -n 2
 ```
 
@@ -375,7 +375,7 @@ Now re-run the same task:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -i build-cython-ext
 ```
 
@@ -396,7 +396,7 @@ This is the development loop for the semester:
 |---|---|
 | Verify Docker works | `docker run hello-world` |
 | Verify Harbor works | `harbor run -d terminal-bench-sample@2.0 -a oracle` |
-| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:MLMBaselineAgent -i <task-name>` |
+| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:BaselineAgent -i <task-name>` |
 | Run your agent on all sample tasks | `./scripts/run_baseline.sh` |
 | Run the MLM26 public subset | `./scripts/run_subset.sh` |
 | Run tasks in parallel | Add `-n 4` (or however many your RAM supports) |
