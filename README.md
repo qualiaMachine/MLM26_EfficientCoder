@@ -286,7 +286,9 @@ If you see `Mean: 1.000` with 0 exceptions, Docker and Harbor are working correc
 
 What this does: unlike the oracle, this runs **your actual agent** — it sends the task instruction to an LLM, the LLM generates bash commands, the agent executes them inside the Docker container, and the loop repeats until the agent declares done or hits the turn limit. The task's test suite then grades the final container state.
 
-**Requires:** a running LLM that the agent can talk to. The quickest way to get one is [Ollama](https://ollama.com/download), which runs open-weight models locally. For other options (vLLM, hosted endpoints), see `starter/docs/byo_model.md`.
+**Requires:** a running LLM that the agent can talk to via an API. The baseline agent communicates with the model through an OpenAI-compatible HTTP endpoint (chat completions API) — it doesn't load model weights directly. That means you need something that *serves* a model, not just the model files themselves.
+
+The quickest way to get this running is [Ollama](https://ollama.com/download). Ollama handles downloading the model, quantizing it, and serving it behind an OpenAI-compatible API — all in one tool. You could also download models from Hugging Face and serve them yourself with [vLLM](https://docs.vllm.ai/) or [llama.cpp](https://github.com/ggml-org/llama.cpp), which gives you more control (custom quantizations, batching, multi-GPU). See `starter/docs/byo_model.md` for those options. For getting started, Ollama is the path of least resistance.
 
 **Set up Ollama:**
 
