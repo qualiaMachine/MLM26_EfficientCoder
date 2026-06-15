@@ -396,7 +396,55 @@ You should see the agent read the task, explore the container, attempt bash comm
 
 > **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
 
-Results land in `starter/jobs/`. Check `job.log` in the job directory for the full agent trace (every command the model ran). See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
+### Reading your results
+
+Every run creates a timestamped directory under `starter/jobs/`:
+
+```
+starter/jobs/2026-06-15__16-00-02/          ← one directory per run
+├── job.log                                  ← full agent trace: every LLM command, every output
+├── terminal-bench__fix-git/                 ← one subdirectory per task
+│   └── 0/                                   ← attempt number (0-indexed; more with --n-attempts)
+│       └── result.json                      ← score, timing, token usage, metadata
+├── terminal-bench__polyglot-c-py/
+│   └── 0/
+│       └── result.json
+└── ...
+```
+
+**`job.log`** — Your first stop for debugging. Contains the full agent trace: every command the model ran, every turn, in order. This is how you see *what* the model did and *where* it went wrong. Example:
+
+```
+[agent] turn 1: git status
+[agent] turn 2: git log --oneline --graph --all
+[agent] turn 3: git checkout d7d3e4b
+...
+```
+
+**`result.json`** — One per task per attempt. Key fields:
+
+| Field | What it tells you |
+|---|---|
+| `reward` | The score: `1.0` = passed the test suite, `0.0` = failed |
+| `started_at` / `finished_at` | Timing for each phase (environment setup, agent setup, agent execution, verifier) |
+| `exception` | What went wrong if the trial crashed (null if it ran cleanly) |
+| `n_input_tokens` / `n_output_tokens` | How many tokens your agent consumed |
+| `metadata.turns` | How many reasoning/action cycles the agent used |
+| `metadata.finished` | Whether the agent said TASK_COMPLETE (`true`) or hit the turn limit (`false`) |
+| `metadata.messages` | The full LLM conversation — every system/user/assistant message, in order |
+
+Inspect a result:
+```bash
+# Pretty-print the latest result
+cat jobs/2026-06-15__16-00-02/terminal-bench__fix-git/0/result.json | python3 -m json.tool
+
+# Just see the score
+python3 -c "import json; print(json.load(open('jobs/2026-06-15__16-00-02/terminal-bench__fix-git/0/result.json'))['reward'])"
+```
+
+When you run with `--n-attempts 5` (required for the leaderboard), each task gets attempt directories `0/` through `4/`, each with its own `result.json`. Harbor reports the aggregate pass@k stats in the console.
+
+See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
 ### What's in `starter/`
 
