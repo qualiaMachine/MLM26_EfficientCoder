@@ -314,9 +314,9 @@ Now download a model. This just saves files to disk — **no GPU usage yet.** Ol
 # Pick one that fits your hardware:
 #   No GPU / CPU only:     ollama pull qwen2.5-coder:3b      (~2 GB, slow but works)
 #   8 GB VRAM:             ollama pull qwen2.5-coder:7b      (~4.7 GB)
-#   16 GB VRAM:            ollama pull qwen2.5-coder:14b     (~9 GB)
+#   16+ GB VRAM:           ollama pull qwen2.5-coder:14b     (~9 GB)  ← recommended starting point
 #   24+ GB VRAM:           ollama pull qwen2.5-coder:32b     (~20 GB)
-ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:14b
 ```
 
 **Configure the model endpoint** (from the `starter/` directory — that's where `.env` and the agent code live):
@@ -326,10 +326,10 @@ cd ~/MLM26/starter
 cp .env.example .env
 ```
 
-Edit `.env` to match the model you pulled:
+The defaults in `.env.example` already point at Ollama with `qwen2.5-coder:14b`. If you pulled a different model, edit `.env` to match:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:7b
+LLM_MODEL=qwen2.5-coder:14b            # adjust to 7b if < 32 GB memory; expect most tests to fail with small models
 LLM_API_KEY=ollama                      # Ollama doesn't need auth — this is a dummy
                                         # value to satisfy the OpenAI client library,
                                         # which errors if api_key is empty. Any non-empty

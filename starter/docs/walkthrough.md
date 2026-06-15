@@ -173,16 +173,16 @@ Download from [ollama.com/download](https://ollama.com/download) and install.
 ### Pull a model
 
 ```bash
-ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:14b
 ```
 
-This downloads a 7B parameter coding model (~4.5 GB). It's small enough to run on most hardware and good enough to see the agent work. You'll upgrade to larger models later.
+This downloads a 14B parameter coding model (~9 GB). It's the recommended starting point — large enough to reason through most easy/medium tasks, small enough to run on 16+ GB VRAM. The 7B works too but expect most tasks to fail due to limited reasoning capacity.
 
 > **Model sizes that fit common GPUs:**
 > - **No GPU / CPU only:** `qwen2.5-coder:3b` (slow but works)
 > - **8 GB VRAM:** `qwen2.5-coder:7b`
-> - **16 GB VRAM:** `qwen2.5-coder:14b`
-> - **24 GB VRAM:** `qwen2.5-coder:32b-q4_K_M` (quantized to fit)
+> - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point)
+> - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB)
 > - **48+ GB VRAM:** `qwen2.5-coder:32b` at fp16, or 70B quantized
 
 ### Verify the endpoint
@@ -201,12 +201,12 @@ You should see a JSON response listing your pulled model(s). If you get "connect
 cp .env.example .env
 ```
 
-The defaults in `.env.example` already point at Ollama with `qwen2.5-coder:32b`. Edit `.env` to match the model you actually pulled:
+The defaults in `.env.example` already point at Ollama with `qwen2.5-coder:14b`. Edit `.env` if you pulled a different model:
 
 ```bash
 # .env
 LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:7b
+LLM_MODEL=qwen2.5-coder:14b
 LLM_API_KEY=ollama
 ```
 
