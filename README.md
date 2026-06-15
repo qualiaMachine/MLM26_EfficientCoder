@@ -373,7 +373,7 @@ Read the code: `agent/agent.py` (the loop), `agent/prompts.py` (what the LLM see
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:MLMBaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -i build-cython-ext
 ```
 
@@ -388,7 +388,7 @@ You should see the agent read the task, explore the container, attempt commands,
 ```
 starter/
 ├── agent/
-│   ├── agent.py            # MLMBaselineAgent (Harbor BaseAgent) — main loop, read it
+│   ├── agent.py            # BaselineAgent (Harbor BaseAgent) — main loop, read it
 │   ├── tools.py            # Action parsing + shell execution helpers
 │   ├── llm.py              # OpenAI-compatible client wrapper
 │   └── prompts.py          # System prompts (modify freely)
@@ -420,7 +420,7 @@ Harbor supports custom agents without modifying Harbor itself. Two integration s
 Either way, you run it the same way:
 
 ```bash
-harbor run -d terminal-bench@2.0 --agent-import-path agent.agent:MLMBaselineAgent
+harbor run -d terminal-bench@2.0 --agent-import-path agent.agent:BaselineAgent
 ```
 
 Useful flags: `-i <task-name>` to include specific tasks (repeatable, supports globs), `-x` to exclude, `-n` to control how many tasks run concurrently, `-m` to record the model used.
@@ -512,7 +512,7 @@ Harbor also supports passing model config directly:
 harbor run \
   -d terminal-bench@2.0 \
   -m ollama/qwen2.5-coder:32b \
-  --agent-import-path agent.agent:MLMBaselineAgent
+  --agent-import-path agent.agent:BaselineAgent
 ```
 
 Tested endpoints (community-maintained list — additions welcome):
