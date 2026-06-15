@@ -459,7 +459,7 @@ Welcome. The challenge is open. Sprints are hybrid. Prizes don't care.
 Self-reported scores against the public set are submitted via the Kaggle hackathon page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
 
 **What's the relationship to the upstream Terminal-Bench project?**
-We're users, contributors, and (hopefully) collaborators — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
+We're users and fans — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
 
 ---
 
@@ -467,7 +467,6 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 
 - [ ] Confirm prize pool with sponsors
 - [ ] Confirm finale reference hardware spec
-- [ ] Identify the UW–Madison contributor(s) to Terminal-Bench 2.0; reach out for collaboration
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (finale judge from their side? early heads-up on upstream tasks?)
 - [ ] Set the real public-subset task list in `starter/eval/public_subset.txt` and cold-start test on a fresh machine before publishing
 - [ ] Cold-start test the quickstart on a machine that didn't write it
