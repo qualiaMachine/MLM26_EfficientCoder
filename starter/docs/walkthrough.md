@@ -76,9 +76,10 @@ If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc   # reload your shell so uv is on your PATH
 ```
 
-Close and reopen your terminal (so `uv` is on your PATH), then verify:
+Verify it works:
 
 ```bash
 uv --version
@@ -135,16 +136,24 @@ This will:
 2. For each task: build a Docker image, run the oracle inside it, grade the result, destroy the container
 3. Print an aggregate score
 
-**Expected output** (abbreviated):
+**Expected output:**
 
 ```
-Running 10 tasks...
-  build-cython-ext          ✓  reward: 1.0
-  chess-best-move            ✓  reward: 1.0
-  configure-git-webserver    ✓  reward: 1.0
-  ...
-Aggregate: 10/10 (100.0%)
+  10/10 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:02:52 0:00:00
+
+terminal-bench-sample • oracle
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│     10 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+Job Info
+Total runtime: 3m 5s
+Results written to jobs/<date>__<time>/result.json
 ```
+
+If you see `Mean: 1.000` with 0 exceptions, everything works.
 
 If tasks fail here, the problem is Docker, not your agent. Common issues:
 - Docker not running → start it
