@@ -319,9 +319,10 @@ Now download a model. This just saves files to disk — **no GPU usage yet.** Ol
 ollama pull qwen2.5-coder:7b
 ```
 
-**Configure and run:**
+**Configure and run** (from the `starter/` directory — that's where `.env` and the scripts live):
 
 ```bash
+cd ~/MLM26/starter
 cp .env.example .env
 ```
 
