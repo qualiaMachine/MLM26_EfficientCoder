@@ -300,11 +300,11 @@ sudo apt-get update && sudo apt-get install -y zstd   # required by the Ollama i
 curl -fsSL https://ollama.com/install.sh | sh
 
 # Pull a model — pick one that fits your hardware:
-#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b          (~2 GB, slow but works)
-#   8 GB VRAM:             ollama pull qwen2.5-coder:7b-q8_0     (~8 GB, 8-bit quantized)
-#   16 GB VRAM:            ollama pull qwen2.5-coder:14b         (~9 GB)
-#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b         (~20 GB)
-ollama pull qwen2.5-coder:7b-q8_0
+#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b      (~2 GB, slow but works)
+#   8 GB VRAM:             ollama pull qwen2.5-coder:7b      (~4.7 GB)
+#   16 GB VRAM:            ollama pull qwen2.5-coder:14b     (~9 GB)
+#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b     (~20 GB)
+ollama pull qwen2.5-coder:7b
 
 # Verify the endpoint is running
 curl http://localhost:11434/v1/models
@@ -321,7 +321,7 @@ cp .env.example .env
 Edit `.env` to match the model you pulled:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:7b-q8_0
+LLM_MODEL=qwen2.5-coder:7b
 LLM_API_KEY=ollama
 ```
 
