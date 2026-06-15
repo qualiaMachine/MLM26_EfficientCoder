@@ -290,6 +290,8 @@ What this does: unlike the oracle, this runs **your actual agent** — it sends 
 
 The quickest way to get this running is [Ollama](https://ollama.com/download). Ollama handles downloading the model, quantizing it, and serving it behind an OpenAI-compatible API — all in one tool. You could also download models from Hugging Face and serve them yourself with [vLLM](https://docs.vllm.ai/) or [llama.cpp](https://github.com/ggml-org/llama.cpp), which gives you more control (custom quantizations, batching, multi-GPU). See `starter/docs/byo_model.md` for those options. For getting started, Ollama is the path of least resistance.
 
+This design also means you can swap in *any* OpenAI-compatible endpoint later — a model on a shared cluster (e.g., RunAI/Slurm + vLLM), a cloud API like Amazon Bedrock or Google Vertex, or a friend's GPU across the network. Just change `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` in `.env`. No code changes needed.
+
 **Set up Ollama:**
 
 ```bash
