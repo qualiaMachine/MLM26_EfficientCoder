@@ -18,14 +18,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 git clone git@github.com:qualiaMachine/MLM26.git
-cd MLM26/starter
+cd MLM26
 
 uv venv --python 3.12              # Harbor needs Python 3.12+; uv fetches it if missing
 source .venv/bin/activate
-uv pip install -e .                # installs harbor + this agent package (editable)
+uv pip install -e starter/         # installs harbor + this agent package (editable)
 ```
 
-> Best practice: one venv per project, always activated when you work. If `harbor` is "not found" later, you forgot to activate. The `-e` (editable) install means your edits to `agent/` take effect immediately — no reinstall needed. It also makes your agent importable by Harbor's `--agent-import-path`.
+> Best practice: one venv per project, always activated when you work. The venv lives at the repo root; the agent code lives in `starter/`. If `harbor` is "not found" later, you forgot to activate. The `-e` (editable) install means your edits to `starter/agent/` take effect immediately — no reinstall needed. It also makes your agent importable by Harbor's `--agent-import-path`.
 
 **3. Verify the harness** (no model needed — the oracle replays each task's known solution):
 
