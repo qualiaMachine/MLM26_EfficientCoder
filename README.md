@@ -239,7 +239,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 **2. Clone this repo and set up the starter environment:**
 
 ```bash
-git clone https://github.com/qualiaMachine/MLM26.git
+git clone git@github.com:qualiaMachine/MLM26.git
 cd MLM26/starter
 
 # Create a virtual environment (best practice: one venv per project)

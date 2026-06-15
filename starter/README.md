@@ -17,7 +17,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 **2. Clone, create a venv, install:**
 
 ```bash
-git clone https://github.com/qualiaMachine/MLM26.git
+git clone git@github.com:qualiaMachine/MLM26.git
 cd MLM26/starter
 
 uv venv --python 3.12              # Harbor needs Python 3.12+; uv fetches it if missing

@@ -93,7 +93,7 @@ You should see something like `uv 0.7.x` or newer. You don't need to install Pyt
 The MLM26 repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory — that's your working directory for the semester.
 
 ```bash
-git clone https://github.com/qualiaMachine/MLM26.git
+git clone git@github.com:qualiaMachine/MLM26.git
 cd MLM26/starter
 ```
 
