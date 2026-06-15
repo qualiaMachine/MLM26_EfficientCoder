@@ -298,21 +298,26 @@ This design also means you can swap in *any* OpenAI-compatible endpoint later �
 # Install Ollama (if you don't have it)
 sudo apt-get update && sudo apt-get install -y zstd   # required by the Ollama installer
 curl -fsSL https://ollama.com/install.sh | sh
+```
 
-# Pull a model — pick one that fits your hardware:
+The installer starts Ollama's HTTP server automatically in the background (via systemd). Verify it's running:
+
+```bash
+curl http://localhost:11434/v1/models
+```
+
+You should see a JSON response (an empty model list is fine — you haven't pulled anything yet). If you get "connection refused," run `ollama serve` in a separate terminal.
+
+Now download a model. This just saves files to disk — **no GPU usage yet.** Ollama loads models into GPU memory on demand when the first API request arrives, keeps them loaded for ~5 minutes of inactivity, then unloads. Your GPU stays idle until the agent actually runs.
+
+```bash
+# Pick one that fits your hardware:
 #   No GPU / CPU only:     ollama pull qwen2.5-coder:3b      (~2 GB, slow but works)
 #   8 GB VRAM:             ollama pull qwen2.5-coder:7b      (~4.7 GB)
 #   16 GB VRAM:            ollama pull qwen2.5-coder:14b     (~9 GB)
 #   24+ GB VRAM:           ollama pull qwen2.5-coder:32b     (~20 GB)
 ollama pull qwen2.5-coder:7b
-
-# Verify the server is running (it started automatically during install)
-curl http://localhost:11434/v1/models
 ```
-
-You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` in a separate terminal.
-
-> **How Ollama uses your GPU:** `ollama pull` just downloads files to disk — no GPU usage yet. Ollama loads the model into GPU memory on demand when the first request arrives, keeps it loaded for ~5 minutes of inactivity, then unloads it. Your GPU is idle until the agent actually runs.
 
 **Configure and run:**
 
