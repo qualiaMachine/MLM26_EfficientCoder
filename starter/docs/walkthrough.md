@@ -71,11 +71,13 @@ You should see something like `uv 0.7.x` or newer. You don't need to install Pyt
 
 ---
 
-## Step 3: Clone the starter repo and install
+## Step 3: Clone the repo and install the starter agent
+
+The MLM26 repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory — that's your working directory for the semester.
 
 ```bash
-git clone https://github.com/mlplusx/mlm26-coding-agent-starter.git
-cd mlm26-coding-agent-starter
+git clone https://github.com/qualiaMachine/MLM26.git
+cd MLM26/starter
 ```
 
 Create a virtual environment with Python 3.12 and install everything:
@@ -87,9 +89,11 @@ uv pip install -e .
 ```
 
 What just happened:
+- `git clone` downloaded the MLM26 repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
+- `cd MLM26/starter` puts you in the agent directory — this is where you'll spend your time.
 - `uv venv --python 3.12` created a `.venv/` directory with an isolated Python 3.12. If you don't have 3.12, uv downloaded it for you.
 - `source .venv/bin/activate` activated the venv. Your prompt should now show `(.venv)` at the start.
-- `uv pip install -e .` installed Harbor, the OpenAI client library, and this repo's agent code in editable mode — meaning your edits to `agent/` take effect immediately without reinstalling.
+- `uv pip install -e .` installed Harbor, the OpenAI client library, and the agent code in editable mode — meaning your edits to `agent/` take effect immediately without reinstalling.
 
 **Verify the install:**
 
@@ -384,4 +388,4 @@ This is the development loop for the semester:
 - **Week 2:** Run the full public subset. Record your baseline score.
 - **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the semester.
 
-Full challenge schedule, rules, and judging criteria: [MLM26 README](https://github.com/qualiaMachine/MLM26).
+Full challenge schedule, rules, and judging criteria: [MLM26 README](../../README.md).

@@ -159,7 +159,7 @@ Judging panel includes ML+X organizers plus invited reviewers — we're aiming f
 
 ## Getting started
 
-This section is your fast path from "I registered" to "I have a working baseline scoring on Terminal-Bench." For a detailed step-by-step walkthrough with expected output at every stage (Docker → uv → Harbor → model setup → first score → making changes), see [`docs/walkthrough.md`](https://github.com/mlplusx/mlm26-coding-agent-starter/blob/main/docs/walkthrough.md) in the starter repo.
+This section is your fast path from "I registered" to "I have a working baseline scoring on Terminal-Bench." The baseline agent and all supporting docs live in the [`starter/`](starter/) directory of this repo. For a detailed step-by-step walkthrough with expected output at every stage, see [`starter/docs/walkthrough.md`](starter/docs/walkthrough.md).
 
 ### Prerequisites
 
@@ -250,11 +250,11 @@ Common gotcha: if `docker` isn't found inside Ubuntu, WSL integration (step 3) i
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-**2. Clone and set up your environment:**
+**2. Clone this repo and set up the starter environment:**
 
 ```bash
-git clone https://github.com/mlplusx/mlm26-coding-agent-starter.git
-cd mlm26-coding-agent-starter
+git clone https://github.com/qualiaMachine/MLM26.git
+cd MLM26/starter
 
 # Create a virtual environment (best practice: one venv per project)
 uv venv --python 3.12              # creates .venv/; uv fetches Python 3.12 if missing
@@ -277,10 +277,10 @@ cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
 
 You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. Results land in `jobs/`. If you get something different, see `docs/troubleshooting.md`.
 
-### What's in the starter repo
+### What's in `starter/`
 
 ```
-mlm26-coding-agent-starter/
+starter/
 ├── agent/
 │   ├── agent.py            # MLMBaselineAgent (Harbor BaseAgent) — main loop, read it
 │   ├── tools.py            # Action parsing + shell execution helpers
@@ -500,7 +500,7 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Confirm finale reference hardware spec
 - [ ] Identify the UW–Madison contributor(s) to Terminal-Bench 2.0; reach out for collaboration
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (finale judge from their side? early heads-up on upstream tasks?)
-- [ ] Build the starter repo (`mlplusx/mlm26-coding-agent-starter`) — scaffold drafted in `starter/` in this repo; split it out, set the real public-subset task list in `eval/public_subset.txt`, and cold-start test before publishing
+- [ ] Set the real public-subset task list in `starter/eval/public_subset.txt` and cold-start test on a fresh machine before publishing
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Build the red team sample agent
 - [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)

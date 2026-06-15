@@ -1,6 +1,6 @@
 # Agent safety
 
-The full safety policy lives in the [challenge README](https://github.com/qualiaMachine/MLM26#safety). The short version for daily work:
+The full safety policy lives in the [challenge README](../../README.md#safety). The short version for daily work:
 
 **Terminal-Bench's sandbox does the heavy lifting.** Every task runs in a fresh Docker container with no host access, destroyed afterward. Inside `harbor run`, your agent can't hurt you. Don't undo that:
 

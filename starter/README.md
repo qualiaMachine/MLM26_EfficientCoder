@@ -1,8 +1,8 @@
 # MLM26 Coding Agent Starter
 
-The fast path from "I registered" to "my agent has a Terminal-Bench score." This repo gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 harness. Your job is to make it better.
+The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 harness. Your job is to make it better.
 
-Challenge brief, rules, schedule, and judging: see the [MLM26 README](https://github.com/qualiaMachine/MLM26).
+Challenge brief, rules, schedule, and judging: see the [MLM26 README](../README.md).
 
 ## Setup (15 minutes, once)
 
@@ -17,8 +17,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 **2. Clone, create a venv, install:**
 
 ```bash
-git clone https://github.com/mlplusx/mlm26-coding-agent-starter.git
-cd mlm26-coding-agent-starter
+git clone https://github.com/qualiaMachine/MLM26.git
+cd MLM26/starter
 
 uv venv --python 3.12              # Harbor needs Python 3.12+; uv fetches it if missing
 source .venv/bin/activate
@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](https://github.com/qualiaMachine/MLM26)): single GPU ≤96 GB VRAM, open weights only, ≤100 turns and ≤5 min per task, no closed-weight API calls anywhere in your system.
+Constraints that always apply (full rules in the [challenge README](../README.md)): single GPU ≤96 GB VRAM, open weights only, ≤100 turns and ≤5 min per task, no closed-weight API calls anywhere in your system.
 
 ## Docs
 
