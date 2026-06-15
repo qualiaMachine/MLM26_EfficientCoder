@@ -361,7 +361,7 @@ The baseline agent lives in `starter/agent/agent.py` (~60 lines). Here's what it
               │  4. Append the output back to      │
               │     the conversation as context    │
               │                                   │
-              │  5. Repeat (up to 100 turns)       │
+              │  5. Repeat (up to MAX_TURNS)        │
               └───────────────────────────────────┘
 ```
 
@@ -369,19 +369,27 @@ This is a minimal [ReAct](https://arxiv.org/abs/2210.03629) loop: the LLM **reas
 
 Read the code: `agent/agent.py` (the loop), `agent/prompts.py` (what the LLM sees), `agent/tools.py` (how commands get parsed and run), `agent/llm.py` (the API client).
 
-**Now run it:**
+**Now run it** on a single task with a low turn limit so it finishes quickly:
 
 ```bash
-harbor run -d terminal-bench-sample@2.0 \
+AGENT_MAX_TURNS=15 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
   -i build-cython-ext
 ```
 
-This tells Harbor: use the 10-task sample dataset, load our agent class from `agent/agent.py`, and run only the `build-cython-ext` task. (The `scripts/run_baseline.sh` convenience script wraps this same command.)
+What this command does:
+- `AGENT_MAX_TURNS=15` — caps the agent at 15 reasoning/action cycles instead of the default 100. For this test run you just want to see the loop work, not wait an hour.
+- `-d terminal-bench-sample@2.0` — use the 10-task sample dataset.
+- `--agent-import-path agent.agent:BaselineAgent` — load our agent class from `agent/agent.py`.
+- `-i build-cython-ext` — run **only** this one task (without `-i`, it runs all 10).
 
 **Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB).
 
-You should see the agent read the task, explore the container, attempt commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line. Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
+You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line.
+
+> **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
+
+Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
 ### What's in `starter/`
 
