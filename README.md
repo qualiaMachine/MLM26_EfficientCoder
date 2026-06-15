@@ -2,7 +2,7 @@
 
 A Machine Learning Marathon track for building the best local coding agent — measured on Terminal-Bench. Hosted by ML+X at UW–Madison.
 
-September–December 2026. Two tracks. Real prizes. Open to anyone.
+September–December 2026. Real prizes. Open to anyone.
 
 ---
 
@@ -12,9 +12,9 @@ Frontier coding assistants like Claude Code, Cursor, and Aider assume an API cal
 
 A growing class of users — researchers with sensitive data, organizations on tight compute budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. But "plausible" and "actually good" are different things, and nobody has run a competition of what the best *local* coding agent looks like under realistic constraints.
 
-In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget, or extend the evaluation methodology that tells us what "best" means.
+In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget.
 
-The outputs of this competition feed directly into how we deploy AI for researchers.
+The outputs of this challenge feed directly into how we deploy AI for researchers.
 
 ### Why Terminal-Bench
 
@@ -26,7 +26,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ## At a glance
 
-- **Format:** Kaggle Community Hackathon, semester-long, two tracks
+- **Format:** Kaggle Community Hackathon, semester-long
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
 - **Eval backbone:** Terminal-Bench 2.0 via [Harbor](https://www.harborframework.com/) (Docker-per-task, outcome-based scoring)
@@ -38,37 +38,17 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ---
 
-## Tracks
-
-You pick one track at registration. You can switch once, before the Week 6 mid-checkpoint.
-
-### Track A — Best Local Coding Agent
+## The challenge
 
 Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
-Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Local MLM26 participants must also submit a writeup explaining what they built and why.
-
-**This track suits you if:** you like building systems, you enjoy prompt engineering and agent design, you want to climb a leaderboard the field watches.
-
-### Track B — Extending the Evaluation
-
-Terminal-Bench is the starting point, not the endpoint. This track is about extending, critiquing, or specializing it. Examples of what a strong Track B submission could be:
-
-- A curated subset of Terminal-Bench tasks specifically suited to local-model evaluation (e.g., tasks where local agents currently fail, or tasks where compute budget matters)
-- New Terminal-Bench-format tasks contributed back to the project (data science, notebook-shaped workflows, scientific computing, whatever you think is under-represented)
-- An analysis of *which* Terminal-Bench tasks discriminate between local and frontier models, and why
-- A methodology for measuring something Terminal-Bench doesn't — agent latency, cost per task, robustness to prompt variation, failure mode taxonomy
-- A new harness feature or task type that the Terminal-Bench maintainers might accept upstream
-
-Submissions are judged on rigor, reusability, and what they reveal about local coding agents. Strong submissions become ML+X-maintained artifacts and ideally upstream contributions.
-
-**This track suits you if:** you care about measurement, you've thought about why benchmarks are hard, you'd rather build the ruler than the thing being measured.
+Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Participants must also submit a writeup explaining what they built and why.
 
 ---
 
-## Constraints (Track A)
+## Constraints
 
-These exist to make this a *local* coding agent competition rather than "whoever brought the biggest GPU." If they're too tight for what you want to build, the answer is probably Track B.
+These exist to make this a *local* coding agent challenge rather than "whoever brought the biggest GPU."
 
 ### Hardware
 
@@ -119,7 +99,7 @@ Twelve sprint weeks plus kickoff and finale.
 - **Week 9 — Writeup draft.** Full draft posted to Kaggle.
 - **Week 10 — Peer review.** Teams review each other's writeups. Optional outside reviewers from the Terminal-Bench community.
 - **Week 11 — Final polish + dry run.** Rehearse finale demo.
-- **Week 12 — Finale.** Public event. Held-out task set scored live. Per-track judging. Awards. Gallery goes live.
+- **Week 12 — Finale.** Public event. Held-out task set scored live. Judging. Awards. Gallery goes live.
 
 **Red team exercise** runs between Weeks 2 and 3: a deliberately misbehaving sample agent that participants analyze for safety issues. Builds the right reflexes early.
 
@@ -127,31 +107,20 @@ Twelve sprint weeks plus kickoff and finale.
 
 ## Submission format
 
-Same shape for both tracks. Modeled on Kaggle's community hackathon format.
+Modeled on Kaggle's community hackathon format.
 
 1. **Kaggle Writeup.** Public, in your team's name. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, limitations, what you'd do with another month. Markdown. Quality > length.
-2. **Video demo.** 5–8 minutes. Show the agent working (or your methodology in action). Voiceover. Clear > polished.
-3. **Public repo.** GitHub link with code, README, reproduction instructions. License: MIT or Apache 2.0.
-
-For Track A, the repo must include a Terminal-Bench-compatible agent in a runnable state. For Track B, the repo must include the extension/methodology in a state someone else could pick up and use — ideally as a PR-ready contribution to Terminal-Bench.
+2. **Video demo.** 5–8 minutes. Show the agent working. Voiceover. Clear > polished.
+3. **Public repo.** GitHub link with code, README, reproduction instructions. License: MIT or Apache 2.0. The repo must include a Terminal-Bench-compatible agent in a runnable state.
 
 ---
 
 ## Judging
 
-### Track A rubric
-
 - **Terminal-Bench score (45%)** — Performance on the held-out finale subset.
 - **Engineering depth (20%)** — Is the work technically substantive? Does the writeup show real understanding of the tradeoffs?
 - **Reproducibility (15%)** — Can someone else run this? Are the constraints actually respected? Does it fit in the VRAM budget?
 - **Clarity & presentation (20%)** — Writeup and demo quality.
-
-### Track B rubric
-
-- **Rigor (35%)** — Is the methodology sound? Are claims supported? Are the new tasks well-designed?
-- **Reusability (30%)** — Could the Terminal-Bench maintainers accept this? Could another lab pick it up? Documentation, license, code quality.
-- **Insight (20%)** — Does the work reveal something useful about the state of local coding agents?
-- **Clarity & presentation (15%)** — Writeup and demo quality.
 
 Judging panel includes ML+X organizers plus invited reviewers — we're aiming for at least one reviewer from the Terminal-Bench community.
 
@@ -435,7 +404,7 @@ A 32B-class Qwen-Coder agent has already cracked the Terminal-Bench leaderboard 
 
 ## Task sets
 
-Track A is scored against Terminal-Bench tasks. We use the framework directly, with three subsets:
+Scoring is based on Terminal-Bench tasks. We use the framework directly, with three subsets:
 
 ### Public set — used for self-evaluation
 
@@ -447,7 +416,7 @@ A different public Terminal-Bench subset, not announced at kickoff. Released Wee
 
 ### Held-out finale set (Week 12)
 
-A small curated set of Terminal-Bench tasks — possibly including new tasks contributed by Track B submissions, possibly including unreleased upstream tasks (subject to permission). Revealed and scored at the finale. This is the main Track A number.
+A small curated set of Terminal-Bench tasks — possibly including unreleased upstream tasks (subject to permission). Revealed and scored at the finale. This is the main number.
 
 ---
 
@@ -457,7 +426,7 @@ A small curated set of Terminal-Bench tasks — possibly including new tasks con
 - **Discord** — informal, real-time, drop-in office hours
 - **Weekly Wednesday sprints** — hybrid, recorded
 - **Office hours** — TBD, posted in Discord
-- **Terminal-Bench Discord** — separate, upstream community. Worth joining if you're serious about Track B.
+- **Terminal-Bench Discord** — separate, upstream community. Worth joining.
 
 Be kind, be specific, search before you ask.
 
@@ -486,11 +455,11 @@ Hosted open-weight APIs are cheap for development. Reference hardware at the fin
 **I'm not at UW.**
 Welcome. The challenge is open. Sprints are hybrid. Prizes don't care.
 
-**Will Track A get an automated leaderboard during the semester?**
+**Will there be an automated leaderboard during the semester?**
 Self-reported scores against the public set are submitted via the Kaggle hackathon page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
 
 **What's the relationship to the upstream Terminal-Bench project?**
-We're users, contributors, and (hopefully) collaborators — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers. Strong Track B submissions may be proposed upstream, subject to their review.
+We're users, contributors, and (hopefully) collaborators — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
 
 ---
 
@@ -503,14 +472,14 @@ We're users, contributors, and (hopefully) collaborators — but MLM26 is a sepa
 - [ ] Set the real public-subset task list in `starter/eval/public_subset.txt` and cold-start test on a fresh machine before publishing
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Build the red team sample agent
-- [ ] Recruit Track B-relevant judges (eval methodology folks, Terminal-Bench contributors)
+- [ ] Recruit judges (Terminal-Bench contributors, agent researchers)
 - [ ] Set up Discord
 - [ ] Coordinate with Kaggle on Community Hackathon setup
 - [ ] Final pass on safety doc with UW research-IT
-- [ ] Decide finale held-out task selection process — entirely public TB tasks, or include some Track B contributions, or some upstream-unreleased tasks?
+- [ ] Decide finale held-out task selection process — entirely public TB tasks, or include some unreleased upstream tasks?
 
 Open questions:
 
-- Do we want a "beginner track" or scaffolding for first-time agent builders? Could be done via paired teams or a workshop in Week 1, rather than a third track.
+- Do we want a "beginner track" or scaffolding for first-time agent builders? Could be done via paired teams or a workshop in Week 1.
 - How do we handle teams that want to share infrastructure (shared model endpoint)? Probably fine if disclosed.
 - Outside reviewers for the finale — who? Terminal-Bench team is the obvious ask. Ludwig Schmidt? Anthropic contacts? NVIDIA?
