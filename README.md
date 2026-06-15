@@ -286,12 +286,46 @@ If you see `Mean: 1.000` with 0 exceptions, Docker and Harbor are working correc
 
 What this does: unlike the oracle, this runs **your actual agent** — it sends the task instruction to an LLM, the LLM generates bash commands, the agent executes them inside the Docker container, and the loop repeats until the agent declares done or hits the turn limit. The task's test suite then grades the final container state.
 
-**Requires:** a running model endpoint (see `starter/docs/byo_model.md`). The easiest option is [Ollama](https://ollama.com/download) with a local model. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). Expect ~2–5 minutes per task depending on model speed.
+**Requires:** a running LLM that the agent can talk to. The quickest way to get one is [Ollama](https://ollama.com/download), which runs open-weight models locally. For other options (vLLM, hosted endpoints), see `starter/docs/byo_model.md`.
+
+**Set up Ollama:**
 
 ```bash
-cp .env.example .env               # edit this: set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
+# Install Ollama (if you don't have it)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull a model — pick one that fits your hardware:
+#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b     (~2 GB, slow but works)
+#   8 GB VRAM:             ollama pull qwen2.5-coder:7b     (~4.5 GB)
+#   16 GB VRAM:            ollama pull qwen2.5-coder:14b    (~9 GB)
+#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b    (~20 GB)
+ollama pull qwen2.5-coder:7b
+
+# Verify the endpoint is running
+curl http://localhost:11434/v1/models
+```
+
+You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` first.
+
+**Configure and run:**
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` to match the model you pulled:
+```bash
+LLM_BASE_URL=http://localhost:11434/v1
+LLM_MODEL=qwen2.5-coder:7b
+LLM_API_KEY=ollama
+```
+
+Now run the baseline agent on one task:
+```bash
 ./scripts/run_baseline.sh build-cython-ext
 ```
+
+**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB).
 
 You should see the agent read the task, explore the container, attempt commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line. Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
