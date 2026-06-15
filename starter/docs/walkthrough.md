@@ -33,7 +33,7 @@ All challenge work happens inside **WSL2** (Windows Subsystem for Linux), not Po
 wsl --install
 ```
 
-Reboot, then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** (search "Ubuntu" in Start menu).
+Reboot. A terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it. Then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** — press the Windows key, type **Ubuntu**, and click the app (or use Windows Terminal's Ubuntu tab).
 
 ### Verify Docker works
 

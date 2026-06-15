@@ -41,10 +41,10 @@ Docker on Windows requires **WSL2**. Do all challenge work **inside WSL2** (Ubun
    ```powershell
    wsl --install
    ```
-   Reboot when prompted (installs Ubuntu by default).
+   Reboot when prompted (installs Ubuntu by default). After rebooting, a terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it.
 2. Install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with **"Use WSL 2 based engine"** checked.
 3. Docker Desktop → Settings → Resources → **WSL Integration** → enable your Ubuntu distro.
-4. Open Ubuntu (Start menu) and verify:
+4. Open the Ubuntu terminal: press the **Windows key**, type **Ubuntu**, click the app. (Or use Windows Terminal's Ubuntu tab.) Verify:
    ```bash
    docker run hello-world
    ```
