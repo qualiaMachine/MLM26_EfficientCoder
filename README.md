@@ -372,9 +372,10 @@ This is a minimal [ReAct](https://arxiv.org/abs/2210.03629) loop: the LLM **reas
 
 Read the code: `agent/agent.py` (the loop), `agent/prompts.py` (what the LLM sees), `agent/tools.py` (how commands get parsed and run), `agent/llm.py` (the API client).
 
-**Now run it** on a single task with a low turn limit so it finishes quickly:
+**Now run it** on a single task with a low turn limit so it finishes quickly (make sure you're in `starter/`):
 
 ```bash
+cd ~/MLM26/starter    # harbor must run from here — .env and agent/ live here
 AGENT_MAX_TURNS=15 harbor run -d terminal-bench@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
   -i fix-git
