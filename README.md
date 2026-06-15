@@ -42,7 +42,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
-Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Participants must also submit a writeup explaining what they built and why.
+Submissions are scored on Terminal-Bench performance, engineering depth, reproducibility, and writeup quality. All 89 Terminal-Bench tasks are public — the challenge is building an agent that generalizes, not memorizing solutions. See [Judging](#judging) for the full rubric.
 
 ---
 
@@ -99,7 +99,7 @@ Twelve sprint weeks plus kickoff and finale.
 - **Week 9 — Writeup draft.** Full draft posted to Kaggle.
 - **Week 10 — Peer review.** Teams review each other's writeups. Optional outside reviewers from the Terminal-Bench community.
 - **Week 11 — Final polish + dry run.** Rehearse finale demo.
-- **Week 12 — Finale.** Public event. Held-out task set scored live. Judging. Awards. Gallery goes live.
+- **Week 12 — Finale.** Public event. Live scoring, judging, awards. Gallery goes live.
 
 **Red team exercise** runs between Weeks 2 and 3: a deliberately misbehaving sample agent that participants analyze for safety issues. Builds the right reflexes early.
 
@@ -117,10 +117,10 @@ Modeled on Kaggle's community hackathon format.
 
 ## Judging
 
-- **Terminal-Bench score (45%)** — Performance on the held-out finale subset.
-- **Engineering depth (20%)** — Is the work technically substantive? Does the writeup show real understanding of the tradeoffs?
-- **Reproducibility (15%)** — Can someone else run this? Are the constraints actually respected? Does it fit in the VRAM budget?
-- **Clarity & presentation (20%)** — Writeup and demo quality.
+- **Terminal-Bench score (30%)** — Performance across Terminal-Bench tasks. All 89 tasks are public — participants can see descriptions, test suites, and run any task at any time. This is by design: the benchmark tests whether your agent *generalizes* across diverse tasks, not whether you can memorize solutions. Hardcoding task-specific hacks for 89 tasks is more work than building a good general agent, which is the point.
+- **Engineering depth (25%)** — Is the work technically substantive? Does the writeup show real understanding of the tradeoffs? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
+- **Reproducibility (20%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
+- **Clarity & presentation (25%)** — Writeup and demo quality. Can a reader understand what you built, why, and what you learned?
 
 Judging panel includes ML+X organizers plus invited reviewers — we're aiming for at least one reviewer from the Terminal-Bench community.
 
