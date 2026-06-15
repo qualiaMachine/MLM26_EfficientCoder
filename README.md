@@ -152,6 +152,21 @@ docker --version          # should print a version
 docker run hello-world    # should print "Hello from Docker!"
 ```
 
+Expected output (first run pulls the image, then prints the greeting):
+
+```
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+...
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...
+```
+
+If you see `Hello from Docker!`, you're good. The rest of the output is informational.
+
 <details>
 <summary><strong>🍎 macOS</strong></summary>
 
