@@ -330,7 +330,10 @@ Edit `.env` to match the model you pulled:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
 LLM_MODEL=qwen2.5-coder:7b
-LLM_API_KEY=ollama
+LLM_API_KEY=ollama                      # Ollama doesn't need auth — this is a dummy
+                                        # value to satisfy the OpenAI client library,
+                                        # which errors if api_key is empty. Any non-empty
+                                        # string works.
 ```
 
 **Understand the agent before you run it.** A raw LLM can't solve Terminal-Bench tasks — it can only generate text. What makes it useful is the **agent loop** (the orchestration code) that sits between the model and the Docker container. This is the architecture that companies like Cursor, Devin, and Codex are built on, and it's what you'll be improving all semester.
