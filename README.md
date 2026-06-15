@@ -306,11 +306,13 @@ curl -fsSL https://ollama.com/install.sh | sh
 #   24+ GB VRAM:           ollama pull qwen2.5-coder:32b     (~20 GB)
 ollama pull qwen2.5-coder:7b
 
-# Verify the endpoint is running
+# Verify the server is running (it started automatically during install)
 curl http://localhost:11434/v1/models
 ```
 
-You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` first.
+You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` in a separate terminal.
+
+> **How Ollama uses your GPU:** `ollama pull` just downloads files to disk — no GPU usage yet. Ollama loads the model into GPU memory on demand when the first request arrives, keeps it loaded for ~5 minutes of inactivity, then unloads it. Your GPU is idle until the agent actually runs.
 
 **Configure and run:**
 
