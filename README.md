@@ -251,7 +251,7 @@ uv pip install -e starter/         # installs harbor + the agent package (editab
 
 **3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set.
 
-**Background:** Terminal-Bench tasks are software engineering challenges — things like "build this Cython extension," "find the best chess move," or "configure a git webserver." Each task ships as a Docker image containing source code, instructions, and a test suite that grades the final state of the container. Your agent's job (eventually) is to read the instructions, figure out what to do, and execute bash commands inside the container until the task is solved.
+**Background:** Terminal-Bench tasks are challenges that test what a coding agent can do from a bash terminal. The 89 tasks span categories (software-engineering, security, data-processing, scientific-computing, system-administration, etc.) and difficulties (easy → hard). Examples: "find lost git changes and merge them" (easy, software-engineering), "build a Cython extension with NumPy compatibility" (medium, debugging), "configure a git-triggered webserver" (hard, system-administration). Browse all tasks at [tbench.ai](https://www.tbench.ai/). Each task ships as a Docker image containing source code, instructions, and a test suite that grades the final state of the container. Your agent's job (eventually) is to read the instructions, figure out what to do, and execute bash commands inside the container until the task is solved.
 
 [Harbor](https://www.harborframework.com/) is the official harness that orchestrates all of this — it pulls task definitions, spins up Docker containers, runs your agent inside them, grades results against the test suite, and tears everything down.
 
@@ -372,20 +372,22 @@ Read the code: `agent/agent.py` (the loop), `agent/prompts.py` (what the LLM see
 **Now run it** on a single task with a low turn limit so it finishes quickly:
 
 ```bash
-AGENT_MAX_TURNS=15 harbor run -d terminal-bench-sample@2.0 \
+AGENT_MAX_TURNS=15 harbor run -d terminal-bench@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
-  -i build-cython-ext
+  -i fix-git
 ```
 
 What this command does:
 - `AGENT_MAX_TURNS=15` — caps the agent at 15 reasoning/action cycles instead of the default 100. For this test run you just want to see the loop work, not wait an hour.
-- `-d terminal-bench-sample@2.0` — use the 10-task sample dataset.
+- `-d terminal-bench@2.0` — use the full 89-task Terminal-Bench dataset (first run downloads task definitions, cached after).
 - `--agent-import-path agent.agent:BaselineAgent` — load our agent class from `agent/agent.py`.
-- `-i build-cython-ext` — run **only** this one task (without `-i`, it runs all 10).
+- `-i fix-git` — run **only** the `fix-git` task. This is one of the easiest tasks in Terminal-Bench (difficulty: easy, category: software-engineering) — the agent needs to find some lost git changes and merge them into master. Even a 7B model has a real shot at this one.
 
-**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB).
+> **About task difficulty:** Terminal-Bench tasks span easy/medium/hard across categories like software-engineering, security, data-processing, scientific-computing, and system-administration. You can browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/). The 10-task sample set (`terminal-bench-sample@2.0`) is handy for quick iteration but contains no easy tasks — so for this first demo we use the full dataset with a single easy task.
 
-You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line.
+**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). First run may take longer as Harbor downloads the task definition.
+
+You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail).
 
 > **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
 
