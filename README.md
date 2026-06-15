@@ -382,9 +382,9 @@ AGENT_MAX_TURNS=15 harbor run -d terminal-bench@2.0 \
 
 What this command does:
 - `AGENT_MAX_TURNS=15` — caps the agent at 15 reasoning/action cycles instead of the default 100. For this test run you just want to see the loop work, not wait an hour.
-- `-d terminal-bench@2.0` — use the full 89-task Terminal-Bench dataset (first run downloads task definitions, cached after).
+- `-d terminal-bench@2.0` — use the full 89-task Terminal-Bench dataset as the task source (first run downloads task definitions, cached after). This doesn't mean it runs all 89 — that's what `-i` controls.
 - `--agent-import-path agent.agent:BaselineAgent` — load our agent class from `agent/agent.py`.
-- `-i fix-git` — run **only** the `fix-git` task. This is one of the easiest tasks in Terminal-Bench (difficulty: easy, category: software-engineering) — the agent needs to find some lost git changes and merge them into master. Even a 7B model has a real shot at this one.
+- `-i fix-git` — **include only** the `fix-git` task (the output will show `1/1`). Without `-i`, Harbor would run all 89 tasks. You can pass `-i` multiple times to include more tasks (e.g., `-i fix-git -i polyglot-c-py` runs 2). This task is one of the easiest in Terminal-Bench (difficulty: easy, category: software-engineering) — the agent needs to find some lost git changes and merge them into master.
 
 > **About task difficulty:** Terminal-Bench tasks span easy/medium/hard across categories like software-engineering, security, data-processing, scientific-computing, and system-administration. You can browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/). The 10-task sample set (`terminal-bench-sample@2.0`) is handy for quick iteration but contains no easy tasks — so for this first demo we use the full dataset with a single easy task.
 
