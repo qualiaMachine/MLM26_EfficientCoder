@@ -280,7 +280,7 @@ Total runtime: 3m 5s
 Results written to jobs/2026-06-15__13-39-11/result.json
 ```
 
-If you see `Mean: 1.000` with 0 exceptions, you're good. If tasks fail here, the problem is Docker, not your agent. See `starter/docs/troubleshooting.md`.
+If you see `Mean: 1.000` with 0 exceptions, Docker and Harbor are working correctly. If tasks fail, it's a Docker or network issue — see `starter/docs/troubleshooting.md`.
 
 **4. Run the baseline agent** against a single sample task.
 
