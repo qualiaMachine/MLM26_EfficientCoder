@@ -319,7 +319,7 @@ Now download a model. This just saves files to disk — **no GPU usage yet.** Ol
 ollama pull qwen2.5-coder:7b
 ```
 
-**Configure and run** (from the `starter/` directory — that's where `.env` and the scripts live):
+**Configure the model endpoint** (from the `starter/` directory — that's where `.env` and the agent code live):
 
 ```bash
 cd ~/MLM26/starter
@@ -333,10 +333,51 @@ LLM_MODEL=qwen2.5-coder:7b
 LLM_API_KEY=ollama
 ```
 
-Now run the baseline agent on one task:
-```bash
-./scripts/run_baseline.sh build-cython-ext
+**Understand the agent before you run it.** A raw LLM can't solve Terminal-Bench tasks — it can only generate text. What makes it useful is the **agent loop** (the orchestration code) that sits between the model and the Docker container. This is the architecture that companies like Cursor, Devin, and Codex are built on, and it's what you'll be improving all semester.
+
+The baseline agent lives in `starter/agent/agent.py` (~60 lines). Here's what it does:
+
 ```
+┌─────────────────────────────────────────────────┐
+│  Harbor spins up a Docker container for the     │
+│  task, then calls your agent's run() method     │
+│  with the task instruction + container access.  │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+              ┌─── AGENT LOOP ───┐
+              │                  │
+              │  1. Send the full conversation    │
+              │     (system prompt + history)     │
+              │     to the LLM via HTTP API       │
+              │                                   │
+              │  2. Parse the LLM's response:     │
+              │     ```bash ...```  → command     │
+              │     TASK_COMPLETE   → stop         │
+              │     anything else   → nudge LLM   │
+              │                                   │
+              │  3. Execute the command inside     │
+              │     the Docker container           │
+              │                                   │
+              │  4. Append the output back to      │
+              │     the conversation as context    │
+              │                                   │
+              │  5. Repeat (up to 100 turns)       │
+              └───────────────────────────────────┘
+```
+
+This is a minimal [ReAct](https://arxiv.org/abs/2210.03629) loop: the LLM **reasons** about what to do, **acts** by emitting a bash command, **observes** the output, and repeats. The baseline is deliberately simple — no planning, no error recovery, no context management, no self-critique. **That's what you'll add.** The orchestration layer is where all the points are.
+
+Read the code: `agent/agent.py` (the loop), `agent/prompts.py` (what the LLM sees), `agent/tools.py` (how commands get parsed and run), `agent/llm.py` (the API client).
+
+**Now run it:**
+
+```bash
+harbor run -d terminal-bench-sample@2.0 \
+  --agent-import-path agent.agent:MLMBaselineAgent \
+  -i build-cython-ext
+```
+
+This tells Harbor: use the 10-task sample dataset, load our agent class from `agent/agent.py`, and run only the `build-cython-ext` task. (The `scripts/run_baseline.sh` convenience script wraps this same command.)
 
 **Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB).
 
