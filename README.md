@@ -260,17 +260,23 @@ cd starter
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-Expected output (abbreviated):
+Expected output:
 ```
-Running 10 tasks...
-  build-cython-ext          ✓  reward: 1.0
-  chess-best-move            ✓  reward: 1.0
-  configure-git-webserver    ✓  reward: 1.0
-  ...
-Aggregate: 10/10 (100.0%)
+  10/10 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:02:52 0:00:00
+
+terminal-bench-sample • oracle
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│     10 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+Job Info
+Total runtime: 3m 5s
+Results written to jobs/2026-06-15__13-39-11/result.json
 ```
 
-If tasks fail here, the problem is Docker, not your agent. See `starter/docs/troubleshooting.md`.
+If you see `Mean: 1.000` with 0 exceptions, you're good. If tasks fail here, the problem is Docker, not your agent. See `starter/docs/troubleshooting.md`.
 
 **4. Run the baseline agent** against a single sample task.
 
