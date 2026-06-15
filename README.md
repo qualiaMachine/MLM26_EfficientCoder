@@ -228,6 +228,8 @@ Common gotcha: if `docker` isn't found inside Ubuntu, WSL integration (step 3) i
 
 ### Quickstart
 
+> **Windows users:** run everything below inside your **Ubuntu / WSL2 terminal**, not PowerShell.
+
 **1. Install uv** (if you don't have it):
 
 ```bash
