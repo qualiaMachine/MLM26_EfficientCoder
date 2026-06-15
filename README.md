@@ -286,26 +286,38 @@ If you see `Mean: 1.000` with 0 exceptions, Docker and Harbor are working correc
 
 What this does: unlike the oracle, this runs **your actual agent** — it sends the task instruction to an LLM, the LLM generates bash commands, the agent executes them inside the Docker container, and the loop repeats until the agent declares done or hits the turn limit. The task's test suite then grades the final container state.
 
-**Requires:** a running LLM that the agent can talk to. The quickest way to get one is [Ollama](https://ollama.com/download), which runs open-weight models locally. For other options (vLLM, hosted endpoints), see `starter/docs/byo_model.md`.
+**Requires:** a running LLM that the agent can talk to via an API. The baseline agent communicates with the model through an OpenAI-compatible HTTP endpoint (chat completions API) — it doesn't load model weights directly. That means you need something that *serves* a model, not just the model files themselves.
+
+The quickest way to get this running is [Ollama](https://ollama.com/download). Ollama handles downloading the model, quantizing it, and serving it behind an OpenAI-compatible API — all in one tool. You could also download models from Hugging Face and serve them yourself with [vLLM](https://docs.vllm.ai/) or [llama.cpp](https://github.com/ggml-org/llama.cpp), which gives you more control (custom quantizations, batching, multi-GPU). See `starter/docs/byo_model.md` for those options. For getting started, Ollama is the path of least resistance.
+
+This design also means you can swap in *any* OpenAI-compatible endpoint later — a model on a shared cluster (e.g., RunAI/Slurm + vLLM), a cloud API like Amazon Bedrock or Google Vertex, or a friend's GPU across the network. Just change `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` in `.env`. No code changes needed.
 
 **Set up Ollama:**
 
 ```bash
 # Install Ollama (if you don't have it)
+sudo apt-get update && sudo apt-get install -y zstd   # required by the Ollama installer
 curl -fsSL https://ollama.com/install.sh | sh
+```
 
-# Pull a model — pick one that fits your hardware:
-#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b          (~2 GB, slow but works)
-#   8 GB VRAM:             ollama pull qwen2.5-coder:7b-q8_0     (~8 GB, 8-bit quantized)
-#   16 GB VRAM:            ollama pull qwen2.5-coder:14b         (~9 GB)
-#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b         (~20 GB)
-ollama pull qwen2.5-coder:7b-q8_0
+The installer starts Ollama's HTTP server automatically in the background (via systemd). Verify it's running:
 
-# Verify the endpoint is running
+```bash
 curl http://localhost:11434/v1/models
 ```
 
-You should see a JSON response listing your model. If you get "connection refused," run `ollama serve` first.
+You should see a JSON response (an empty model list is fine — you haven't pulled anything yet). If you get "connection refused," run `ollama serve` in a separate terminal.
+
+Now download a model. This just saves files to disk — **no GPU usage yet.** Ollama loads models into GPU memory on demand when the first API request arrives, keeps them loaded for ~5 minutes of inactivity, then unloads. Your GPU stays idle until the agent actually runs.
+
+```bash
+# Pick one that fits your hardware:
+#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b      (~2 GB, slow but works)
+#   8 GB VRAM:             ollama pull qwen2.5-coder:7b      (~4.7 GB)
+#   16 GB VRAM:            ollama pull qwen2.5-coder:14b     (~9 GB)
+#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b     (~20 GB)
+ollama pull qwen2.5-coder:7b
+```
 
 **Configure and run:**
 
@@ -316,7 +328,7 @@ cp .env.example .env
 Edit `.env` to match the model you pulled:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:7b-q8_0
+LLM_MODEL=qwen2.5-coder:7b
 LLM_API_KEY=ollama
 ```
 
