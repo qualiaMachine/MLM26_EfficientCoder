@@ -295,11 +295,11 @@ What this does: unlike the oracle, this runs **your actual agent** — it sends 
 curl -fsSL https://ollama.com/install.sh | sh
 
 # Pull a model — pick one that fits your hardware:
-#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b     (~2 GB, slow but works)
-#   8 GB VRAM:             ollama pull qwen2.5-coder:7b     (~4.5 GB)
-#   16 GB VRAM:            ollama pull qwen2.5-coder:14b    (~9 GB)
-#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b    (~20 GB)
-ollama pull qwen2.5-coder:7b
+#   No GPU / CPU only:     ollama pull qwen2.5-coder:3b          (~2 GB, slow but works)
+#   8 GB VRAM:             ollama pull qwen2.5-coder:7b-q8_0     (~8 GB, 8-bit quantized)
+#   16 GB VRAM:            ollama pull qwen2.5-coder:14b         (~9 GB)
+#   24+ GB VRAM:           ollama pull qwen2.5-coder:32b         (~20 GB)
+ollama pull qwen2.5-coder:7b-q8_0
 
 # Verify the endpoint is running
 curl http://localhost:11434/v1/models
@@ -316,7 +316,7 @@ cp .env.example .env
 Edit `.env` to match the model you pulled:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:7b
+LLM_MODEL=qwen2.5-coder:7b-q8_0
 LLM_API_KEY=ollama
 ```
 
