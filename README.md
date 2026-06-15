@@ -249,21 +249,41 @@ source .venv/bin/activate          # activate it (on Windows/WSL2 same command)
 uv pip install -e starter/         # installs harbor + the agent package (editable)
 ```
 
-**3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set (the oracle replays each task's known solution — it confirms your Docker/Harbor setup without needing a model):
+**3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set.
 
-```bash
-harbor run -d terminal-bench-sample@2.0 -a oracle
-```
+What this does: Harbor downloads 10 task definitions (~first run only), then for each task it builds a Docker image, runs the **oracle agent** inside it (the oracle just replays the known solution — no LLM needed), grades the result, and destroys the container. No GPU, no model endpoint, no API key required — this purely tests that Docker + Harbor are wired up correctly.
 
-**4. Run the baseline agent** against a single sample task:
+**Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. You should see each task pass with `reward: 1.0` and an aggregate score of 100%.
 
 ```bash
 cd starter
-cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
+harbor run -d terminal-bench-sample@2.0 -a oracle
+```
+
+Expected output (abbreviated):
+```
+Running 10 tasks...
+  build-cython-ext          ✓  reward: 1.0
+  chess-best-move            ✓  reward: 1.0
+  configure-git-webserver    ✓  reward: 1.0
+  ...
+Aggregate: 10/10 (100.0%)
+```
+
+If tasks fail here, the problem is Docker, not your agent. See `starter/docs/troubleshooting.md`.
+
+**4. Run the baseline agent** against a single sample task.
+
+What this does: unlike the oracle, this runs **your actual agent** — it sends the task instruction to an LLM, the LLM generates bash commands, the agent executes them inside the Docker container, and the loop repeats until the agent declares done or hits the turn limit. The task's test suite then grades the final container state.
+
+**Requires:** a running model endpoint (see `starter/docs/byo_model.md`). The easiest option is [Ollama](https://ollama.com/download) with a local model. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). Expect ~2–5 minutes per task depending on model speed.
+
+```bash
+cp .env.example .env               # edit this: set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
 ./scripts/run_baseline.sh build-cython-ext
 ```
 
-You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. Results land in `starter/jobs/`. If you get something different, see `starter/docs/troubleshooting.md`.
+You should see the agent read the task, explore the container, attempt commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail). Don't panic if it fails — the baseline with a small model will fail most tasks. That's the starting line, not the finish line. Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
 ### What's in `starter/`
 
