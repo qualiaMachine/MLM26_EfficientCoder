@@ -330,7 +330,10 @@ Edit `.env` to match the model you pulled:
 ```bash
 LLM_BASE_URL=http://localhost:11434/v1
 LLM_MODEL=qwen2.5-coder:7b
-LLM_API_KEY=ollama
+LLM_API_KEY=ollama                      # Ollama doesn't need auth — this is a dummy
+                                        # value to satisfy the OpenAI client library,
+                                        # which errors if api_key is empty. Any non-empty
+                                        # string works.
 ```
 
 **Understand the agent before you run it.** A raw LLM can't solve Terminal-Bench tasks — it can only generate text. What makes it useful is the **agent loop** (the orchestration code) that sits between the model and the Docker container. This is the architecture that companies like Cursor, Devin, and Codex are built on, and it's what you'll be improving all semester.
@@ -379,9 +382,9 @@ AGENT_MAX_TURNS=15 harbor run -d terminal-bench@2.0 \
 
 What this command does:
 - `AGENT_MAX_TURNS=15` — caps the agent at 15 reasoning/action cycles instead of the default 100. For this test run you just want to see the loop work, not wait an hour.
-- `-d terminal-bench@2.0` — use the full 89-task Terminal-Bench dataset (first run downloads task definitions, cached after).
+- `-d terminal-bench@2.0` — use the full 89-task Terminal-Bench dataset as the task source (first run downloads task definitions, cached after). This doesn't mean it runs all 89 — that's what `-i` controls.
 - `--agent-import-path agent.agent:BaselineAgent` — load our agent class from `agent/agent.py`.
-- `-i fix-git` — run **only** the `fix-git` task. This is one of the easiest tasks in Terminal-Bench (difficulty: easy, category: software-engineering) — the agent needs to find some lost git changes and merge them into master. Even a 7B model has a real shot at this one.
+- `-i fix-git` — **include only** the `fix-git` task (the output will show `1/1`). Without `-i`, Harbor would run all 89 tasks. You can pass `-i` multiple times to include more tasks (e.g., `-i fix-git -i polyglot-c-py` runs 2). This task is one of the easiest in Terminal-Bench (difficulty: easy, category: software-engineering) — the agent needs to find some lost git changes and merge them into master.
 
 > **About task difficulty:** Terminal-Bench tasks span easy/medium/hard across categories like software-engineering, security, data-processing, scientific-computing, and system-administration. You can browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/). The 10-task sample set (`terminal-bench-sample@2.0`) is handy for quick iteration but contains no easy tasks — so for this first demo we use the full dataset with a single easy task.
 

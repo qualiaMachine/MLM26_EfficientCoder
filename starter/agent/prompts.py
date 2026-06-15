@@ -1,11 +1,45 @@
-"""System prompts for the baseline agent. Modify freely — this is where
-cheap wins live. Better instructions, output format constraints, and
-task-type hints all go here."""
+"""Prompt templates for the baseline agent.
+
+This file defines every piece of text that the LLM sees during a task.
+Improving these prompts is the single highest-leverage change you can make
+— better instructions, output format constraints, task-type detection, and
+self-verification steps all live here.
+
+There are three components:
+
+1. **SYSTEM_PROMPT** — Sent once at the start of every task as the system
+   message. Tells the LLM who it is, what format to use, and what rules to
+   follow. The LLM sees this before the task instruction.
+
+2. **NUDGE_MESSAGE** — Injected as a user message whenever the LLM produces
+   a response that contains neither a bash code block nor TASK_COMPLETE.
+   This keeps the LLM on-protocol when it drifts into freeform text.
+
+3. **observation_message()** — Wraps the stdout/stderr/exit-code output of
+   a command execution into a user message. This is what the LLM sees after
+   each bash command runs in the container.
+
+Improvement ideas
+=================
+- Add a STRATEGY section telling the LLM to read instructions before acting.
+- Detect task type from the instruction and inject domain-specific hints.
+- Add self-verification: "Before saying TASK_COMPLETE, run the tests."
+- Constrain output format more tightly for weaker models.
+- Add few-shot examples of good agent behavior.
+"""
 
 SYSTEM_PROMPT = """\
 You are an autonomous software engineering agent working inside a Linux \
 container. You are given a task to complete. You cannot ask questions — \
 work with what you have.
+
+STRATEGY — follow this order:
+1. First, read the task instruction carefully. Understand what is being asked.
+2. Explore: list files, read READMEs, understand the starting state.
+3. Plan your approach before executing. Think about what commands you need.
+4. Execute your plan step by step. Check the output of each command.
+5. If something fails, read the error message carefully and adapt.
+6. Verify your work before finishing — run tests if available.
 
 RULES:
 1. Each turn, respond with EXACTLY ONE action: a single bash code block \
@@ -38,4 +72,18 @@ block to run a command, or TASK_COMPLETE on its own if the task is fully done.\
 
 
 def observation_message(observation: str) -> str:
+    """Format a command's output as a user message for the conversation.
+
+    Parameters
+    ----------
+    observation : str
+        The combined stdout/stderr/exit-code string produced by
+        ``tools.run_shell()``.
+
+    Returns
+    -------
+    str
+        A user-message string that the LLM will see as the result of its
+        last command, followed by a prompt for the next action.
+    """
     return f"Command output:\n{observation}\n\nWhat is your next action?"
