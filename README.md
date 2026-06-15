@@ -392,9 +392,11 @@ What this command does:
 
 You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail).
 
+> **Don't panic if it scores 0.0** — that's expected with the baseline. In our testing, the 7B model actually *solved* `fix-git` by turn 8 (found the detached commit, created a temp branch, merged it into master) but then kept going — it tried to `git push` to a nonexistent remote, failed, and spent 30+ turns in a loop generating SSH keys. The correct solution was already done, but the agent didn't know to stop. **This is exactly why orchestration matters** — a smarter agent loop with better stopping logic, loop detection, or self-verification ("did I already solve this?") would have scored 1.0 with the same model. That's the competition.
+
 > **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
 
-Results land in `starter/jobs/`. See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
+Results land in `starter/jobs/`. Check `job.log` in the job directory for the full agent trace (every command the model ran). See `starter/docs/troubleshooting.md` if you get errors instead of a verdict.
 
 ### What's in `starter/`
 

@@ -150,7 +150,11 @@ class BaselineAgent(BaseAgent):
             # Harbor kills us for a timeout, partial stats are still saved.
             context.n_input_tokens = n_input
             context.n_output_tokens = n_output
-            context.metadata = {"turns": turns, "finished": finished}
+            context.metadata = {
+                "turns": turns,
+                "finished": finished,
+                "messages": messages,
+            }
 
             messages.append({"role": "assistant", "content": text})
 
