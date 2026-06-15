@@ -76,9 +76,10 @@ If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc   # reload your shell so uv is on your PATH
 ```
 
-Close and reopen your terminal (so `uv` is on your PATH), then verify:
+Verify it works:
 
 ```bash
 uv --version

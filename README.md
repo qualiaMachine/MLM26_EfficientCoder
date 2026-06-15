@@ -234,6 +234,7 @@ Common gotcha: if `docker` isn't found inside Ubuntu, WSL integration (step 3) i
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc   # reload your shell so uv is on your PATH
 ```
 
 **2. Clone this repo and set up the starter environment:**
