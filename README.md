@@ -251,9 +251,13 @@ uv pip install -e starter/         # installs harbor + the agent package (editab
 
 **3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set.
 
-What this does: [Harbor](https://www.harborframework.com/) is the official harness for running Terminal-Bench — it handles pulling task definitions, building Docker containers, running your agent inside them, grading results, and cleaning up. Here it downloads 10 task definitions (~first run only), then for each task it builds a Docker image, runs the **oracle agent** inside it (the oracle just replays the known solution — no LLM needed), grades the result, and destroys the container. No GPU, no model endpoint, no API key required — this purely tests that Docker + Harbor are wired up correctly.
+**Background:** Terminal-Bench tasks are software engineering challenges — things like "build this Cython extension," "find the best chess move," or "configure a git webserver." Each task ships as a Docker image containing source code, instructions, and a test suite that grades the final state of the container. Your agent's job (eventually) is to read the instructions, figure out what to do, and execute bash commands inside the container until the task is solved.
 
-**Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. You should see each task pass with `reward: 1.0` and an aggregate score of 100%.
+[Harbor](https://www.harborframework.com/) is the official harness that orchestrates all of this — it pulls task definitions, spins up Docker containers, runs your agent inside them, grades results against the test suite, and tears everything down.
+
+**What this step does:** Harbor downloads 10 sample task definitions (~first run only, cached after), then for each task it builds a Docker container and runs the **oracle agent** inside it. The oracle is a cheat — it just replays each task's known solution step-by-step instead of thinking. It exists so you can verify your Docker + Harbor setup without needing a GPU, a model endpoint, or an API key. If the oracle scores 100%, your plumbing works.
+
+**Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. Everything runs on CPU.
 
 ```bash
 cd starter
