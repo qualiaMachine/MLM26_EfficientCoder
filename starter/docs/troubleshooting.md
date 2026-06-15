@@ -5,13 +5,13 @@ Work through these in order — they cover ~90% of first-week issues. Still stuc
 ## Setup
 
 **`harbor: command not found`**
-Your venv isn't activated (`source .venv/bin/activate`) or the install failed. Re-run `uv pip install -r requirements.txt` and check for errors.
+Your venv isn't activated (`source .venv/bin/activate` from the repo root) or the install failed. Re-run `uv pip install -e starter/` and check for errors.
 
 **`requires-python >=3.12` / install resolution errors**
 Harbor needs Python 3.12+. Recreate the venv: `uv venv --python 3.12` (uv downloads 3.12 for you if missing).
 
 **`Failed to import module 'agent.agent'`**
-The agent package isn't installed in the venv Harbor runs from. From the repo root: `uv pip install -e .` (the editable install is what makes `--agent-import-path agent.agent:MLMBaselineAgent` resolvable).
+The agent package isn't installed in the venv Harbor runs from. From the repo root: `uv pip install -e starter/` (the editable install is what makes `--agent-import-path agent.agent:MLMBaselineAgent` resolvable).
 
 **`Cannot connect to the Docker daemon`**
 Docker isn't running. See [docker_setup.md](docker_setup.md).
@@ -22,7 +22,7 @@ This is the canary — if oracle fails, the problem is your Docker/Harbor setup,
 ## Agent runs
 
 **Agent import fails with `--agent-import-path agent.agent:MLMBaselineAgent`**
-Activate the venv and make sure you ran `uv pip install -e .` from the repo root — that's what puts the `agent` package on Harbor's import path.
+Activate the venv and make sure you ran `uv pip install -e starter/` from the repo root — that's what puts the `agent` package on Harbor's import path.
 
 **Agent starts but every LLM call fails (connection refused / 404)**
 Your endpoint isn't up or `.env` is wrong. Test it directly:

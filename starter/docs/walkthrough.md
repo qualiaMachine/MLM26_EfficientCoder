@@ -41,13 +41,30 @@ Reboot. A terminal may open to finish Ubuntu setup (username + password) — if 
 docker run hello-world
 ```
 
-You should see:
+On the first run, Docker downloads the image — expect output like this:
 
 ```
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+4f55086f7dd0: Pull complete
+...
+Status: Downloaded newer image for hello-world:latest
+
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
 ...
 ```
+
+If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
 
 If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). See [docker_setup.md](docker_setup.md) for more troubleshooting.
 
@@ -73,11 +90,11 @@ You should see something like `uv 0.7.x` or newer. You don't need to install Pyt
 
 ## Step 3: Clone the repo and install the starter agent
 
-The MLM26 repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory — that's your working directory for the semester.
+The MLM26 repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory. The virtual environment lives at the repo root so it's shared across everything.
 
 ```bash
-git clone https://github.com/qualiaMachine/MLM26.git
-cd MLM26/starter
+git clone git@github.com:qualiaMachine/MLM26.git
+cd MLM26
 ```
 
 Create a virtual environment with Python 3.12 and install everything:
@@ -85,15 +102,15 @@ Create a virtual environment with Python 3.12 and install everything:
 ```bash
 uv venv --python 3.12
 source .venv/bin/activate
-uv pip install -e .
+uv pip install -e starter/
 ```
 
 What just happened:
 - `git clone` downloaded the MLM26 repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
-- `cd MLM26/starter` puts you in the agent directory — this is where you'll spend your time.
+- `cd MLM26` puts you at the repo root — the venv lives here.
 - `uv venv --python 3.12` created a `.venv/` directory with an isolated Python 3.12. If you don't have 3.12, uv downloaded it for you.
 - `source .venv/bin/activate` activated the venv. Your prompt should now show `(.venv)` at the start.
-- `uv pip install -e .` installed Harbor, the OpenAI client library, and the agent code in editable mode — meaning your edits to `agent/` take effect immediately without reinstalling.
+- `uv pip install -e starter/` installed Harbor, the OpenAI client library, and the agent code in editable mode — meaning your edits to `starter/agent/` take effect immediately without reinstalling.
 
 **Verify the install:**
 
@@ -353,7 +370,7 @@ harbor run -d terminal-bench-sample@2.0 \
   -i build-cython-ext
 ```
 
-Because you used `uv pip install -e .` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?
+Because you used `uv pip install -e starter/` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?
 
 This is the development loop for the semester:
 1. **Hypothesize** — "the agent fails because it doesn't read the instructions first"

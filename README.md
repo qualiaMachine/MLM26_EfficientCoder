@@ -152,6 +152,21 @@ docker --version          # should print a version
 docker run hello-world    # should print "Hello from Docker!"
 ```
 
+Expected output (first run pulls the image, then prints the greeting):
+
+```
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+...
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...
+```
+
+If you see `Hello from Docker!`, you're good. The rest of the output is informational.
+
 <details>
 <summary><strong>🍎 macOS</strong></summary>
 
@@ -213,6 +228,8 @@ Common gotcha: if `docker` isn't found inside Ubuntu, WSL integration (step 3) i
 
 ### Quickstart
 
+> **Windows users:** run everything below inside your **Ubuntu / WSL2 terminal**, not PowerShell.
+
 **1. Install uv** (if you don't have it):
 
 ```bash
@@ -222,13 +239,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 **2. Clone this repo and set up the starter environment:**
 
 ```bash
-git clone https://github.com/qualiaMachine/MLM26.git
-cd MLM26/starter
+git clone git@github.com:qualiaMachine/MLM26.git
+cd MLM26
 
 # Create a virtual environment (best practice: one venv per project)
 uv venv --python 3.12              # creates .venv/; uv fetches Python 3.12 if missing
 source .venv/bin/activate          # activate it (on Windows/WSL2 same command)
-uv pip install -e .                # installs harbor + the agent package (editable)
+uv pip install -e starter/         # installs harbor + the agent package (editable)
 ```
 
 **3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set (the oracle replays each task's known solution — it confirms your Docker/Harbor setup without needing a model):
@@ -240,11 +257,12 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 **4. Run the baseline agent** against a single sample task:
 
 ```bash
+cd starter
 cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
 ./scripts/run_baseline.sh build-cython-ext
 ```
 
-You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. Results land in `jobs/`. If you get something different, see `docs/troubleshooting.md`.
+You should see the baseline agent receive a task instruction, work inside a fresh Docker container, and have its result graded by the task's test suite. Results land in `starter/jobs/`. If you get something different, see `starter/docs/troubleshooting.md`.
 
 ### What's in `starter/`
 
@@ -267,7 +285,7 @@ starter/
 │   ├── byo_model.md        # How to point at your own endpoint
 │   └── harbor.md           # Harbor orientation + custom agent guide
 ├── .env.example
-├── pyproject.toml          # `uv pip install -e .` makes the agent importable by Harbor
+├── pyproject.toml          # `uv pip install -e starter/` makes the agent importable by Harbor
 └── README.md
 ```
 

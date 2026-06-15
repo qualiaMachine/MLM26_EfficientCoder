@@ -74,7 +74,7 @@ Run any custom agent with:
 harbor run -d <dataset@version> --agent-import-path your.module:YourAgentClass
 ```
 
-Note: Harbor imports your agent class with a plain Python import, so your agent package must be installed in the same virtual environment as `harbor` — that's why setup uses `uv pip install -e .` rather than a plain requirements file.
+Note: Harbor imports your agent class with a plain Python import, so your agent package must be installed in the same virtual environment as `harbor` — that's why setup uses `uv pip install -e starter/` (from the repo root) rather than a plain requirements file.
 
 ## Submitting to the public Terminal-Bench leaderboard
 
