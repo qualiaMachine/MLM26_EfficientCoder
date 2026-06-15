@@ -251,7 +251,7 @@ uv pip install -e starter/         # installs harbor + the agent package (editab
 
 **3. Verify Harbor + Terminal-Bench works** by running the oracle agent against the 10-task sample set.
 
-What this does: Harbor downloads 10 task definitions (~first run only), then for each task it builds a Docker image, runs the **oracle agent** inside it (the oracle just replays the known solution — no LLM needed), grades the result, and destroys the container. No GPU, no model endpoint, no API key required — this purely tests that Docker + Harbor are wired up correctly.
+What this does: [Harbor](https://www.harborframework.com/) is the official harness for running Terminal-Bench — it handles pulling task definitions, building Docker containers, running your agent inside them, grading results, and cleaning up. Here it downloads 10 task definitions (~first run only), then for each task it builds a Docker image, runs the **oracle agent** inside it (the oracle just replays the known solution — no LLM needed), grades the result, and destroys the container. No GPU, no model endpoint, no API key required — this purely tests that Docker + Harbor are wired up correctly.
 
 **Expect:** ~5–10 minutes on first run (downloading task images), ~2 minutes on subsequent runs. Needs ~4 GB disk for task images and ~4 GB RAM. You should see each task pass with `reward: 1.0` and an aggregate score of 100%.
 
