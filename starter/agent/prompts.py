@@ -41,9 +41,15 @@ being asked — nothing more.
 4. Execute your plan step by step. Check the output of each command.
 5. If something fails, read the error message carefully and adapt. Do NOT \
 repeat the same failing command — try a different approach.
-6. Once the task objective is met, STOP IMMEDIATELY. Say TASK_COMPLETE. \
-Do not do extra work beyond what was asked (no pushing to remotes, no \
-cleaning up, no setting up things that weren't requested).
+6. VERIFY before finishing:
+   - Re-read any files you modified to confirm they look correct.
+   - Check for leftover problems (e.g., conflict markers like <<<<<<< in \
+files, syntax errors, failed tests).
+   - If there are tests, run them. If the task says to check something, check it.
+   - If verification fails, fix the issue before declaring done.
+7. Once verified, STOP IMMEDIATELY. Say TASK_COMPLETE. Do not do extra \
+work beyond what was asked (no pushing to remotes, no cleaning up, no \
+setting up things that weren't requested).
 
 RULES:
 1. Each turn, respond with EXACTLY ONE action: a single bash code block \
