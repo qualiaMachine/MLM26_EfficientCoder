@@ -11,23 +11,19 @@ Frontier coding assistants are excellent, but they send your code to a third par
 
 **Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison. September–December 2026.**
 
+**Judging and awards** are for local UW–Madison participants. Anyone is welcome to use the starter code, Terminal-Bench 2.0, and the judging rubric below to guide their own work — we just can't evaluate you remotely.
+
 ---
 
 ## TIMELINE (Kaggle "Timeline" section)
 
 | Date | Milestone |
 |---|---|
-| September 2026 (Week 1) | Kickoff & team formation. Live Docker + Harbor setup workshop. |
-| Week 2 | Baseline replication. Get the starter agent running with a score. |
-| Week 3 | Failure analysis. Classify where your baseline fails. |
-| Week 4 | Architecture commit. 5-min team pitch on your approach. |
-| Week 5 | First working version. Demo your agent solving a task end-to-end. |
-| Week 6 | **Mid-semester checkpoint.** Post writeup draft, demo to room, peer feedback. |
-| Weeks 7–8 | Build & generalization test. Run against tasks you haven't optimized for. |
-| Week 9 | Full writeup draft posted to Kaggle. |
-| Week 10 | Peer review of writeups. |
-| Week 11 | Final polish + dry run. |
-| December 2026 (Week 12) | **Finale.** Public event. Live scoring, judging, awards. |
+| September 2026 | **Kickoff.** Team formation, Docker + Harbor setup workshop, starter code walkthrough. |
+| Mid-October 2026 | **Mid-semester presentation.** 5-min team presentation: your approach, progress so far, and what you've learned. |
+| December 2026 | **Final submission.** Writeup, code, and notebook due. Live scoring and awards event. |
+
+How you manage the weeks in between is up to your team. We recommend getting the baseline running in Week 1, doing failure analysis in Week 2–3, and iterating from there — but you know your schedule best.
 
 ---
 
@@ -140,17 +136,11 @@ Your project report. Should include:
 
 Your Writeup should not exceed 5,000 words. Quality over length.
 
-### 2. Video demo (3–5 minutes)
-
-Show your agent solving at least one Terminal-Bench task end-to-end. Voiceover explaining what the agent is doing and why. Clear > polished.
-
-Publish to YouTube, attach to your Writeup's Media Gallery.
-
-### 3. Public notebook
+### 2. Public notebook
 
 Your agent code submitted as a public notebook in the Project Files field. Should be runnable or clearly documented.
 
-### 4. Public project link
+### 3. Public GitHub repo
 
 A GitHub repo link with:
 - Your complete agent code in a runnable state
@@ -174,6 +164,8 @@ For teams that want to focus on understanding rather than engineering. Produce a
 
 ## EVALUATION (Kaggle "Evaluation" section)
 
+Judging is for **UW–Madison local participants** only. If you're following along externally, use this rubric as a guide for self-evaluation — it reflects what we think matters in a good coding agent project.
+
 ## Judging Rubric (100 points total)
 
 | Criteria | Points | Description |
@@ -182,7 +174,7 @@ For teams that want to focus on understanding rather than engineering. Produce a
 | **Generalizability** | 0–25 | Is your agent general-purpose? One system prompt, one agent loop, no per-task branching or task-specific prompt templates. Judges will read your code AND test your agent on tasks outside your reported set. Detecting task *categories* is fine; hardcoding individual task solutions is not. |
 | **Engineering depth** | 0–20 | Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A deep understanding of *why* your agent fails on certain task categories scores higher than a marginally better number with no insight. |
 | **Reproducibility** | 0–15 | Can someone else clone your repo and reproduce your results? Are hardware constraints respected? Does it fit in the VRAM budget? Are evaluation procedures honest? |
-| **Clarity & presentation** | 0–15 | Writeup and video quality. Can a reader understand what you built, why, and what you learned? |
+| **Clarity & presentation** | 0–15 | Writeup quality and mid-semester presentation. Can a reader understand what you built, why, and what you learned? |
 
 ### Required elements (pass/fail)
 
@@ -192,7 +184,6 @@ For teams that want to focus on understanding rather than engineering. Produce a
 | Open-weight models only (no closed API calls) | Yes/No |
 | Fits within single GPU ≤96 GB VRAM | Yes/No |
 | Public GitHub repo with reproduction instructions | Yes/No |
-| Video demo ≤5 minutes | Yes/No |
 
 ### How Terminal-Bench score is evaluated
 
