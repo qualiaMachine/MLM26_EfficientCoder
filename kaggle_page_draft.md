@@ -11,6 +11,8 @@ The model is only half the story. A raw LLM can't reliably solve multi-step codi
 
 This is an engineering challenge as much as an ML one. The teams that do well won't just pick the best model — they'll build the best system around it.
 
+**This is a collaborative challenge, not a prize competition.** There are no cash prizes and no reason to hoard ideas. We encourage teams to share repos early, post findings to the Discussion tab, and build on each other's work. Fork a teammate's context management strategy. Borrow someone's error recovery loop and improve it. The best outcomes happen when everyone's baseline keeps rising — and your writeup is where you show what *you* contributed, what you learned, and why your approach works. Collaboration is the winning strategy here.
+
 Frontier coding assistants like Claude Code and Cursor are excellent, but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
 
 **Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison. September–December 2026.**
@@ -127,7 +129,7 @@ Quick summary of what you'll do:
 
 **One submission per team, at the end of the semester.** There is no live leaderboard and no mid-semester submissions — focus on building and understanding, not chasing a number.
 
-During the semester, we encourage teams to post draft writeups and progress updates to the Kaggle Discussion tab. This is your chance to get feedback from other participants, share what's working, and learn from each other's approaches. Think of it as an open lab notebook.
+During the semester, we encourage teams to share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Other teams should feel free to fork, adapt, and build on your ideas — that's the point. Credit what you borrowed in your writeup, and explain what you added. Think of Discussion as an open lab notebook for the whole cohort.
 
 ### Final submission
 
