@@ -125,11 +125,15 @@ Quick summary of what you'll do:
 
 ## SUBMISSION REQUIREMENTS (Kaggle "Submission Requirements" section)
 
-A valid submission must contain the following:
+**One submission per team, at the end of the semester.** There is no live leaderboard and no mid-semester submissions — focus on building and understanding, not chasing a number.
 
-### 1. Kaggle Writeup
+During the semester, we encourage teams to post draft writeups and progress updates to the Kaggle Discussion tab. This is your chance to get feedback from other participants, share what's working, and learn from each other's approaches. Think of it as an open lab notebook.
 
-Your project report. Should include:
+### Final submission
+
+Submit via the provided Google Form by the deadline. A valid submission includes:
+
+**1. Writeup** — Your project report (≤5,000 words). Should include:
 - **Problem framing** — What are you trying to solve and why does it matter?
 - **Approach** — What architecture, model, and techniques did you use? Why?
 - **What worked and what didn't** — Honest analysis of your experiments.
@@ -138,17 +142,14 @@ Your project report. Should include:
 - **Limitations** — What are the constraints of your approach?
 - **What you'd do with another month** — Future directions.
 
-Your Writeup should not exceed 5,000 words. Quality over length.
+Quality over length.
 
-### 2. Public notebook
+**2. Public notebook** — Your agent code submitted as a public notebook in the Project Files field. Should be runnable or clearly documented.
 
-Your agent code submitted as a public notebook in the Project Files field. Should be runnable or clearly documented.
-
-### 3. Public GitHub repo
-
-A GitHub repo link with:
+**3. Public GitHub repo** — Must include:
 - Your complete agent code in a runnable state
 - A README with reproduction instructions
+- A tagged release or commit hash matching your reported scores (e.g., `git tag v1.0-submission`)
 - Terminal-Bench-compatible agent (runnable via `harbor run --agent-import-path`)
 - License: MIT or Apache 2.0
 
@@ -189,9 +190,11 @@ Judging is for **UW–Madison local participants** only. If you're following alo
 | Fits within single GPU ≤96 GB VRAM | Yes/No |
 | Public GitHub repo with reproduction instructions | Yes/No |
 
-### How Terminal-Bench score is evaluated
+### How scoring and verification work
 
-Judges will run your agent (from your public repo) against Terminal-Bench tasks using Harbor on reference hardware. Your self-reported scores should be reproducible. Significant discrepancies between self-reported and judge-evaluated scores will affect the Reproducibility criterion.
+There is no live leaderboard. Teams run Terminal-Bench locally, self-report their scores in the final submission, and tag the exact commit that produced them.
+
+Judges verify the top-ranked teams by cloning their repos and running `harbor run` on reference hardware. If your reproduced score is close to what you reported, it stands. Significant discrepancies will hurt your Reproducibility score. You won't be penalized for honest variance between runs — but you will be penalized for cherry-picked or inflated numbers.
 
 ---
 
