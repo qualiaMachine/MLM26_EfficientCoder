@@ -56,7 +56,7 @@ Your agent never touches your real filesystem — it only acts inside the contai
 
 ## The starter agent
 
-We provide a minimal [ReAct](https://arxiv.org/abs/2210.03629)-style baseline agent (~60 lines of Python) that:
+We provide a minimal [ReAct](https://arxiv.org/abs/2210.03629)-style baseline agent (~60 lines of Python). ReAct is a simple agent pattern: the model *reasons* about what to do, takes an *action* (runs a command), *observes* the result, and repeats. The baseline:
 1. Sends the task instruction to an LLM via any OpenAI-compatible endpoint
 2. Parses the LLM's response for a bash command
 3. Executes it in the container
