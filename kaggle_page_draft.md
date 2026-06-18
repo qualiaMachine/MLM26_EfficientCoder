@@ -7,7 +7,11 @@
 
 Build the best local coding agent — one that runs entirely on open-weight models within a single GPU (≤96 GB VRAM) — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor.
 
-Frontier coding assistants are excellent, but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
+The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — not just sometimes, but every time? And how do you do all of this on a single GPU, where you can't just throw a bigger model at the problem?
+
+This is an engineering challenge as much as an ML one. The teams that do well won't just pick the best model — they'll build the best system around it.
+
+Frontier coding assistants like Claude Code and Cursor are excellent, but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
 
 **Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison. September–December 2026.**
 
@@ -37,7 +41,7 @@ An autonomous coding agent that:
 - Gets graded on the container's final state by an automated test suite
 - Runs on open-weight models only, on a single GPU with ≤96 GB VRAM
 
-The agent architecture is up to you: prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning — anything goes within the hardware constraints.
+The model gives you a reasoning engine. Everything else — how you prompt it, how you manage the conversation history, how you recover from errors, how you decide when the task is actually done — is the orchestration layer you build around it. That orchestration code is where the competition lives. Prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning — anything goes within the hardware constraints.
 
 ## How it works
 
