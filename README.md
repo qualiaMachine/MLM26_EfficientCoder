@@ -42,7 +42,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
-Submissions are scored on a held-out subset of Terminal-Bench tasks revealed at the finale. Participants must also submit a writeup explaining what they built and why.
+Submissions are scored on Terminal-Bench performance, engineering depth, reproducibility, and writeup quality. All 89 Terminal-Bench tasks are public — the challenge is building an agent that generalizes, not memorizing solutions. See [Judging](#judging) for the full rubric.
 
 ---
 
@@ -99,7 +99,7 @@ Twelve sprint weeks plus kickoff and finale.
 - **Week 9 — Writeup draft.** Full draft posted to Kaggle.
 - **Week 10 — Peer review.** Teams review each other's writeups. Optional outside reviewers from the Terminal-Bench community.
 - **Week 11 — Final polish + dry run.** Rehearse finale demo.
-- **Week 12 — Finale.** Public event. Held-out task set scored live. Judging. Awards. Gallery goes live.
+- **Week 12 — Finale.** Public event. Live scoring, judging, awards. Gallery goes live.
 
 **Red team exercise** runs between Weeks 2 and 3: a deliberately misbehaving sample agent that participants analyze for safety issues. Builds the right reflexes early.
 
@@ -117,10 +117,11 @@ Modeled on Kaggle's community hackathon format.
 
 ## Judging
 
-- **Terminal-Bench score (45%)** — Performance on the held-out finale subset.
-- **Engineering depth (20%)** — Is the work technically substantive? Does the writeup show real understanding of the tradeoffs?
-- **Reproducibility (15%)** — Can someone else run this? Are the constraints actually respected? Does it fit in the VRAM budget?
-- **Clarity & presentation (20%)** — Writeup and demo quality.
+- **Terminal-Bench score (25%)** — Raw performance across Terminal-Bench tasks.
+- **Generalizability (25%)** — Your agent must be general-purpose: one system prompt, one agent loop, no per-task `if task == "fix-git"` branching or task-specific prompt templates. Judges will read your code to verify this. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. All 89 Terminal-Bench tasks are public; the question is whether your agent handles *any* terminal task, not just the ones you practiced on.
+- **Engineering depth (20%)** — Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
+- **Reproducibility (15%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
+- **Clarity & presentation (15%)** — Writeup and demo quality. Can a reader understand what you built, why, and what you learned?
 
 Judging panel includes ML+X organizers plus invited reviewers — we're aiming for at least one reviewer from the Terminal-Bench community.
 
@@ -389,13 +390,26 @@ What this command does:
 
 > **About task difficulty:** Terminal-Bench tasks span easy/medium/hard across categories like software-engineering, security, data-processing, scientific-computing, and system-administration. You can browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/). The 10-task sample set (`terminal-bench-sample@2.0`) is handy for quick iteration but contains no easy tasks — so for this first demo we use the full dataset with a single easy task.
 
-**Expect:** ~2–5 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). First run may take longer as Harbor downloads the task definition.
+**Expect:** ~5–10 minutes depending on model speed. You need enough RAM/VRAM to run your chosen model **plus** the Docker container (~2 GB). First run may take longer as Harbor downloads the task definition.
 
-You should see the agent read the task, explore the container, attempt bash commands, and get a final verdict (`reward: 1.0` = pass, `reward: 0.0` = fail).
+Expected output (with the 14B model):
 
-> **Don't panic if it scores 0.0** — that's expected with the baseline. In our testing, the 7B model actually *solved* `fix-git` by turn 8 (found the detached commit, created a temp branch, merged it into master) but then kept going — it tried to `git push` to a nonexistent remote, failed, and spent 30+ turns in a loop generating SSH keys. The correct solution was already done, but the agent didn't know to stop. **This is exactly why orchestration matters** — a smarter agent loop with better stopping logic, loop detection, or self-verification ("did I already solve this?") would have scored 1.0 with the same model. That's the competition.
+```
+  1/1 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:08:49 0:00:00
 
-> **Why only 15 turns?** The competition default is 100 turns per task, but small models (especially 7B) tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough to confirm the pipeline works end-to-end. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
+terminal-bench • mlm26-baseline
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      1 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+```
+
+If you see `Mean: 1.000`, your agent just solved a real Terminal-Bench task — it found orphaned git changes via `git reflog`, merged them into master, resolved a merge conflict, verified the result, and declared done. All autonomously, with a local 14B model.
+
+> **Scoring 0.0?** Check `job.log` in the job directory (see [Reading your results](#reading-your-results) below) to see what the model actually did. Common failure modes: the model gets stuck in a loop repeating the same command, tries to push to a remote that doesn't exist, or uses `sed` on files with special characters and mangles them. Smaller models (7B) will fail most tasks — that's the starting line. The competition is about improving the agent orchestration to get more tasks passing.
+
+> **Why only 15 turns?** The competition default is 100 turns per task, but small models tend to get stuck in loops — repeating the same command dozens of times. For this setup check, 15 turns is enough. When you start improving your agent, remove the cap or set it higher: `AGENT_MAX_TURNS=100`.
 
 ### Reading your results
 
