@@ -1,8 +1,8 @@
 # MLM26: Local Coding Agent Challenge
 
-Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026.
+Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
-**Judging and awards** are for local UW–Madison participants. Anyone is welcome to use the starter code, Terminal-Bench 2.0, and the judging rubric to guide their own work.
+**UW–Madison participants** get weekly sprints, office hours, mid-semester presentations, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
 
 ---
 
@@ -33,8 +33,9 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 - **Hardware constraint:** Single GPU ≤96 GB VRAM
 - **Per-task budget:** ≤100 turns (Terminal-Bench default), ≤5 minutes wall-clock
 - **Models:** Open weights only. Bring-your-own endpoint (Ollama, vLLM, hosted open-weight API). RunAI-hosted endpoints available on request for UW participants.
-- **Submission:** Writeup + public notebook + public GitHub repo (one submission per team, end of semester)
-- **Teams:** 1–4 people
+- **Submission:** Submission card + writeup + public notebook + public GitHub repo (one per team, end of semester)
+- **Judging:** Automated ranking by score → top ~10 get human review
+- **Teams:** 1–4 people, open to everyone
 
 ---
 
@@ -98,8 +99,11 @@ How you manage the weeks in between is up to your team. We recommend getting the
 
 During the semester, share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Other teams should feel free to fork, adapt, and build on your ideas — that's the point. Credit what you borrowed in your writeup, and explain what you added.
 
-Submit via the provided Google Form by the deadline:
+Your submission has two parts:
 
+**Part 1: Submission card** — Structured metadata used for automated ranking (model, params, quantization, GPU, VRAM, Terminal-Bench score, repo URL, commit tag). See the [Kaggle page](TBD) for the full field list.
+
+**Part 2: Full submission** — Attached to your Kaggle Writeup:
 1. **Writeup** (≤5,000 words). Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
 2. **Public notebook.** Your agent code as a public notebook. Should be runnable or clearly documented.
 3. **Public GitHub repo.** Complete agent code, README with reproduction instructions, a tagged release or commit hash matching your reported scores (e.g., `git tag v1.0-submission`), Terminal-Bench-compatible agent (runnable via `harbor run --agent-import-path`). License: MIT or Apache 2.0.
@@ -108,17 +112,28 @@ Submit via the provided Google Form by the deadline:
 
 ## Judging
 
-- **Terminal-Bench score (25%)** — Raw performance across Terminal-Bench tasks.
-- **Generalizability (25%)** — Your agent must be general-purpose: one system prompt, one agent loop, no per-task `if task == "fix-git"` branching or task-specific prompt templates. Judges will read your code to verify this. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. All 89 Terminal-Bench tasks are public; the question is whether your agent handles *any* terminal task, not just the ones you practiced on.
-- **Engineering depth (20%)** — Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
-- **Reproducibility (15%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
-- **Clarity & presentation (15%)** — Writeup quality and mid-semester presentation. Can a reader understand what you built, why, and what you learned?
+Evaluation happens in two stages to scale to many submissions without drowning in manual review.
 
-Judging is for **UW–Madison local participants** only. If you're following along externally, use this rubric as a guide for self-evaluation.
+### Stage 1: Automated ranking (all submissions)
 
-### How scoring and verification work
+Every team submits a **submission card** with structured metadata: model used, parameter count, quantization, GPU, VRAM usage, Terminal-Bench score, and repo link. Submissions are ranked by self-reported score. No human review at this stage.
 
-There is no live leaderboard. Teams run Terminal-Bench locally, self-report their scores in the final submission, and tag the exact commit that produced them. Judges verify the top-ranked teams by cloning their repos and running `harbor run` on reference hardware. Honest variance between runs is fine — cherry-picked or inflated numbers are not.
+### Stage 2: Human review (top ~10)
+
+Judges deep-review the top ~10 submissions by score:
+1. Clone the repo at the tagged commit, run `harbor run` on reference hardware, verify the reported score.
+2. Read the code to check for generalizability — no per-task branching or hardcoded solutions.
+3. Read the writeup and score against the rubric below.
+
+Honest run-to-run variance is fine. Significant discrepancies between reported and reproduced scores disqualify. Cherry-picked or inflated numbers are not tolerated.
+
+### Rubric (100 points, applied to finalists)
+
+- **Terminal-Bench score (25%)** — Raw performance. Verified by judges on reference hardware.
+- **Generalizability (25%)** — One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Judges read your code AND test on tasks outside your reported set. Detecting task *categories* is fine; hardcoding individual solutions is not.
+- **Engineering depth (20%)** — Did you try multiple approaches and analyze why some worked better? Deep understanding of *why* your agent fails scores higher than a marginally better number with no insight.
+- **Reproducibility (15%)** — Can someone clone your repo and reproduce your results? Does it fit the VRAM budget? Is the submission card accurate?
+- **Clarity & presentation (15%)** — Writeup quality. Can a reader understand what you built, why, and what you learned?
 
 ---
 
@@ -653,10 +668,10 @@ Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
 You can get started on CPU with a small model (qwen2.5-coder:3b). UW participants can request RunAI-hosted endpoints. Cloud GPU providers (Lambda, RunPod, Vast.ai) work too.
 
 **I'm not at UW.**
-Welcome. The starter code, Terminal-Bench, and the judging rubric are all available. We just can't evaluate you remotely — judging and awards are for UW–Madison participants.
+Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, or RunAI endpoints, but you're eligible for all main track awards. UW participants also compete for local awards.
 
 **Will there be a leaderboard during the semester?**
-No live leaderboard. Run Terminal-Bench locally, track your own progress, and share findings via the Discussion tab. Final scores are self-reported and verified by judges for top teams. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+No live leaderboard. Run Terminal-Bench locally, track your own progress, and share findings via the Discussion tab. At the deadline, everyone submits a structured submission card with their score — that's the ranking. Judges then deep-review the top ~10. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.

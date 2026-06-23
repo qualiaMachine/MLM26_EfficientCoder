@@ -15,9 +15,9 @@ This is an engineering challenge as much as an ML one. The teams that do well wo
 
 Frontier coding assistants like Claude Code and Cursor are excellent, but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
 
-**Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison. September–December 2026.**
+**Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison. September–December 2026. Open to everyone.**
 
-**Judging and awards** are for local UW–Madison participants. Anyone is welcome to use the starter code, Terminal-Bench 2.0, and the judging rubric below to guide their own work — we just can't evaluate you remotely.
+**UW–Madison participants** get access to weekly sprints, office hours, mid-semester presentations, and RunAI-hosted GPU endpoints. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
 
 ---
 
@@ -127,13 +127,31 @@ Quick summary of what you'll do:
 
 ## SUBMISSION REQUIREMENTS (Kaggle "Submission Requirements" section)
 
-**One submission per team, at the end of the semester.** There is no live leaderboard and no mid-semester submissions — focus on building and understanding, not chasing a number.
+**One submission per team, at the end of the semester.** There is no live leaderboard — focus on building and understanding, not chasing a number.
 
 During the semester, we encourage teams to share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Other teams should feel free to fork, adapt, and build on your ideas — that's the point. Credit what you borrowed in your writeup, and explain what you added. Think of Discussion as an open lab notebook for the whole cohort.
 
 ### Final submission
 
-Submit via the provided Google Form by the deadline. A valid submission includes:
+Your submission has two parts:
+
+**Part 1: Submission card** — A structured form with your key metadata. This is how we rank and filter submissions before detailed review:
+
+| Field | Example |
+|---|---|
+| Team name | Terminal Velocity |
+| GitHub repo URL | github.com/team/agent |
+| Commit tag | `v1.0-submission` |
+| Model(s) used | Qwen2.5-Coder 32B (AWQ 4-bit) |
+| Total parameters | 32B |
+| Quantization | AWQ int4 |
+| GPU used | RTX 4090 (24 GB) |
+| Peak VRAM usage | 21 GB |
+| Terminal-Bench score | 0.42 (37/89 tasks passed) |
+| Tasks evaluated | All 89 |
+| Mean wall-clock per task | 3m 12s |
+
+**Part 2: Full submission** — Attached to your Kaggle Writeup:
 
 **1. Writeup** — Your project report (≤5,000 words). Should include:
 - **Problem framing** — What are you trying to solve and why does it matter?
@@ -161,42 +179,54 @@ Quality over length.
 
 ### Track A: Local Agent (main track)
 
-Build the best general-purpose local coding agent under the hardware constraints. Open to all participants.
+Build the best general-purpose local coding agent under the hardware constraints. Open to everyone.
 
 ### Track B: Analysis & Insight (optional)
 
 For teams that want to focus on understanding rather than engineering. Produce a rigorous analysis of coding agent behavior on Terminal-Bench: failure taxonomies, scaling laws, prompt sensitivity studies, model comparisons, etc. Scored primarily on engineering depth and clarity rather than raw Terminal-Bench score.
 
+### UW–Madison local awards
+
+UW participants are eligible for additional recognition based on mid-semester presentations and in-person engagement. Details announced at kickoff.
+
 ---
 
 ## EVALUATION (Kaggle "Evaluation" section)
 
-Judging is for **UW–Madison local participants** only. If you're following along externally, use this rubric as a guide for self-evaluation — it reflects what we think matters in a good coding agent project.
+Evaluation happens in two stages. This is how we scale to hundreds of submissions without drowning in manual review.
 
-## Judging Rubric (100 points total)
+### Stage 1: Automated ranking
+
+All submissions are ranked by self-reported Terminal-Bench score from their submission card. This is fully automated — no human review at this stage. Every valid submission gets a rank.
+
+### Stage 2: Human review (top ~10)
+
+Judges deep-review the top ~10 submissions by score. For each finalist, judges will:
+1. **Clone the repo** at the tagged commit and run `harbor run` on reference hardware to verify the reported score.
+2. **Read the code** to check for generalizability — no per-task branching or hardcoded solutions.
+3. **Read the writeup** and score against the full rubric below.
+
+If your reproduced score is close to what you reported, it stands. Significant discrepancies disqualify. Honest run-to-run variance is fine — cherry-picked or inflated numbers are not.
+
+### Judging Rubric (100 points, applied to finalists)
 
 | Criteria | Points | Description |
 |---|---|---|
-| **Terminal-Bench score** | 0–25 | Raw performance across Terminal-Bench tasks. Higher is better. Evaluated by running your agent against a task set chosen by the judges. |
-| **Generalizability** | 0–25 | Is your agent general-purpose? One system prompt, one agent loop, no per-task branching or task-specific prompt templates. Judges will read your code AND test your agent on tasks outside your reported set. Detecting task *categories* is fine; hardcoding individual task solutions is not. |
-| **Engineering depth** | 0–20 | Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A deep understanding of *why* your agent fails on certain task categories scores higher than a marginally better number with no insight. |
-| **Reproducibility** | 0–15 | Can someone else clone your repo and reproduce your results? Are hardware constraints respected? Does it fit in the VRAM budget? Are evaluation procedures honest? |
-| **Clarity & presentation** | 0–15 | Writeup quality and mid-semester presentation. Can a reader understand what you built, why, and what you learned? |
+| **Terminal-Bench score** | 0–25 | Raw performance. Higher is better. Verified by judges on reference hardware. |
+| **Generalizability** | 0–25 | Is your agent general-purpose? One system prompt, one agent loop, no per-task branching. Judges will read your code AND test on tasks outside your reported set. Detecting task *categories* is fine; hardcoding individual solutions is not. |
+| **Engineering depth** | 0–20 | Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? Deep understanding of *why* your agent fails scores higher than a marginally better number with no insight. |
+| **Reproducibility** | 0–15 | Can someone clone your repo and reproduce your results? Does it fit the VRAM budget? Is the submission card accurate? |
+| **Clarity & presentation** | 0–15 | Writeup quality. Can a reader understand what you built, why, and what you learned? |
 
 ### Required elements (pass/fail)
 
 | Requirement | Pass/Fail |
 |---|---|
+| Submission card fully filled out | Yes/No |
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
 | Open-weight models only (no closed API calls) | Yes/No |
 | Fits within single GPU ≤96 GB VRAM | Yes/No |
-| Public GitHub repo with reproduction instructions | Yes/No |
-
-### How scoring and verification work
-
-There is no live leaderboard. Teams run Terminal-Bench locally, self-report their scores in the final submission, and tag the exact commit that produced them.
-
-Judges verify the top-ranked teams by cloning their repos and running `harbor run` on reference hardware. If your reproduced score is close to what you reported, it stands. Significant discrepancies will hurt your Reproducibility score. You won't be penalized for honest variance between runs — but you will be penalized for cherry-picked or inflated numbers.
+| Public GitHub repo with tagged commit | Yes/No |
 
 ---
 
@@ -221,6 +251,9 @@ Judges verify the top-ranked teams by cloning their repos and running `harbor ru
 
 ## ADDITIONAL SECTION: FAQ
 
+**How does judging work with so many submissions?**
+Stage 1 is automated: we rank everyone by self-reported Terminal-Bench score from the submission card. Stage 2 is human: judges deep-review only the top ~10 submissions — cloning repos, verifying scores, reading writeups. You don't need to be at UW to be a finalist.
+
 **Do I need a GPU to participate?**
 You need a GPU to run your agent competitively, but you can get started on CPU with a small model (qwen2.5-coder:3b). UW participants can request RunAI-hosted endpoints. Cloud GPU providers (Lambda, RunPod, Vast.ai) work too.
 
@@ -235,6 +268,9 @@ Both fine. Reflect honestly on contributions in the writeup.
 
 **Can I use RAG, tool use, or external knowledge bases?**
 Yes — anything that runs locally within the hardware constraints. No calls to external APIs for model inference.
+
+**I'm not at UW–Madison. Can I still participate?**
+Yes. The challenge is fully open. You just won't have access to weekly sprints, office hours, or RunAI endpoints. You're eligible for all main track awards.
 
 **Is this individual or team-based?**
 Teams of 1–4. Form at kickoff or find teammates on Discord.
