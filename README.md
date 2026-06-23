@@ -1,20 +1,20 @@
 # MLM26: Local Coding Agent Challenge
 
-A Machine Learning Marathon track for building the best local coding agent — measured on Terminal-Bench. Hosted by ML+X at UW–Madison.
+Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
-September–December 2026. Real prizes. Open to anyone.
+**UW–Madison participants** get weekly sprints, office hours, mid-semester presentations, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
 
 ---
 
 ## Why this challenge
 
-Frontier coding assistants like Claude Code, Cursor, and Aider assume an API call to a frontier model. They are excellent. They also send your code to a third party, cost real money per task, and raise security concerns when the data can't leave your environment.
+Frontier coding assistants like Claude Code, Cursor, and Codex are excellent — but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
 
-A growing class of users — researchers with sensitive data, organizations on tight compute budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. But "plausible" and "actually good" are different things, and nobody has run a competition of what the best *local* coding agent looks like under realistic constraints.
+The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — not just sometimes, but every time? And how do you do all of this on a single GPU, where you can't just throw a bigger model at the problem?
 
-In this year's premiere MLM26 challenge, teams will compete to build the best local coding agent possible within a defined compute budget.
+This is an engineering challenge as much as an ML one. The teams that do well won't just pick the best model — they'll build the best system around it.
 
-The outputs of this challenge feed directly into how we deploy AI for researchers.
+**This is a collaborative challenge, not a prize competition.** There are no cash prizes and no reason to hoard ideas. Share your repo early, post findings to the Discussion tab, fork each other's approaches, and build on what works. The best outcomes happen when everyone's baseline keeps rising — your writeup is where you show what *you* contributed, what you learned, and why your approach works.
 
 ### Why Terminal-Bench
 
@@ -26,23 +26,26 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ## At a glance
 
-- **Format:** Kaggle Community Hackathon, semester-long
+- **Format:** Kaggle Community Hackathon, semester-long, collaborative
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
 - **Eval backbone:** Terminal-Bench 2.0 via [Harbor](https://www.harborframework.com/) (Docker-per-task, outcome-based scoring)
 - **Hardware constraint:** Single GPU ≤96 GB VRAM
 - **Per-task budget:** ≤100 turns (Terminal-Bench default), ≤5 minutes wall-clock
 - **Models:** Open weights only. Bring-your-own endpoint (Ollama, vLLM, hosted open-weight API). RunAI-hosted endpoints available on request for UW participants.
-- **Submission:** Kaggle Writeup + video demo + public repo link
-- **Prizes:** TBD (sponsor pool, capped at Kaggle's $10K limit)
+- **Submission:** Submission card + writeup + public notebook + public GitHub repo (one per team, end of semester)
+- **Judging:** Automated ranking by score → top ~10 get human review
+- **Teams:** 1–4 people, open to everyone
 
 ---
 
 ## The challenge
 
-Build a coding agent that scores highest on a held-out Terminal-Bench subset under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
+Build an autonomous coding agent that scores highest on Terminal-Bench 2.0 under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
-Submissions are scored on Terminal-Bench performance, engineering depth, reproducibility, and writeup quality. All 89 Terminal-Bench tasks are public — the challenge is building an agent that generalizes, not memorizing solutions. See [Judging](#judging) for the full rubric.
+The model gives you a reasoning engine. Everything else — how you prompt it, how you manage conversation history, how you recover from errors, how you decide when the task is actually done — is the orchestration layer you build around it. That orchestration code is where the challenge lives.
+
+All 89 Terminal-Bench tasks are public — the challenge is building an agent that generalizes, not memorizing solutions. See [Judging](#judging) for the full rubric.
 
 ---
 
@@ -78,52 +81,59 @@ Full safety section below.
 
 ## Schedule
 
-Twelve sprint weeks plus kickoff and finale.
+| Date | Milestone |
+|---|---|
+| September 2026 | **Kickoff.** Team formation, Docker + Harbor setup workshop (bring your laptop), starter code walkthrough. |
+| Mid-October 2026 | **Mid-semester presentation.** 5-min team presentation: your approach, progress so far, and what you've learned. |
+| December 2026 | **Final submission.** Writeup, code, and notebook due. Live scoring and awards event. |
 
-**Phase 1 — Foundations (Weeks 1–3)**
+How you manage the weeks in between is up to your team. We recommend getting the baseline running in Week 1, doing failure analysis in Weeks 2–3, and iterating from there — but you know your schedule best.
 
-- **Week 1 — Kickoff & team formation.** Challenge brief, Terminal-Bench walkthrough, **live Docker + Harbor setup workshop** (bring your laptop — this is the #1 place people get stuck), baseline demo, endpoint setup. Teams form by end of week.
-- **Week 2 — Baseline replication.** Get the reference agent running. Score it against a public Terminal-Bench subset. Deliverable: working baseline with score.
-- **Week 3 — Failure analysis.** Classify where your baseline fails on Terminal-Bench tasks. Deliverable: failure taxonomy writeup.
-
-**Phase 2 — Build (Weeks 4–8)**
-
-- **Week 4 — Architecture commit.** 5-min team pitch on your approach.
-- **Week 5 — First working version.** Demo your agent solving a task end-to-end.
-- **Week 6 — Mid-semester checkpoint.** Extended session. Post writeup draft to Kaggle gallery, demo to full room, structured peer feedback. **Most important week.**
-- **Week 7 — Iteration sprint.** No big demo. Just build.
-- **Week 8 — Generalization test.** Run against a fresh Terminal-Bench subset you haven't seen. Self-report scores. Catches overfitting.
-
-**Phase 3 — Polish & Finale (Weeks 9–12)**
-
-- **Week 9 — Writeup draft.** Full draft posted to Kaggle.
-- **Week 10 — Peer review.** Teams review each other's writeups. Optional outside reviewers from the Terminal-Bench community.
-- **Week 11 — Final polish + dry run.** Rehearse finale demo.
-- **Week 12 — Finale.** Public event. Live scoring, judging, awards. Gallery goes live.
-
-**Red team exercise** runs between Weeks 2 and 3: a deliberately misbehaving sample agent that participants analyze for safety issues. Builds the right reflexes early.
+**Weekly sprints** (Wednesdays 4:30–6:30 pm CT, hybrid) are available for working sessions, questions, and informal demos throughout the semester.
 
 ---
 
 ## Submission format
 
-Modeled on Kaggle's community hackathon format.
+**One submission per team, at the end of the semester.** There is no live leaderboard and no mid-semester submissions — focus on building and understanding, not chasing a number.
 
-1. **Kaggle Writeup.** Public, in your team's name. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, limitations, what you'd do with another month. Markdown. Quality > length.
-2. **Video demo.** 5–8 minutes. Show the agent working. Voiceover. Clear > polished.
-3. **Public repo.** GitHub link with code, README, reproduction instructions. License: MIT or Apache 2.0. The repo must include a Terminal-Bench-compatible agent in a runnable state.
+During the semester, share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Other teams should feel free to fork, adapt, and build on your ideas — that's the point. Credit what you borrowed in your writeup, and explain what you added.
+
+Your submission has two parts:
+
+**Part 1: Submission card** — Structured metadata used for automated ranking (model, params, quantization, GPU, VRAM, Terminal-Bench score, repo URL, commit tag). See the [Kaggle page](TBD) for the full field list.
+
+**Part 2: Full submission** — Attached to your Kaggle Writeup:
+1. **Writeup** (≤5,000 words). Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
+2. **Public notebook.** Your agent code as a public notebook. Should be runnable or clearly documented.
+3. **Public GitHub repo.** Complete agent code, README with reproduction instructions, a tagged release or commit hash matching your reported scores (e.g., `git tag v1.0-submission`), Terminal-Bench-compatible agent (runnable via `harbor run --agent-import-path`). License: MIT or Apache 2.0.
 
 ---
 
 ## Judging
 
-- **Terminal-Bench score (25%)** — Raw performance across Terminal-Bench tasks.
-- **Generalizability (25%)** — Your agent must be general-purpose: one system prompt, one agent loop, no per-task `if task == "fix-git"` branching or task-specific prompt templates. Judges will read your code to verify this. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. All 89 Terminal-Bench tasks are public; the question is whether your agent handles *any* terminal task, not just the ones you practiced on.
-- **Engineering depth (20%)** — Is the work technically substantive? Did you try multiple approaches and analyze why some worked better? A team that deeply understands *why* their agent fails on certain task categories and documents the analysis scores higher than a team with a marginally better number but no insight.
-- **Reproducibility (15%)** — Can someone else clone your repo and reproduce your results? Are the hardware constraints actually respected? Does it fit in the VRAM budget? Are your evaluation procedures honest?
-- **Clarity & presentation (15%)** — Writeup and demo quality. Can a reader understand what you built, why, and what you learned?
+Evaluation happens in two stages to scale to many submissions without drowning in manual review.
 
-Judging panel includes ML+X organizers plus invited reviewers — we're aiming for at least one reviewer from the Terminal-Bench community.
+### Stage 1: Automated ranking (all submissions)
+
+Every team submits a **submission card** with structured metadata: model used, parameter count, quantization, GPU, VRAM usage, Terminal-Bench score, and repo link. Submissions are ranked by self-reported score. No human review at this stage.
+
+### Stage 2: Human review (top ~10)
+
+Judges deep-review the top ~10 submissions by score:
+1. Clone the repo at the tagged commit, run `harbor run` on reference hardware, verify the reported score.
+2. Read the code to check for generalizability — no per-task branching or hardcoded solutions.
+3. Read the writeup and score against the rubric below.
+
+Honest run-to-run variance is fine. Significant discrepancies between reported and reproduced scores disqualify. Cherry-picked or inflated numbers are not tolerated.
+
+### Rubric (100 points, applied to finalists)
+
+- **Terminal-Bench score (25%)** — Raw performance. Verified by judges on reference hardware.
+- **Generalizability (25%)** — One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Judges read your code AND test on tasks outside your reported set. Detecting task *categories* is fine; hardcoding individual solutions is not.
+- **Engineering depth (20%)** — Did you try multiple approaches and analyze why some worked better? Deep understanding of *why* your agent fails scores higher than a marginally better number with no insight.
+- **Reproducibility (15%)** — Can someone clone your repo and reproduce your results? Does it fit the VRAM budget? Is the submission card accurate?
+- **Clarity & presentation (15%)** — Writeup quality. Can a reader understand what you built, why, and what you learned?
 
 ---
 
@@ -562,9 +572,9 @@ Terminal-Bench runs each task in a fresh Docker container with no host access. T
 - **Shell commands.** Even "safe" commands compose into damage. `find . -name "*.py" -exec rm {} \;` looks like a search. `mv` and `cp` overwrite without prompting. `>` truncates files.
 - **Looks-safe traps.** `chmod` can lock you out. `git clean -fdx` deletes untracked files including your work. `docker system prune` deletes everything.
 
-### Red team week (between Weeks 2 and 3)
+### Red team exercise
 
-We'll release a deliberately misbehaving sample agent. Your job: figure out what it does wrong, what damage it could do in a less-sandboxed environment, and how the Terminal-Bench harness prevents most of it. Writeup due before Week 3.
+At some point early in the semester, we'll release a deliberately misbehaving sample agent. Your job: figure out what it does wrong, what damage it could do in a less-sandboxed environment, and how the Terminal-Bench harness prevents most of it.
 
 The instincts that prevent your agent from `rm -rf`ing your homedir are the same instincts that prevent it from confidently making wrong edits to a real codebase.
 
@@ -619,19 +629,9 @@ A 32B-class Qwen-Coder agent has already cracked the Terminal-Bench leaderboard 
 
 ## Task sets
 
-Scoring is based on Terminal-Bench tasks. We use the framework directly, with three subsets:
+All 89 Terminal-Bench 2.0 tasks are public — participants can browse descriptions, test suites, and solutions at [tbench.ai](https://tbench.ai). The challenge is building an agent that *generalizes* across diverse task types, not memorizing individual solutions.
 
-### Public set — used for self-evaluation
-
-A subset of public Terminal-Bench tasks (the easy and medium tiers, mostly). Participants run against this all semester. Scores are self-reported. Use it to debug your agent and track your own progress.
-
-### Generalization set (Week 8)
-
-A different public Terminal-Bench subset, not announced at kickoff. Released Week 8. Tests whether you overfit to the public set.
-
-### Held-out finale set (Week 12)
-
-A small curated set of Terminal-Bench tasks — possibly including unreleased upstream tasks (subject to permission). Revealed and scored at the finale. This is the main number.
+Run your agent against any tasks you want during the semester to track progress. Your final submission should report scores with the exact commands used to produce them. Judges may run your agent against tasks outside your reported set to test generalizability.
 
 ---
 
@@ -661,17 +661,17 @@ Yes, please. Independent of MLM. It's a real leaderboard and a real artifact.
 **Do I need to use the entire Terminal-Bench task set?**
 For evaluation during the semester, no — work with whatever subset is useful for your debugging. For the finale, you don't pick — we score against a fixed held-out subset.
 
-**My team is just me.** / **My team is six people.**
-Both fine. Reflect honestly on contribution in the writeup.
+**My team is just me.** / **My team is four people.**
+Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-Hosted open-weight APIs are cheap for development. Reference hardware at the finale is provided. UW participants can request RunAI access.
+You can get started on CPU with a small model (qwen2.5-coder:3b). UW participants can request RunAI-hosted endpoints. Cloud GPU providers (Lambda, RunPod, Vast.ai) work too.
 
 **I'm not at UW.**
-Welcome. The challenge is open. Sprints are hybrid. Prizes don't care.
+Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, or RunAI endpoints, but you're eligible for all main track awards. UW participants also compete for local awards.
 
-**Will there be an automated leaderboard during the semester?**
-Self-reported scores against the public set are submitted via the Kaggle hackathon page. Scores are honor-system during the semester; verification happens at the Week 8 generalization checkpoint and the Week 12 finale when organizers run agents on reference hardware. You can also submit to the public Terminal-Bench leaderboard independently.
+**Will there be a leaderboard during the semester?**
+No live leaderboard. Run Terminal-Bench locally, track your own progress, and share findings via the Discussion tab. At the deadline, everyone submits a structured submission card with their score — that's the ranking. Judges then deep-review the top ~10. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
@@ -680,20 +680,11 @@ We're users and fans — but MLM26 is a separate event. We don't speak for the T
 
 ## Organizer notes (delete before publishing)
 
-- [ ] Confirm prize pool with sponsors
 - [ ] Confirm finale reference hardware spec
-- [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (finale judge from their side? early heads-up on upstream tasks?)
-- [ ] Set the real public-subset task list in `starter/eval/public_subset.txt` and cold-start test on a fresh machine before publishing
+- [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)
 - [ ] Cold-start test the quickstart on a machine that didn't write it
-- [ ] Build the red team sample agent
 - [ ] Recruit judges (Terminal-Bench contributors, agent researchers)
 - [ ] Set up Discord
 - [ ] Coordinate with Kaggle on Community Hackathon setup
 - [ ] Final pass on safety doc with UW research-IT
-- [ ] Decide finale held-out task selection process — entirely public TB tasks, or include some unreleased upstream tasks?
-
-Open questions:
-
-- Do we want a "beginner track" or scaffolding for first-time agent builders? Could be done via paired teams or a workshop in Week 1.
-- How do we handle teams that want to share infrastructure (shared model endpoint)? Probably fine if disclosed.
-- Outside reviewers for the finale — who? Terminal-Bench team is the obvious ask. Ludwig Schmidt? Anthropic contacts? NVIDIA?
+- [ ] Create Google Form for final submissions
