@@ -30,8 +30,9 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 - **Dates:** Kickoff September 2026 → Finale December 2026
 - **Sprints:** Wednesdays 4:30–6:30 pm (Madison time, hybrid)
 - **Eval backbone:** Terminal-Bench 2.0 via [Harbor](https://www.harborframework.com/) (Docker-per-task, outcome-based scoring)
-- **Hardware constraint:** Single GPU ≤96 GB VRAM
+- **Hardware constraint:** Single GPU ≤48 GB VRAM (sized to fit Qwen2.5-Coder-32B at 4-bit AWQ comfortably)
 - **Per-task budget:** ≤100 turns (Terminal-Bench default), ≤5 minutes wall-clock
+- **Default model:** Qwen2.5-Coder-32B-Instruct (AWQ 4-bit) — the suggested anchor so anyone with a ~48 GB GPU slice can compete. Teams are free to explore other open-weight models that fit the budget.
 - **Models:** Open weights only. Bring-your-own endpoint (Ollama, vLLM, hosted open-weight API). RunAI-hosted endpoints available on request for UW participants.
 - **Submission:** Submission card + writeup + public notebook + public GitHub repo (one per team, end of semester)
 - **Judging:** Automated ranking by score → top ~10 get human review
@@ -41,7 +42,7 @@ By building on Terminal-Bench, your work is comparable to public leaderboard ent
 
 ## The challenge
 
-Build an autonomous coding agent that scores highest on Terminal-Bench 2.0 under local-model constraints. ≤96 GB VRAM on a single GPU, open-weight models only, capped per-task budget. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
+Build an autonomous coding agent that scores highest on Terminal-Bench 2.0 under local-model constraints. ≤48 GB VRAM on a single GPU, open-weight models only, capped per-task budget. The suggested anchor model is **Qwen2.5-Coder-32B-Instruct at 4-bit AWQ** — it fits the VRAM budget with room for context and batching, runs locally on a single 48 GB GPU (or half of a 96 GB card), and gives every team a strong common baseline. Teams are free to explore other open-weight models that fit. Within those limits, anything goes — your choice of base model, scaffolding, retrieval, tool design, prompting, quantization, agent loop, fine-tuning.
 
 The model gives you a reasoning engine. Everything else — how you prompt it, how you manage conversation history, how you recover from errors, how you decide when the task is actually done — is the orchestration layer you build around it. That orchestration code is where the challenge lives.
 
@@ -55,9 +56,10 @@ These exist to make this a *local* coding agent challenge rather than "whoever b
 
 ### Hardware
 
-- **Single GPU with ≤96 GB VRAM.** Verified at finale on reference hardware (e.g. A100-80GB, H100).
-- **Quantization allowed.** fp16, int8, int4, AWQ, GGUF — we only care that it fits.
-- **Dense or MoE both fine.** As long as it fits in the VRAM budget.
+- **Single GPU with ≤48 GB VRAM.** Sized to fit Qwen2.5-Coder-32B at 4-bit AWQ with room for context and batching. Verified at finale on reference hardware (e.g. half-slice of an RTX Pro 6000 96 GB, L40S 48 GB, or A100/H100 partitioned to a 48 GB budget).
+- **The 48 GB budget exists to keep this inclusive.** Anyone with a single ~48 GB GPU (or a slice of a larger one) should be able to participate locally — including folks outside UW without cluster access.
+- **Quantization allowed.** fp16, int8, int4, AWQ, GGUF — we only care that it fits in 48 GB at evaluation time (weights + KV cache + activations).
+- **Dense or MoE both fine.** As long as the loaded footprint fits the VRAM budget.
 - **No multi-GPU agents.** Tensor parallelism across two GPUs disqualifies.
 - **No closed-weight model calls.** This is a *local* coding agent challenge. Calling GPT-5 or Claude or Gemini from inside your agent is out of scope, even for "just the planner." Open weights served locally or via open-weight hosted APIs (Together, Fireworks, Groq serving Qwen/Llama/DeepSeek/etc.) are fine.
 
@@ -617,11 +619,15 @@ Pick whatever lets you iterate fast. You can swap models freely throughout the s
 
 This list ages fast. Treat it as a starting point.
 
-- **Qwen2.5-Coder 32B / Qwen3-Coder** variants — strong coding baselines, fit in 24 GB at 4-bit
+**Default / suggested anchor: Qwen2.5-Coder-32B-Instruct (AWQ 4-bit).** This is our recommended starting model — it fits comfortably in 48 GB with headroom for context and batching, has a well-tested AWQ checkpoint on Hugging Face, and serves cleanly under vLLM. Using this as your baseline makes it easy to compare results across teams. You are **not** required to use it — anything open-weight that fits the budget is fair game.
+
+Other models worth trying (must still fit in ≤48 GB at eval time):
+
+- **Qwen2.5-Coder 14B / Qwen3-Coder** variants — smaller footprint, more headroom for long context or larger batches
 - **DeepSeek-Coder V2** family — strong on harder tasks
 - **GLM-4.5** — recent, well-regarded for agent work
-- **Llama 3.3 70B** — fits comfortably at fp16 with 96 GB, or 4-bit on smaller cards
-- **Mixtral-style MoEs** — high active-to-total ratio, useful when total params aren't the constraint
+- **Llama 3.x** — quantized variants that fit in 48 GB
+- **MoE models with a small active-parameter slice** — only if the loaded footprint fits 48 GB (note: full weights still need to fit)
 
 A 32B-class Qwen-Coder agent has already cracked the Terminal-Bench leaderboard above some larger MoE setups — careful agent design matters more than parameter count.
 

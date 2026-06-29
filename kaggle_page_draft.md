@@ -5,7 +5,7 @@
 
 ## OVERVIEW (Kaggle "Overview" section)
 
-Build the best local coding agent — one that runs entirely on open-weight models within a single GPU (≤96 GB VRAM) — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor.
+Build the best local coding agent — one that runs entirely on open-weight models within a single GPU (≤48 GB VRAM, sized so Qwen2.5-Coder-32B at 4-bit AWQ fits comfortably) — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor.
 
 The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — not just sometimes, but every time? And how do you do all of this on a single GPU, where you can't just throw a bigger model at the problem?
 
@@ -41,7 +41,9 @@ An autonomous coding agent that:
 - Receives a task description (e.g., "find the lost git changes and merge them into master")
 - Reads, explores, plans, and executes bash commands inside a Docker container
 - Gets graded on the container's final state by an automated test suite
-- Runs on open-weight models only, on a single GPU with ≤96 GB VRAM
+- Runs on open-weight models only, on a single GPU with ≤48 GB VRAM
+
+**Suggested default model:** Qwen2.5-Coder-32B-Instruct at 4-bit AWQ. This is the anchor we recommend so every team starts from a known-good, locally-runnable baseline. Teams are free to explore other open-weight models that fit the VRAM budget.
 
 The model gives you a reasoning engine. Everything else — how you prompt it, how you manage the conversation history, how you recover from errors, how you decide when the task is actually done — is the orchestration layer you build around it. That orchestration code is where the competition lives. Prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning — anything goes within the hardware constraints.
 
@@ -85,10 +87,10 @@ You can also add entirely new files, modules, retrieval systems, or fine-tuned m
 ## Constraints
 
 ### Hardware
-- **Single GPU with ≤96 GB VRAM.** Verified at finale on reference hardware.
+- **Single GPU with ≤48 GB VRAM.** Sized to fit Qwen2.5-Coder-32B at 4-bit AWQ with room for context and batching. Verified at finale on reference hardware (48 GB GPU, or a 48 GB slice of a larger card).
 - **Open-weight models only.** No API calls to GPT, Claude, Gemini, etc.
-- **Quantization allowed.** fp16, int8, int4, AWQ, GGUF — whatever fits.
-- **Dense or MoE both fine.** As long as it fits in the VRAM budget.
+- **Quantization allowed.** fp16, int8, int4, AWQ, GGUF — whatever fits in 48 GB at eval time.
+- **Dense or MoE both fine.** As long as the loaded footprint fits the VRAM budget.
 
 ### Per-task budget
 - **≤100 turns per task** (Terminal-Bench default)
@@ -225,7 +227,7 @@ If your reproduced score is close to what you reported, it stands. Significant d
 | Submission card fully filled out | Yes/No |
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
 | Open-weight models only (no closed API calls) | Yes/No |
-| Fits within single GPU ≤96 GB VRAM | Yes/No |
+| Fits within single GPU ≤48 GB VRAM | Yes/No |
 | Public GitHub repo with tagged commit | Yes/No |
 
 ---

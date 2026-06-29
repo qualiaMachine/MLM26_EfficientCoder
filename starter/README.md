@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): single GPU ≤96 GB VRAM, open weights only, ≤100 turns and ≤5 min per task, no closed-weight API calls anywhere in your system.
+Constraints that always apply (full rules in the [challenge README](../README.md)): single GPU ≤48 GB VRAM, open weights only, ≤100 turns and ≤5 min per task, no closed-weight API calls anywhere in your system. The suggested anchor model is Qwen2.5-Coder-32B-Instruct at 4-bit AWQ — it fits the budget cleanly and is a good starting point — but you can swap to anything open-weight that fits.
 
 ## Docs
 
