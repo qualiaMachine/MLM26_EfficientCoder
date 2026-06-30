@@ -2,30 +2,15 @@
 
 Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
-**Start:** September 2026 · **Close:** December 2026
-
 ---
 
 ## Overview
 
-Build a coding agent on top of an open-weight model — small, large, or somewhere in between — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor. The leaderboard rewards both raw performance *and* efficiency: a single weighted score that combines Terminal-Bench accuracy, the model's memory footprint, and the agent's token consumption per task.
+The last two years have transformed how software gets built. Frontier coding assistants — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real collaborators. They are remarkable, but they are also closed, expensive, and untrusting. Every keystroke flows to a third party, costs accumulate per task, and entire categories of users — researchers working with sensitive data, organizations on tight budgets, teams in regulated environments — are locked out of the best tooling their field has ever produced.
 
-The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — every time?
+Open-weight models have closed enough of the raw-quality gap that a credible coding assistant can now plausibly run locally. *Plausibly*, but not yet *well*. MLM26 is a semester-long collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), the industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. The leaderboard rewards both raw performance and efficiency, so a 14B model wrapped in a thoughtful agent loop can credibly beat a 480B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
-This is a **collaborative challenge, not a prize competition.** There are no cash prizes and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit borrowed ideas in your writeup; explain what you added.
-
-**UW–Madison participants** get weekly sprints, office hours, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
-
----
-
-## Schedule
-
-| Date | Milestone |
-|---|---|
-| September 2026 | Kickoff |
-| December 2026 | Final submission |
-
-UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
+This is a collaborative challenge, not a prize competition. There are no cash prizes and no reason to hoard ideas — share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup; explain what you added. The best outcomes happen when everyone's baseline keeps rising. UW–Madison participants get weekly sprints, office hours, and shared GPU access through ML+X; everyone else is welcome to participate remotely with the same starter code, benchmark, and submission pipeline.
 
 ---
 
@@ -33,27 +18,32 @@ UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
 
 ### Background
 
-Frontier coding assistants like Claude Code, Cursor, and Codex are excellent — but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
+A raw language model can read a task description and emit a reasonable command, but it cannot, on its own, solve a multi-step coding problem that spans dozens of shell invocations and recovers from a chain of errors. It loses track of context, repeats failed commands, hallucinates files that do not exist, and does not know when to stop. The distance between "can think about code" and "can autonomously navigate a real engineering problem" is enormous — and bridging it is the central craft of building a coding agent.
+
+That bridge is the **orchestration layer**: the harness that lives around the model and decides what context to keep, how to recover from a failed command, when the task is actually done, and how to chain reasoning, action, and verification into something that works reliably across a hundred turns. It is what separates "an LLM and a shell" from "an agent." There is no consensus yet on what the best architecture looks like — prompting strategies, tool design, planning logic, retrieval, multi-stage pipelines, self-critique, fine-tuning — and the design space is wide open. The bet of this challenge is that *how* you build the agent matters as much as which model you pick, and that careful engineering on a small model can beat thoughtless deployment of a large one.
 
 ### Goal
 
-Build an autonomous coding agent that:
-- Receives a task description (e.g., "find the lost git changes and merge them into master")
-- Reads, explores, plans, and executes bash commands inside a Docker container
-- Gets graded on the container's final state by an automated test suite
-- Runs on an open-weight model picked from the [`MODELS.md`](MODELS.md) list (or a model you've added to that list via PR)
+Build an autonomous coding agent, running entirely on open-weight models, that:
 
-The orchestration code around the model is where the challenge lives — prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning. The model gives you a reasoning engine. Everything you build around it is the part that decides whether the agent actually works. The efficiency tilt in the scoring formula means a 7B or 14B model with a clever loop can credibly beat a 70B with a naive one.
+- **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
+- **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability.
+- **Beats the leaderboard**, which rewards a single weighted score combining Terminal-Bench accuracy, model footprint, and tokens per task.
 
-### What's provided
+Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal ReAct loop — a launchpad, not a solution.
 
-- **Starter code** in [`starter/`](starter/) — a minimal ReAct-style baseline agent (~200 lines) wired into Harbor. Yours to modify and extend.
-- **[Terminal-Bench 2.0](https://tbench.ai)** — 89 public tasks across software engineering, security, data processing, system administration, scientific computing, and more. Each task ships as a Docker image with source code, instructions, and a test suite.
-- **[Harbor](https://www.harborframework.com/)** — the official Terminal-Bench 2.0 harness. Pulls task definitions, spins up containers, runs your agent, grades results, tears everything down.
-- **Setup docs** under [`starter/docs/`](starter/docs/) — Docker, model endpoints, walkthrough, troubleshooting, safety.
-- **RunAI-hosted model endpoints** for UW participants on request.
+### What we provide
 
-All 89 Terminal-Bench tasks are public — the challenge is building an agent that *generalizes*, not memorizing solutions.
+- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
+- **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
+- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be added by PR.
+- **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
+
+### What the challenge is built on
+
+- **[Terminal-Bench 2.0](https://tbench.ai)** is the benchmark we score against — an open, industry-standard collection of 89 tasks spanning software engineering, security, data processing, system administration, and scientific computing. Each task ships with a starting environment, an instruction, and an automated test suite. All 89 are public.
+- **[Harbor](https://www.harborframework.com/)** is the official Terminal-Bench 2.0 harness — the open-source tool that runs tasks, executes your agent against them, and produces the score files your submission is built from. You install Harbor as part of your dev setup; we do not host it. The walkthrough in `starter/docs/` covers installation and a first run.
 
 ### Example tasks
 
