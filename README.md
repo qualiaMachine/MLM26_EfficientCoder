@@ -92,7 +92,7 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 Submissions are ranked on a single weighted score:
 
 ```
-leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)
+leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)^2
 ```
 
 Where:
@@ -100,9 +100,21 @@ Where:
 - **`reported_VRAM_GB`** is the canonical number for your `(model, quantization)` row in [`MODELS.md`](MODELS.md). You don't measure it; you pick a row.
 - **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
 
-Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)` = `0.42 / 7.55` = **0.056**.
+Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)^2` = `0.42 / 7.55^2` = `0.42 / 57.0` = **0.00737**.
 
-The formula rewards leaner agents but raw performance still dominates: a stronger TB score with a giant model can still outrank a weaker one with a tiny model, and a smaller, terser agent can outrank a similar score from a huge MoE that burns tokens. It's an efficiency *tilt*, not a hard equalizer.
+The squared log denominator makes efficiency a real design pressure: a leaner agent can credibly outrank a more capable but more expensive one. Raw performance still matters — a sufficiently strong TB score wins regardless — but it has to genuinely outpace the footprint penalty, not just edge ahead by a sliver.
+
+### Head-to-head comparisons
+
+Each row shows two hypothetical submissions and which one wins under the formula. These are illustrative; real submissions will land all over the place.
+
+| Submission A | Submission B | Winner | Why |
+|---|---|---|---|
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-7B-AWQ (7 GB), TB 0.30, 500k tokens → **0.00700** | **A** | Raw capability gap (0.42 vs 0.30) wins. The 7B is leaner but not lean enough to close 12 points of TB score. |
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-14B-AWQ (12 GB), TB 0.38, 800k tokens → **0.00780** | **B** | A clever 14B agent at 4 points lower raw score wins by being meaningfully leaner. |
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Same Qwen-32B, TB 0.42, **2.5M** tokens → **0.00682** | **A** | Same model, same TB score — the leaner agent loop wins. A verbose loop costs you real ranking. |
+| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | **A** | Even with an 18× footprint penalty, Kimi's 23-point raw advantage carries the day. Raw capability still dominates when the gap is large. |
+| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen3-Coder-30B-A3B via Bedrock (35 GB), TB 0.50, 1M tokens → **0.00878** | **B** | A 15-point raw gap is no longer enough — the smaller MoE wins on efficiency. Footprint matters when the raw scores are within ~30%. |
 
 ### Computing your submission numbers
 
@@ -171,7 +183,7 @@ Structured metadata used for automated ranking:
 | Terminal-Bench score | 0.42 (37/89 tasks passed) |
 | Total tokens (across 89 tasks) | 1,263,800 |
 | Tasks evaluated | All 89 |
-| **Leaderboard score** (auto) | **0.056** = 0.42 / log10(28 × 1,263,800) |
+| **Leaderboard score** (auto) | **0.00737** = 0.42 / log10(28 × 1,263,800)² |
 | GPU used (informational) | RTX A6000 48 GB |
 | Mean wall-clock per task (informational) | 3m 12s |
 
@@ -306,7 +318,7 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 ## Organizer notes (delete before publishing)
 
 - [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B and Qwen3-Coder-480B-A35B too.
-- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)`).
+- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)^2`).
 - [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
 - [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)
