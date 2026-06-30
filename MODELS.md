@@ -125,7 +125,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 
 ### Hosted-only / NRP managed LLM catalog
 
-These models are too large to run on consumer or single-card research hardware. They're available via NRP's managed-LLM endpoint (UW participants via CILogon) and several are mirrored on NVIDIA build / Bedrock.
+These models are too large to run on consumer or single-card research hardware. They're available via NRP's managed-LLM endpoint (UW participants via CILogon) and several are mirrored on NVIDIA build.
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
@@ -134,6 +134,19 @@ These models are too large to run on consumer or single-card research hardware. 
 | `nvidia/GLM-5.2-NVFP4` | NVFP4 | 380 GB | 744B MoE. NRP-hosted. |
 | `Qwen/Qwen3.5-397B-A17B-FP8` | FP8 | 410 GB | NRP-hosted. |
 | `moonshotai/Kimi-K2.7-Code` | Int4 (native) | 510 GB | 1T MoE. NRP-hosted. |
+
+### Bedrock fully-managed (approximate)
+
+AWS Bedrock's fully-managed pay-per-token Qwen3-Coder lineup is eligible, but **the table values below are approximate**. AWS doesn't formally state the serving quantization on its public model cards; the numbers below assume **FP8**, which is the smallest precision Qwen publishes an official checkpoint for and is consistent with Bedrock's pricing on these models. If AWS confirms a different precision (or changes it mid-semester), we'll update the table. Use these for self-reported submissions until then.
+
+| Bedrock model id | Assumed quantization | Reported VRAM | Notes |
+|---|---|---|---|
+| `qwen.qwen3-coder-30b-a3b-instruct-v1:0` | FP8 (assumed) | 35 GB | 30B MoE, ~3B active. ~$0.20/$0.80 per 1M tokens. |
+| `qwen.qwen3-coder-480b-a35b-instruct-v1:0` | FP8 (assumed) | 510 GB | 480B MoE, ~35B active. ~$0.22/$1.80 per 1M tokens. |
+| `qwen.qwen3-coder-next-v1:0` | FP8 (assumed) | TBD | Added Feb 2026. PR with exact size when verified. |
+| `qwen.qwen3-32b-v1:0` | FP8 (assumed) | 38 GB | Dense 32B. |
+
+Other Bedrock-hosted models (DeepSeek-V3.1, Llama 3.x, Mistral) are not added here yet because we haven't verified an assumed-precision number. PRs welcome.
 
 ## License caveats
 
@@ -146,9 +159,8 @@ The rest of the rows above are MIT, Apache-2.0, or model-specific permissive lic
 
 ## What's not eligible
 
-- **Bedrock fully-managed inference** — AWS doesn't publish the GPU class or serving quantization for fully-managed endpoints, so a hosted call to `Qwen3-Coder-30B-A3B-Instruct` on Bedrock can't be mapped to a `MODELS.md` row. Use Bedrock freely for development, but pick a transparent endpoint for your final run.
-- **Bedrock Custom Model Import (CMI)** — CMI does let you bring your own weights, but it's Provisioned-Throughput-only ($21–50/hr per model unit, 1- or 6-month commit), not a serverless pay-per-token option. Not practical for a hackathon team. If you want to use AWS, rent an EC2 or SageMaker GPU instance directly and run vLLM yourself — that's just self-hosting on cloud compute, which is fine.
-- **Generic OpenAI-compatible APIs that don't disclose `(model, quantization)`.** Same problem. If the provider doesn't say what's under the hood, your VRAM number can't be verified.
+- **Bedrock Custom Model Import (CMI)** — does let you bring your own weights, but it's Provisioned-Throughput-only ($21–50/hr per model unit, 1- or 6-month commit), not a serverless pay-per-token option. Not practical for a hackathon team. (Bedrock's *fully-managed* Qwen3-Coder lineup IS eligible — see the "Bedrock fully-managed (approximate)" section above.)
+- **Generic OpenAI-compatible APIs that don't disclose `(model, quantization)`.** If the provider doesn't say what's under the hood, your VRAM number can't be verified.
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
 - **Multi-GPU tensor parallelism within a single model's forward pass** *claimed as part of your footprint*. Picking a row that maps to >48 GB and serving it on a multi-GPU box is fine — your scored footprint is the table value, not your hardware.
 

@@ -228,7 +228,7 @@ You need somewhere to run your agent. Options, roughly easiest → most powerful
 ### Hosted endpoints (no GPU required)
 
 - **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free hosted, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM rate limit across all calls. Good for prompt iteration and limited eval runs; rate cap makes a full 89-task sweep slow but doable.
-- **Amazon Bedrock** — Pay-per-token, hosts several Qwen3-Coder variants, DeepSeek-V3.1, Llama 3.x, MoE models. **Not eligible as your submission's model.** Fully-managed Bedrock endpoints don't publish the serving quantization (no verifiable VRAM number), and Bedrock Custom Model Import is Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commitment — not viable for a hackathon team. Fine for dev-time prompt exploration. If you want to use AWS for your submitted run, rent an EC2 or SageMaker GPU instance and run vLLM yourself. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
+- **Amazon Bedrock** — Pay-per-token, hosts several Qwen3-Coder variants (`30B-A3B`, `480B-A35B`, `Coder-Next`, `Qwen3-32B`). **Eligible with an approximate VRAM mapping**: AWS doesn't formally publish the serving quantization, but the practical assumption is FP8 (the smallest precision Qwen publishes a checkpoint for, consistent with Bedrock's pricing). See [`MODELS.md`](MODELS.md) "Bedrock fully-managed (approximate)" for the assumed numbers. Bedrock **Custom Model Import** is Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commit — not viable for hackathon teams. If you want AWS for self-hosting, rent an EC2 or SageMaker GPU instance and run vLLM yourself. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
 
 ### Free GPU notebooks (dev / iteration)
 
@@ -265,7 +265,7 @@ Be kind, be specific, search before you ask.
 No. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
 
 **Can I use Amazon Bedrock?**
-No, not for the submitted run. Fully-managed Bedrock endpoints don't disclose the serving quantization, and Bedrock Custom Model Import is Provisioned-Throughput-only ($21–50/hr per model unit, 1–6 month commit) — not a serverless pay-per-token option, and not viable for a hackathon team. Bedrock is fine for development. If you want to use AWS for your real run, rent an EC2 or SageMaker GPU instance and self-host with vLLM.
+Yes, with caveats. The **fully-managed pay-per-token Qwen3-Coder lineup** (`30B-A3B`, `480B-A35B`, `Coder-Next`, `Qwen3-32B`) is eligible — see [`MODELS.md`](MODELS.md) "Bedrock fully-managed (approximate)" for the assumed FP8 VRAM numbers. AWS doesn't officially state the serving precision, so our mapping is a best-effort approximation that we'll correct if AWS confirms otherwise. **Bedrock Custom Model Import** is not viable (Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commit). If you want AWS for self-hosting, rent an EC2 or SageMaker GPU instance and self-host with vLLM — that's just cloud compute, fine like any other rented GPU.
 
 **My model isn't in `MODELS.md`. What do I do?**
 Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.
