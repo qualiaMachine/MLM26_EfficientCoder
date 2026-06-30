@@ -141,12 +141,13 @@ AWS Bedrock's fully-managed pay-per-token Qwen3-Coder lineup is eligible, but **
 
 | Bedrock model id | Assumed quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `qwen.qwen3-coder-30b-a3b-instruct-v1:0` | FP8 (assumed) | 35 GB | 30B MoE, ~3B active. ~$0.20/$0.80 per 1M tokens. |
-| `qwen.qwen3-coder-480b-a35b-instruct-v1:0` | FP8 (assumed) | 510 GB | 480B MoE, ~35B active. ~$0.22/$1.80 per 1M tokens. |
+| `qwen.qwen3-coder-30b-a3b-v1:0` | FP8 (assumed) | 35 GB | 30B MoE, ~3B active. Coder-tuned. |
+| `qwen.qwen3-coder-480b-a35b-v1:0` | FP8 (assumed) | 510 GB | 480B MoE, ~35B active. Coder-tuned. ~$0.22/$1.80 per 1M tokens. |
 | `qwen.qwen3-coder-next-v1:0` | FP8 (assumed) | TBD | Added Feb 2026. PR with exact size when verified. |
-| `qwen.qwen3-32b-v1:0` | FP8 (assumed) | 38 GB | Dense 32B. |
+| `qwen.qwen3-235b-a22b-instruct-2507-v1:0` | FP8 (assumed) | 245 GB | 235B MoE, ~22B active. General-purpose instruct, not coder-tuned but competitive on coding benchmarks. |
+| `qwen.qwen3-32b-v1:0` | FP8 (assumed) | 38 GB | Dense 32B. Good for latency-sensitive use. |
 
-Other Bedrock-hosted models (DeepSeek-V3.1, Llama 3.x, Mistral) are not added here yet because we haven't verified an assumed-precision number. PRs welcome.
+Confirmed launch (Sep 2025): the first four Qwen3 models are the original Bedrock launch from [Danilo Poccia's announcement](https://aws.amazon.com/blogs/aws/qwen-models-are-now-available-in-amazon-bedrock/); `qwen3-coder-next` was added in the Feb 2026 expansion. Other Bedrock-hosted open-weight models (DeepSeek-V3.1, Llama 3.x, Mistral) aren't added here yet because we haven't verified an assumed-precision number — PRs welcome.
 
 ## License caveats
 
