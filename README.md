@@ -49,6 +49,8 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 Each Terminal-Bench task ships as a Docker image with a starting environment, a natural-language instruction, and a hidden test suite that grades the container's final state. Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
+**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code, not Harbor's. Concretely, you write a Python class implementing Harbor's `BaseAgent` interface; Harbor invokes your class's `run(instruction, environment)` method when a task starts. Your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass` — and the same string is what your submission card declares. Full integration details are in [`starter/docs/harbor.md`](starter/docs/harbor.md) and Harbor's upstream [Running Terminal-Bench tutorial](https://www.harborframework.com/docs/tutorials/running-terminal-bench).
+
 Three representative tasks, one from each end of the difficulty spectrum and one in between:
 
 - **fix-git** (easy, software-engineering) — The container holds a small git repo in which a recent `git reset --hard` orphaned several commits of feature work. The branch *looks* clean, but the work is gone from `master`. The agent has to recognize that something was lost, use `git reflog` to locate the orphaned commits, recover them, merge them back into `master` cleanly, and resolve any conflicts that appear. Tests whether the agent can read git's terminal output, recognize a non-obvious failure state, and recall less-common git subcommands.
@@ -75,13 +77,29 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
-**Safety.** Terminal-Bench already runs each task in a fresh, throwaway Docker container with no host access. Don't undo it — don't mount your home directory, don't bake real credentials into the container, don't punch holes in the network allowlist beyond your model endpoint. Full safety guidance: [`starter/docs/safety.md`](starter/docs/safety.md).
-
 ### Contact
 
 Chris Endemann (endemann@wisc.edu) — ML+X, UW–Madison.
 
 Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
+
+---
+
+## Agent safety
+
+**Terminal-Bench's sandbox does the heavy lifting.** Every task runs in a fresh Docker container with no host access, destroyed afterward. Inside `harbor run`, your agent can't hurt you. Don't undo that:
+
+- Don't mount your home directory, SSH keys, or `~/.gitconfig` into containers.
+- Don't bake real credentials into images or `.env` files you commit. Use throwaway keys.
+- `.env` is gitignored in the starter — keep it that way.
+
+**The danger zone is your own dev loop.** When you test agent code *outside* Harbor (e.g., pointing your loop at a local shell "just to see"), it has whatever access you have:
+
+- Develop in a scratch directory, never your home directory or a repo you care about.
+- Never give a dev agent access to directories containing `.git` remotes, credentials, or anything you can't lose.
+- Remember the classics: `git clean -fdx`, `docker system prune`, `find ... -exec rm`, `>` truncation. An agent will eventually try one.
+
+**If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
 
 ---
 
