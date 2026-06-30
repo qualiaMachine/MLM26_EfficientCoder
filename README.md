@@ -47,13 +47,17 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 ### Example tasks
 
-Terminal-Bench tasks span easy → hard across categories. A few representative examples:
+Each Terminal-Bench task ships as a Docker image with a starting environment, a natural-language instruction, and a hidden test suite that grades the container's final state. Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
-- **fix-git** (easy, software-engineering) — recover lost git changes via `git reflog` and merge them into master.
-- **build-cython-ext** (medium, debugging) — build a Cython extension with NumPy compatibility.
-- **configure-webserver** (hard, system-administration) — configure a git-triggered webserver.
+Three representative tasks, one from each end of the difficulty spectrum and one in between:
 
-Browse all 89 with filters at [tbench.ai](https://www.tbench.ai/).
+- **fix-git** (easy, software-engineering) — The container holds a small git repo in which a recent `git reset --hard` orphaned several commits of feature work. The branch *looks* clean, but the work is gone from `master`. The agent has to recognize that something was lost, use `git reflog` to locate the orphaned commits, recover them, merge them back into `master` cleanly, and resolve any conflicts that appear. Tests whether the agent can read git's terminal output, recognize a non-obvious failure state, and recall less-common git subcommands.
+
+- **build-cython-ext** (medium, debugging) — A Cython extension that no longer compiles because the project's NumPy version moved forward and the underlying C API changed. The agent has to read the compiler error, trace it to the deprecated NumPy symbols in the `.pyx` source, patch either the source or the build configuration, and produce a working compiled extension that the test suite can import. Tests cross-language debugging, build-toolchain reasoning, and the discipline to re-run after each fix instead of guessing twice.
+
+- **configure-webserver** (hard, system-administration) — A bare Linux container that needs to be turned into a self-deploying web server: when commits land in a designated local git repo, the served site should update automatically. The agent has to choose a server (nginx, lighttpd, caddy — its call), wire up a `post-receive` hook or equivalent, ensure the service starts on boot, and prove the end-to-end loop with a test commit. Tests multi-component system design and the kind of "no single right answer" judgment that fewer benchmarks capture.
+
+Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
