@@ -8,7 +8,7 @@ Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by 
 
 ## Overview
 
-Build a coding agent that runs entirely on open-weight models inside a single GPU (≤48 GB VRAM) and measure it on [Terminal-Bench 2.0](https://tbench.ai) — the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor.
+Build a coding agent on top of an open-weight model — small, large, or somewhere in between — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor. The leaderboard rewards both raw performance *and* efficiency: a single weighted score that combines Terminal-Bench accuracy, the model's memory footprint, and the agent's token consumption per task.
 
 The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — every time?
 
@@ -41,9 +41,9 @@ Build an autonomous coding agent that:
 - Receives a task description (e.g., "find the lost git changes and merge them into master")
 - Reads, explores, plans, and executes bash commands inside a Docker container
 - Gets graded on the container's final state by an automated test suite
-- Runs on open-weight models only, within the hardware budget
+- Runs on an open-weight model picked from the [`MODELS.md`](MODELS.md) list (or a model you've added to that list via PR)
 
-The orchestration code around the model is where the challenge lives — prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning. The model gives you a reasoning engine. Everything you build around it is the part that decides whether the agent actually works.
+The orchestration code around the model is where the challenge lives — prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning. The model gives you a reasoning engine. Everything you build around it is the part that decides whether the agent actually works. The efficiency tilt in the scoring formula means a 7B or 14B model with a clever loop can credibly beat a 70B with a naive one.
 
 ### What's provided
 
@@ -67,21 +67,18 @@ Browse all 89 with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Hardware (binding):**
-- **Single GPU with ≤48 GB VRAM.** Sized to fit Qwen2.5-Coder-32B at 4-bit AWQ comfortably (weights + KV cache + activations). The 48 GB cap exists so anyone with a single 48 GB GPU (or a 48 GB slice of a larger card) can compete locally — including folks outside UW without cluster access.
-- **No multi-GPU agents.** Tensor parallelism across two GPUs disqualifies.
-- **Open weights only.** No closed-weight API calls anywhere in your system, including "just the planner."
-- **Quantization allowed** (fp16, int8, int4, AWQ, GGUF) — we only care that it fits.
-- Verified at finale on reference hardware (48 GB GPU, or a 48 GB slice of a larger card).
+**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Open a PR to add any open-weight model you want to use that isn't already listed; we merge fast.
+
+**What's not eligible:**
+- **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
+- **Opaque hosted providers** (Amazon Bedrock, generic chat APIs) where you can't pin the exact `(model, quantization)` to a `MODELS.md` row. Fine for development; can't be your submission's model.
+- **Multi-GPU tensor parallelism within a single forward pass.** Serving a model that maps to >48 GB on a multi-GPU machine is fine — your scored footprint is the table value, not your hardware.
 
 **Per-task budget:**
 - ≤100 turns per task (Terminal-Bench default)
-- ≤5 minutes wall-clock per task on reference hardware
 - No human-in-the-loop at evaluation time
 
-**Models — suggested default:** **Qwen2.5-Coder-32B-Instruct at 4-bit AWQ.** Fits the 48 GB budget cleanly, has a well-tested AWQ checkpoint on Hugging Face, serves cleanly under vLLM, and gives every team a strong common baseline. You are **not** required to use it — Qwen3-Coder, DeepSeek-Coder V2, GLM-4.5, Llama 3.x, or any open-weight model that fits is fair game. See [`starter/docs/byo_model.md`](starter/docs/byo_model.md) for endpoint configuration (Ollama, vLLM, hosted open-weight APIs).
-
-**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. Judges read your code to verify.
+**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
 **Safety.** Terminal-Bench already runs each task in a fresh, throwaway Docker container with no host access. Don't undo it — don't mount your home directory, don't bake real credentials into the container, don't punch holes in the network allowlist beyond your model endpoint. Full safety guidance: [`starter/docs/safety.md`](starter/docs/safety.md).
 
@@ -95,39 +92,65 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 
 ## Evaluation
 
-Two-stage to scale across many submissions without drowning in manual review.
+### Scoring
 
-### Stage 1: Automated ranking (all submissions)
+Submissions are ranked on a single weighted score:
 
-Every team submits a **submission card** with structured metadata: model used, parameter count, quantization, GPU, peak VRAM, Terminal-Bench score, and repo link. Submissions are ranked by self-reported score. No human review at this stage.
+```
+leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)
+```
 
-### Stage 2: Human review (top ~10)
+Where:
+- **`TB_score`** is your mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`).
+- **`reported_VRAM_GB`** is the canonical number for your `(model, quantization)` row in [`MODELS.md`](MODELS.md). You don't measure it; you pick a row.
+- **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
 
-Judges deep-review the top ~10 submissions by score:
-1. Clone the repo at the tagged commit, run `harbor run` on reference hardware, verify the reported score.
-2. Read the code to check for generalizability — no per-task branching or hardcoded solutions.
-3. Read the writeup and score against the rubric.
+Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)` = `0.42 / 7.55` = **0.056**.
 
-Honest run-to-run variance is fine. Significant discrepancies between reported and reproduced scores disqualify. Cherry-picked or inflated numbers are not tolerated.
+The formula rewards leaner agents but raw performance still dominates: a stronger TB score with a giant model can still outrank a weaker one with a tiny model, and a smaller, terser agent can outrank a similar score from a huge MoE that burns tokens. It's an efficiency *tilt*, not a hard equalizer.
 
-### Rubric (100 points, applied to finalists)
+### Computing your submission numbers
 
-| Criteria | Points | Description |
-|---|---|---|
-| **Terminal-Bench score** | 25 | Raw performance. Verified by judges on reference hardware. |
-| **Generalizability** | 25 | One system prompt, one agent loop. Judges read your code AND test on tasks outside your reported set. Detecting task categories is fine; hardcoding individual solutions is not. |
-| **Engineering depth** | 20 | Multiple approaches tried and analyzed. Deep understanding of *why* your agent fails scores higher than a marginally better number with no insight. |
-| **Reproducibility** | 15 | Clones cleanly, fits the VRAM budget, submission card accurate. |
-| **Clarity & presentation** | 15 | Writeup quality. Can a reader understand what you built, why, and what you learned? |
+After running `harbor run -d terminal-bench@2.0 --agent-import-path agent.agent:BaselineAgent`, Harbor writes one `result.json` per task under `jobs/<job-id>/terminal-bench__<task>/0/result.json`. Extract the three numbers you need with:
+
+```bash
+JOB=jobs/<your-job-id>
+
+# Terminal-Bench score (mean reward)
+find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
+  [.[] | .reward] | add / length
+'
+
+# Total tokens (input + output, summed across all 89 tasks)
+find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
+  [.[] | (.n_input_tokens + .n_output_tokens)] | add
+'
+
+# Tasks evaluated (sanity check: should be 89)
+find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
+```
+
+These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard recomputes `leaderboard_score` from them — you don't need to compute it yourself, but the worked example above is the formula you'd use to sanity-check.
+
+### Reproducibility check (finale)
+
+There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above. At the finale, organizers re-run the top ~10 submissions to confirm the result:
+
+1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
+2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the semester. Significantly lower private-set scores get investigated for task-specific hardcoding.
+3. **Token + model verification** — confirm `total_tokens` matches the submission card and that the running agent is talking to the same model row claimed in the card.
+
+Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or model/quantization mismatches disqualify.
 
 ### Required elements (pass/fail)
 
 | Requirement | Pass/Fail |
 |---|---|
 | Submission card fully filled out | Yes/No |
+| Model + quantization listed in [`MODELS.md`](MODELS.md) | Yes/No |
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
-| Open-weight models only (no closed API calls) | Yes/No |
-| Fits within single GPU ≤48 GB VRAM | Yes/No |
+| Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
+| All 89 Terminal-Bench tasks evaluated | Yes/No |
 | Public GitHub repo with tagged commit | Yes/No |
 
 ---
@@ -147,14 +170,15 @@ Structured metadata used for automated ranking:
 | Team name | Terminal Velocity |
 | GitHub repo URL | github.com/team/agent |
 | Commit tag | `v1.0-submission` |
-| Model(s) used | Qwen2.5-Coder 32B (AWQ 4-bit) |
-| Total parameters | 32B |
-| Quantization | AWQ int4 |
-| GPU used | RTX A6000 (48 GB) |
-| Peak VRAM usage | 38 GB |
+| Model (from `MODELS.md`) | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` |
+| Quantization (from `MODELS.md`) | AWQ 4-bit |
+| Reported VRAM (from `MODELS.md`) | 28 GB |
 | Terminal-Bench score | 0.42 (37/89 tasks passed) |
+| Total tokens (across 89 tasks) | 1,263,800 |
 | Tasks evaluated | All 89 |
-| Mean wall-clock per task | 3m 12s |
+| **Leaderboard score** (auto) | **0.056** = 0.42 / log10(28 × 1,263,800) |
+| GPU used (informational) | RTX A6000 48 GB |
+| Mean wall-clock per task (informational) | 3m 12s |
 
 ### Part 2: Full submission (attached to your Kaggle Writeup)
 
@@ -164,13 +188,9 @@ Structured metadata used for automated ranking:
 
 ---
 
-## Tracks and awards
+## Awards
 
-**Track A: Local Agent (main track).** Best general-purpose local coding agent under the hardware constraints. Open to everyone.
-
-**Track B: Analysis & Insight (optional).** For teams that want to focus on understanding rather than engineering — failure taxonomies, scaling laws, prompt sensitivity studies, model comparisons. Scored primarily on engineering depth and clarity rather than raw Terminal-Bench score.
-
-**UW–Madison local awards.** UW participants are eligible for additional recognition based on in-person engagement. Details at kickoff.
+Top of the leaderboard wins. **UW–Madison local awards** — UW participants are eligible for additional recognition based on in-person engagement. Details at kickoff.
 
 ---
 
@@ -201,6 +221,32 @@ Full instructions:
 
 ---
 
+## Resources
+
+You need somewhere to run your agent. Options, roughly easiest → most powerful:
+
+### Hosted endpoints (no GPU required)
+
+- **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free hosted, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM rate limit across all calls. Good for prompt iteration and limited eval runs; rate cap makes a full 89-task sweep slow but doable.
+- **Amazon Bedrock** — Pay-per-token, hosts several Qwen3-Coder variants, DeepSeek-V3.1, Llama 3.x, MoE models. **Fully-managed Bedrock endpoints are not eligible** as your submission's model — AWS doesn't publish the serving quantization, so the VRAM number can't be verified. **Bedrock Custom Model Import (CMI) is eligible**: upload an AWQ/Int4 checkpoint that already exists in `MODELS.md`, Bedrock just serves it, your scored footprint is the checkpoint's. CMI is GA in us-east-1, us-west-2, eu-central-1. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
+
+### Free GPU notebooks (dev / iteration)
+
+- **Kaggle Notebooks** ([kaggle.com/docs/notebooks](https://www.kaggle.com/docs/notebooks)) — Available to Community Hackathon participants. Free tier: T4 ×2 (32 GB total VRAM), P100 16 GB, or TPU v3-8; 30 hr/week GPU quota; 12 hr session cap; ~29 GB host RAM; 20-min idle timeout. The 32 GB dual-T4 setup can host Qwen2.5-Coder-32B-AWQ via vLLM `--tensor-parallel-size 2` — workable but PCIe-only comms make inference materially slower than a single 48 GB card.
+- **Google Colab (free tier)** ([colab.research.google.com](https://colab.research.google.com/)) — Single T4 16 GB, ~13 GB host RAM, ~12 hr sessions with 90-min idle disconnect, ~15-30 GPU-hr/week dynamic quota. A 32B model does not fit on a single T4; use this for prompt engineering with smaller models (≤14B AWQ) only. Colab Pro+ has A100 access for paid users.
+
+### Local hardware
+
+Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The suggested anchor (`Qwen2.5-Coder-32B-Instruct-AWQ`, 28 GB) runs comfortably on an RTX A6000 48 GB, L40S 48 GB, RTX Pro 6000 96 GB (or half-slice thereof), or any 32 GB+ card with reduced context. See [`starter/docs/byo_model.md`](starter/docs/byo_model.md) for Ollama / vLLM setup.
+
+### UW–Madison participants (additional)
+
+- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are listed in [`MODELS.md`](MODELS.md) or PR-addable. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
+- **UW-hosted Qwen-Coder endpoint** — A shared Qwen-Coder deployment for MLM26 participants is available through ML+X. Request access via the kickoff form.
+- **CHTC (Center for High Throughput Computing)** ([chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/)) — Free shared campus GPU pool, good for batch sweeps and long-running fine-tunes.
+
+---
+
 ## Communication
 
 - **Kaggle Discussion tab** — async questions, public discussion
@@ -216,31 +262,37 @@ Be kind, be specific, search before you ask.
 ## FAQ
 
 **Can I use a closed-weight model just for planning, with a local model for execution?**
-No. The whole challenge is local. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
+No. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
+
+**Can I use Amazon Bedrock?**
+Two answers. For **fully-managed** Bedrock models (`Qwen3-Coder-30B-A3B`, DeepSeek-V3.1, etc.), no — AWS doesn't disclose the serving quantization, so VRAM can't be pinned. Fine for development. For **Bedrock Custom Model Import (CMI)**, yes — you upload a known checkpoint that's already in `MODELS.md`, Bedrock just serves it, the scored footprint is the checkpoint's. Use CMI if you want to leverage Bedrock infrastructure for your submitted run.
+
+**My model isn't in `MODELS.md`. What do I do?**
+Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.
 
 **Can I fine-tune a model for this?**
-Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter.
+Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to PR your fine-tuned checkpoint into `MODELS.md` so the leaderboard can score it.
 
 **Can I use multiple models (e.g., a small planner + a larger coder)?**
-Yes, as long as the total loaded footprint fits the VRAM budget at inference time.
+Yes, but the submission card carries a single model row. If you use two models, your scored VRAM and token count must reflect the larger / costlier one (or sum), and you should be ready to defend that on the reproducibility check.
 
 **Can I submit my agent to the public Terminal-Bench leaderboard?**
 Yes, please. Independent of MLM. It's a real leaderboard and a real artifact.
 
 **Do I need to use the entire Terminal-Bench task set during the semester?**
-No — work with whatever subset is useful for debugging. For the finale, you don't pick — we score against a fixed held-out subset.
+No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top ~10 on a held-out subset to catch task-specific hardcoding.
 
 **My team is just me. / My team is four people.**
 Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-Start on CPU with a small model (qwen2.5-coder:3b). UW participants can request RunAI-hosted endpoints. Cloud providers (Lambda, RunPod, Vast.ai) work too. Whatever you *submit* must fit the 48 GB single-GPU budget at eval time.
+See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks both work without local hardware. UW participants can hit the NRP managed-LLM endpoint or request RunAI/UW endpoints. Whatever model you finally submit must be a row in `MODELS.md`.
 
 **I'm not at UW.**
-Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, or RunAI endpoints, but you're eligible for all main track awards.
+Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the semester?**
-No. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card with their score — that's the ranking. Judges then deep-review the top ~10. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top ~10 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
@@ -258,7 +310,10 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 
 ## Organizer notes (delete before publishing)
 
-- [ ] Confirm finale reference hardware spec (48 GB target)
+- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B and Qwen3-Coder-480B-A35B too.
+- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)`).
+- [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
+- [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Recruit judges (Terminal-Bench contributors, agent researchers)
@@ -266,3 +321,4 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 - [ ] Coordinate with Kaggle on Community Hackathon setup
 - [ ] Final pass on safety doc with UW research-IT
 - [ ] Create Google Form for final submissions
+- [ ] PR review SLA for `MODELS.md` additions during the semester (target: same-day)
