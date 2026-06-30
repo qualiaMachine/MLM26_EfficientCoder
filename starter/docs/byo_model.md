@@ -52,7 +52,7 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but whatever you submit must run on a single GPU ≤48 GB VRAM with open weights, and closed-weight models (GPT, Claude, Gemini) are out of scope everywhere in your system — including "just the planner." The suggested anchor is Qwen2.5-Coder-32B-Instruct AWQ 4-bit, which fits the budget with room for context and batching.
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) so the leaderboard can compute its VRAM-weighted score. Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed Qwen3-Coder lineup IS eligible (with approximate FP8 VRAM mapping in `MODELS.md`); Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB reported VRAM).
 
 ## RunAI (UW participants)
 
