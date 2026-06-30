@@ -77,13 +77,29 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
-**Safety.** Terminal-Bench already runs each task in a fresh, throwaway Docker container with no host access. Don't undo it — don't mount your home directory, don't bake real credentials into the container, don't punch holes in the network allowlist beyond your model endpoint. Full safety guidance: [`starter/docs/safety.md`](starter/docs/safety.md).
-
 ### Contact
 
 Chris Endemann (endemann@wisc.edu) — ML+X, UW–Madison.
 
 Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
+
+---
+
+## Agent safety
+
+**Terminal-Bench's sandbox does the heavy lifting.** Every task runs in a fresh Docker container with no host access, destroyed afterward. Inside `harbor run`, your agent can't hurt you. Don't undo that:
+
+- Don't mount your home directory, SSH keys, or `~/.gitconfig` into containers.
+- Don't bake real credentials into images or `.env` files you commit. Use throwaway keys.
+- `.env` is gitignored in the starter — keep it that way.
+
+**The danger zone is your own dev loop.** When you test agent code *outside* Harbor (e.g., pointing your loop at a local shell "just to see"), it has whatever access you have:
+
+- Develop in a scratch directory, never your home directory or a repo you care about.
+- Never give a dev agent access to directories containing `.git` remotes, credentials, or anything you can't lose.
+- Remember the classics: `git clean -fdx`, `docker system prune`, `find ... -exec rm`, `>` truncation. An agent will eventually try one.
+
+**If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
 
 ---
 
