@@ -14,7 +14,7 @@ The model is only half the story. A raw LLM can't reliably solve multi-step codi
 
 This is a **collaborative challenge, not a prize competition.** There are no cash prizes and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit borrowed ideas in your writeup; explain what you added.
 
-**UW–Madison participants** get weekly sprints, office hours, mid-semester presentations, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
+**UW–Madison participants** get weekly sprints, office hours, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
 
 ---
 
@@ -22,11 +22,10 @@ This is a **collaborative challenge, not a prize competition.** There are no cas
 
 | Date | Milestone |
 |---|---|
-| September 2026 | **Kickoff.** Team formation, Docker + Harbor setup workshop, starter code walkthrough. |
-| Mid-October 2026 | **Mid-semester presentation.** 5-min team presentation: approach, progress, learnings. |
-| December 2026 | **Final submission.** Writeup, code, and notebook due. Live scoring and awards event. |
+| September 2026 | Kickoff |
+| December 2026 | Final submission |
 
-How you manage the weeks between is up to your team. UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
+UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
 
 ---
 
@@ -171,7 +170,7 @@ Structured metadata used for automated ranking:
 
 **Track B: Analysis & Insight (optional).** For teams that want to focus on understanding rather than engineering — failure taxonomies, scaling laws, prompt sensitivity studies, model comparisons. Scored primarily on engineering depth and clarity rather than raw Terminal-Bench score.
 
-**UW–Madison local awards.** UW participants are eligible for additional recognition based on mid-semester presentations and in-person engagement. Details at kickoff.
+**UW–Madison local awards.** UW participants are eligible for additional recognition based on in-person engagement. Details at kickoff.
 
 ---
 
