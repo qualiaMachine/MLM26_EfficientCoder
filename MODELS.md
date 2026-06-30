@@ -151,22 +151,10 @@ AWS Bedrock's fully-managed pay-per-token Qwen3-Coder lineup is eligible, but **
 
 Confirmed launch (Sep 2025): the first four Qwen3 models are the original Bedrock launch from [Danilo Poccia's announcement](https://aws.amazon.com/blogs/aws/qwen-models-are-now-available-in-amazon-bedrock/); `qwen3-coder-next` was added in the Feb 2026 expansion. Other Bedrock-hosted open-weight models (DeepSeek-V3.1, Llama 3.x, Mistral) aren't added here yet because we haven't verified an assumed-precision number — post in Kaggle Discussion if you have one you'd like added.
 
-## License caveats
-
-A couple of widely-discussed coder models have license terms that block competition use:
-
-- **Codestral 22B / Codestral Mamba** — Mistral's non-production license. Not eligible.
-- Anything with a "research only" or "non-commercial" tag that doesn't permit benchmark publication. Mention any license concerns when you request the model in Discussion.
-
-The rest of the rows above are MIT, Apache-2.0, or model-specific permissive licenses that permit benchmark submission.
-
 ## What's not eligible
 
-- **Bedrock Custom Model Import (CMI)** — does let you bring your own weights, but it's Provisioned-Throughput-only ($21–50/hr per model unit, 1- or 6-month commit), not a serverless pay-per-token option. Not practical for a hackathon team. (Bedrock's *fully-managed* Qwen3-Coder lineup IS eligible — see the "Bedrock fully-managed (approximate)" section above.)
 - **Generic OpenAI-compatible APIs that don't disclose `(model, quantization)`.** If the provider doesn't say what's under the hood, your VRAM number can't be verified.
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-
-**A note on multi-GPU serving:** how you actually run the model — single GPU, multiple GPUs with tensor parallelism, a sharded MoE deployment, a multi-node cluster — doesn't affect your score. The scored footprint is the table value for your `(model, quantization)` row, full stop. That's why Kimi-K2.7-Code at 510 GB and Qwen-Coder-7B-AWQ at 7 GB can both appear in the same table: the leaderboard just cares what was loaded, not where.
 
 ## Requesting an addition
 
