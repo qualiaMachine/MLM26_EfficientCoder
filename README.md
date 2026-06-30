@@ -2,30 +2,15 @@
 
 Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
-**Start:** September 2026 · **Close:** December 2026
-
 ---
 
 ## Overview
 
-Build a coding agent on top of an open-weight model — small, large, or somewhere in between — and measure it on [Terminal-Bench 2.0](https://tbench.ai), the same benchmark used to evaluate Claude Code, Codex, Devin, and Cursor. The leaderboard rewards both raw performance *and* efficiency: a single weighted score that combines Terminal-Bench accuracy, the model's memory footprint, and the agent's token consumption per task.
+The last two years have transformed how software gets built. Frontier coding assistants — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real collaborators. They are remarkable, but they are also closed, expensive, and untrusting. Every keystroke flows to a third party, costs accumulate per task, and entire categories of users — researchers working with sensitive data, organizations on tight budgets, teams in regulated environments — are locked out of the best tooling their field has ever produced.
 
-The model is only half the story. A raw LLM can't reliably solve multi-step coding tasks on its own — it loses track of context, repeats failed commands, hallucinates file contents, and doesn't know when to stop. The real challenge is the **orchestration code around the model**: How do you manage a conversation that spans dozens of turns without blowing the context window? How do you detect when the agent is stuck in a loop? How do you chain reasoning, action, and verification into a pipeline that produces reliable results — every time?
+Open-weight models have closed enough of the raw-quality gap that a credible coding assistant can now plausibly run locally. *Plausibly*, but not yet *well*. MLM26 is a semester-long collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), the industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. The leaderboard rewards both raw performance and efficiency, so a 14B model wrapped in a thoughtful agent loop can credibly beat a 480B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
-This is a **collaborative challenge, not a prize competition.** There are no cash prizes and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit borrowed ideas in your writeup; explain what you added.
-
-**UW–Madison participants** get weekly sprints, office hours, and RunAI GPU access. Everyone else is welcome to participate remotely — the starter code, Terminal-Bench, and submission pipeline are fully open.
-
----
-
-## Schedule
-
-| Date | Milestone |
-|---|---|
-| September 2026 | Kickoff |
-| December 2026 | Final submission |
-
-UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
+This is a collaborative challenge, not a prize competition. There are no cash prizes and no reason to hoard ideas — share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup; explain what you added. The best outcomes happen when everyone's baseline keeps rising. UW–Madison participants get weekly sprints, office hours, and shared GPU access through ML+X; everyone else is welcome to participate remotely with the same starter code, benchmark, and submission pipeline.
 
 ---
 
@@ -33,37 +18,46 @@ UW participants: weekly sprints Wednesdays 4:30–6:30 pm CT (hybrid).
 
 ### Background
 
-Frontier coding assistants like Claude Code, Cursor, and Codex are excellent — but they send your code to a third party, cost real money per task, and raise security concerns when data can't leave your environment. A growing class of users — researchers with sensitive data, organizations on tight budgets — needs coding agents that run locally. Open-weight models have closed enough of the gap that this is plausible. Your job: make it actually good.
+A raw language model can read a task description and emit a reasonable command, but it cannot, on its own, solve a multi-step coding problem that spans dozens of shell invocations and recovers from a chain of errors. It loses track of context, repeats failed commands, hallucinates files that do not exist, and does not know when to stop. The distance between "can think about code" and "can autonomously navigate a real engineering problem" is enormous — and bridging it is the central craft of building a coding agent.
+
+That bridge is the **orchestration layer**: the harness that lives around the model and decides what context to keep, how to recover from a failed command, when the task is actually done, and how to chain reasoning, action, and verification into something that works reliably across a hundred turns. It is what separates "an LLM and a shell" from "an agent." There is no consensus yet on what the best architecture looks like — prompting strategies, tool design, planning logic, retrieval, multi-stage pipelines, self-critique, fine-tuning — and the design space is wide open. The bet of this challenge is that *how* you build the agent matters as much as which model you pick, and that careful engineering on a small model can beat thoughtless deployment of a large one.
 
 ### Goal
 
-Build an autonomous coding agent that:
-- Receives a task description (e.g., "find the lost git changes and merge them into master")
-- Reads, explores, plans, and executes bash commands inside a Docker container
-- Gets graded on the container's final state by an automated test suite
-- Runs on an open-weight model picked from the [`MODELS.md`](MODELS.md) list (or a model you've added to that list via PR)
+Build an autonomous coding agent, running entirely on open-weight models, that:
 
-The orchestration code around the model is where the challenge lives — prompt engineering, tool design, planning, retrieval, context management, error recovery, self-verification, multi-stage pipelines, fine-tuning. The model gives you a reasoning engine. Everything you build around it is the part that decides whether the agent actually works. The efficiency tilt in the scoring formula means a 7B or 14B model with a clever loop can credibly beat a 70B with a naive one.
+- **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
+- **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability.
+- **Beats the leaderboard**, which rewards a single weighted score combining Terminal-Bench accuracy, model footprint, and tokens per task.
 
-### What's provided
+Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal ReAct loop — a launchpad, not a solution.
 
-- **Starter code** in [`starter/`](starter/) — a minimal ReAct-style baseline agent (~200 lines) wired into Harbor. Yours to modify and extend.
-- **[Terminal-Bench 2.0](https://tbench.ai)** — 89 public tasks across software engineering, security, data processing, system administration, scientific computing, and more. Each task ships as a Docker image with source code, instructions, and a test suite.
-- **[Harbor](https://www.harborframework.com/)** — the official Terminal-Bench 2.0 harness. Pulls task definitions, spins up containers, runs your agent, grades results, tears everything down.
-- **Setup docs** under [`starter/docs/`](starter/docs/) — Docker, model endpoints, walkthrough, troubleshooting, safety.
-- **RunAI-hosted model endpoints** for UW participants on request.
+### What we provide
 
-All 89 Terminal-Bench tasks are public — the challenge is building an agent that *generalizes*, not memorizing solutions.
+- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
+- **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
+- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be requested via the Kaggle Discussion tab.
+- **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
+
+### What the challenge is built on
+
+- **[Terminal-Bench 2.0](https://tbench.ai)** is the benchmark we score against — an open, industry-standard collection of 89 tasks spanning software engineering, security, data processing, system administration, and scientific computing. Each task ships with a starting environment, an instruction, and an automated test suite. All 89 are public.
+- **[Harbor](https://www.harborframework.com/)** is the official Terminal-Bench 2.0 harness — the open-source tool that runs tasks, executes your agent against them, and produces the score files your submission is built from. You install Harbor as part of your dev setup; we do not host it. The walkthrough in `starter/docs/` covers installation and a first run.
 
 ### Example tasks
 
-Terminal-Bench tasks span easy → hard across categories. A few representative examples:
+Each Terminal-Bench task ships as a Docker image with a starting environment, a natural-language instruction, and a hidden test suite that grades the container's final state. Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
-- **fix-git** (easy, software-engineering) — recover lost git changes via `git reflog` and merge them into master.
-- **build-cython-ext** (medium, debugging) — build a Cython extension with NumPy compatibility.
-- **configure-webserver** (hard, system-administration) — configure a git-triggered webserver.
+Three representative tasks, one from each end of the difficulty spectrum and one in between:
 
-Browse all 89 with filters at [tbench.ai](https://www.tbench.ai/).
+- **fix-git** (easy, software-engineering) — The container holds a small git repo in which a recent `git reset --hard` orphaned several commits of feature work. The branch *looks* clean, but the work is gone from `master`. The agent has to recognize that something was lost, use `git reflog` to locate the orphaned commits, recover them, merge them back into `master` cleanly, and resolve any conflicts that appear. Tests whether the agent can read git's terminal output, recognize a non-obvious failure state, and recall less-common git subcommands.
+
+- **build-cython-ext** (medium, debugging) — A Cython extension that no longer compiles because the project's NumPy version moved forward and the underlying C API changed. The agent has to read the compiler error, trace it to the deprecated NumPy symbols in the `.pyx` source, patch either the source or the build configuration, and produce a working compiled extension that the test suite can import. Tests cross-language debugging, build-toolchain reasoning, and the discipline to re-run after each fix instead of guessing twice.
+
+- **configure-webserver** (hard, system-administration) — A bare Linux container that needs to be turned into a self-deploying web server: when commits land in a designated local git repo, the served site should update automatically. The agent has to choose a server (nginx, lighttpd, caddy — its call), wire up a `post-receive` hook or equivalent, ensure the service starts on boot, and prove the end-to-end loop with a test commit. Tests multi-component system design and the kind of "no single right answer" judgment that fewer benchmarks capture.
+
+Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
@@ -71,12 +65,13 @@ Browse all 89 with filters at [tbench.ai](https://www.tbench.ai/).
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-- **Opaque hosted providers** (Amazon Bedrock, generic chat APIs) where you can't pin the exact `(model, quantization)` to a `MODELS.md` row. Fine for development; can't be your submission's model.
-- **Multi-GPU tensor parallelism within a single forward pass.** Serving a model that maps to >48 GB on a multi-GPU machine is fine — your scored footprint is the table value, not your hardware.
+- **Opaque hosted providers** (Bedrock Custom Model Import, generic chat APIs that don't disclose `(model, quantization)`) where you can't pin the exact row in `MODELS.md`. Fine for development; can't be your submission's model. (Bedrock's *fully-managed* Qwen3-Coder lineup is eligible via the approximate-VRAM mapping in `MODELS.md`.)
+
+**Multi-GPU serving is fine.** How you actually run the model — single GPU, tensor-parallel across many, sharded MoE deployment, multi-node cluster — does not affect your score. The scored footprint is always the table value for your `(model, quantization)` row.
 
 **Per-task budget:**
-- ≤100 turns per task (Terminal-Bench default)
-- No human-in-the-loop at evaluation time
+- **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
+- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop. A finale-time wall-clock cap may apply to keep the reproducibility queue moving — number TBD.
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
@@ -97,7 +92,7 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 Submissions are ranked on a single weighted score:
 
 ```
-leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)
+leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)^2
 ```
 
 Where:
@@ -105,9 +100,21 @@ Where:
 - **`reported_VRAM_GB`** is the canonical number for your `(model, quantization)` row in [`MODELS.md`](MODELS.md). You don't measure it; you pick a row.
 - **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
 
-Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)` = `0.42 / 7.55` = **0.056**.
+Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)^2` = `0.42 / 7.55^2` = `0.42 / 57.0` = **0.00737**.
 
-The formula rewards leaner agents but raw performance still dominates: a stronger TB score with a giant model can still outrank a weaker one with a tiny model, and a smaller, terser agent can outrank a similar score from a huge MoE that burns tokens. It's an efficiency *tilt*, not a hard equalizer.
+The squared log denominator makes efficiency a real design pressure: a leaner agent can credibly outrank a more capable but more expensive one. Raw performance still matters — a sufficiently strong TB score wins regardless — but it has to genuinely outpace the footprint penalty, not just edge ahead by a sliver.
+
+### Head-to-head comparisons
+
+Each row shows two hypothetical submissions and which one wins under the formula. These are illustrative; real submissions will land all over the place.
+
+| Submission A | Submission B | Winner | Why |
+|---|---|---|---|
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-7B-AWQ (7 GB), TB 0.30, 500k tokens → **0.00700** | **A** | Raw capability gap (0.42 vs 0.30) wins. The 7B is leaner but not lean enough to close 12 points of TB score. |
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-14B-AWQ (12 GB), TB 0.38, 800k tokens → **0.00780** | **B** | A clever 14B agent at 4 points lower raw score wins by being meaningfully leaner. |
+| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Same Qwen-32B, TB 0.42, **2.5M** tokens → **0.00682** | **A** | Same model, same TB score — the leaner agent loop wins. A verbose loop costs you real ranking. |
+| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | **A** | Even with an 18× footprint penalty, Kimi's 23-point raw advantage carries the day. Raw capability still dominates when the gap is large. |
+| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen3-Coder-30B-A3B via Bedrock (35 GB), TB 0.50, 1M tokens → **0.00878** | **B** | A 15-point raw gap is no longer enough — the smaller MoE wins on efficiency. Footprint matters when the raw scores are within ~30%. |
 
 ### Computing your submission numbers
 
@@ -176,7 +183,7 @@ Structured metadata used for automated ranking:
 | Terminal-Bench score | 0.42 (37/89 tasks passed) |
 | Total tokens (across 89 tasks) | 1,263,800 |
 | Tasks evaluated | All 89 |
-| **Leaderboard score** (auto) | **0.056** = 0.42 / log10(28 × 1,263,800) |
+| **Leaderboard score** (auto) | **0.00737** = 0.42 / log10(28 × 1,263,800)² |
 | GPU used (informational) | RTX A6000 48 GB |
 | Mean wall-clock per task (informational) | 3m 12s |
 
@@ -241,7 +248,7 @@ Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. Th
 
 ### UW–Madison participants (additional)
 
-- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are listed in [`MODELS.md`](MODELS.md) or PR-addable. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
+- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are already listed in [`MODELS.md`](MODELS.md); anything missing can be requested in the Kaggle Discussion tab. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
 - **UW-hosted Qwen-Coder endpoint** — A shared Qwen-Coder deployment for MLM26 participants is available through ML+X. Request access via the kickoff form.
 - **CHTC (Center for High Throughput Computing)** ([chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/)) — Free shared campus GPU pool, good for batch sweeps and long-running fine-tunes.
 
@@ -271,7 +278,7 @@ Yes, with caveats. The **fully-managed pay-per-token Qwen3-Coder lineup** (`30B-
 Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.
 
 **Can I fine-tune a model for this?**
-Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to PR your fine-tuned checkpoint into `MODELS.md` so the leaderboard can score it.
+Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to request your fine-tuned checkpoint be added to `MODELS.md` (via the Kaggle Discussion tab) so the leaderboard can score it.
 
 **Can I use multiple models (e.g., a small planner + a larger coder)?**
 Yes, but the submission card carries a single model row. If you use two models, your scored VRAM and token count must reflect the larger / costlier one (or sum), and you should be ready to defend that on the reproducibility check.
@@ -311,7 +318,7 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 ## Organizer notes (delete before publishing)
 
 - [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B and Qwen3-Coder-480B-A35B too.
-- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)`).
+- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)^2`).
 - [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
 - [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)

@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): pick a model from [`MODELS.md`](../MODELS.md) (or PR an addition), open weights only, ≤100 turns per task, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score / log10(reported_VRAM × total_tokens)`, so leaner agents are rewarded — but raw Terminal-Bench performance still dominates. Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Constraints that always apply (full rules in the [challenge README](../README.md)): pick a model from [`MODELS.md`](../MODELS.md) (request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score / log10(reported_VRAM × total_tokens)^2`, so footprint and token use both meaningfully bite — a clever small model can outrank a more capable but more expensive one. Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Docs
 
