@@ -2,7 +2,9 @@
 
 The MLM26 leaderboard scores submissions by a function of **Terminal-Bench score**, **reported VRAM**, and **total tokens consumed**. To make the VRAM input verifiable without forcing every team to run nvidia-smi, we publish a canonical table of `(model, quantization)` → reported VRAM. **Submissions must use a model listed here.**
 
-> Want to use a model that isn't listed? Open a pull request adding a row. PRs that include a HuggingFace link, the published quantization, and a quick VRAM justification (weights size + KV at 16k context) merge quickly — usually same-day during the semester. There is no penalty for being first to add a model; the leaderboard formula is the same for everyone.
+> Want to use a model that isn't listed? Post in the Kaggle Discussion tab with the HuggingFace link, the published quantization, and (if you have it) a quick VRAM estimate — organizers will add it to the table, usually within a day or two. There is no penalty for being first to ask; the leaderboard formula is the same for everyone, and we'd rather expand the catalog than gatekeep it.
+
+> A note on VRAM numbers: the values in this table are **approximate but good enough for ranking**. They assume a 16k-token context window, single-batch serving, and the published checkpoint as released — peak VRAM in practice can be a few GB higher or lower depending on your runner and how much context you push. Since the formula uses `log10(VRAM × tokens)`, that noise is small relative to the gaps the leaderboard actually cares about.
 
 ## How "reported VRAM" is computed
 
@@ -42,7 +44,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct-Int4` | Int4 | 18 GB | MoE: 30B total / ~3B active. |
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` | FP8 | 35 GB | |
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | bf16 | 64 GB | |
-| `Qwen/Qwen3-Coder-Next` | bf16 | TBD | Recently released; PR with exact config. |
+| `Qwen/Qwen3-Coder-Next` | bf16 | TBD | Recently released; request via Kaggle Discussion. |
 | `Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8` | FP8 | 500 GB | Hosted-only (NRP, Bedrock-via-CMI). |
 | `Qwen/Qwen3-Coder-480B-A35B-Instruct` | bf16 | ~1000 GB | Hosted-only. |
 
@@ -121,7 +123,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 |---|---|---|---|
 | `THUDM/GLM-4-9B-Chat` | bf16 | 20 GB | |
 | `THUDM/glm-4-32b-0414` | bf16 | 72 GB | |
-| `THUDM/GLM-4.5` | bf16 | TBD | PR with exact size when finalized. |
+| `THUDM/GLM-4.5` | bf16 | TBD | Request via Kaggle Discussion once config is finalized. |
 
 ### Hosted-only / NRP managed LLM catalog
 
@@ -143,18 +145,18 @@ AWS Bedrock's fully-managed pay-per-token Qwen3-Coder lineup is eligible, but **
 |---|---|---|---|
 | `qwen.qwen3-coder-30b-a3b-v1:0` | FP8 (assumed) | 35 GB | 30B MoE, ~3B active. Coder-tuned. |
 | `qwen.qwen3-coder-480b-a35b-v1:0` | FP8 (assumed) | 510 GB | 480B MoE, ~35B active. Coder-tuned. ~$0.22/$1.80 per 1M tokens. |
-| `qwen.qwen3-coder-next-v1:0` | FP8 (assumed) | TBD | Added Feb 2026. PR with exact size when verified. |
+| `qwen.qwen3-coder-next-v1:0` | FP8 (assumed) | TBD | Added Feb 2026. Request via Kaggle Discussion once size is verified. |
 | `qwen.qwen3-235b-a22b-instruct-2507-v1:0` | FP8 (assumed) | 245 GB | 235B MoE, ~22B active. General-purpose instruct, not coder-tuned but competitive on coding benchmarks. |
 | `qwen.qwen3-32b-v1:0` | FP8 (assumed) | 38 GB | Dense 32B. Good for latency-sensitive use. |
 
-Confirmed launch (Sep 2025): the first four Qwen3 models are the original Bedrock launch from [Danilo Poccia's announcement](https://aws.amazon.com/blogs/aws/qwen-models-are-now-available-in-amazon-bedrock/); `qwen3-coder-next` was added in the Feb 2026 expansion. Other Bedrock-hosted open-weight models (DeepSeek-V3.1, Llama 3.x, Mistral) aren't added here yet because we haven't verified an assumed-precision number — PRs welcome.
+Confirmed launch (Sep 2025): the first four Qwen3 models are the original Bedrock launch from [Danilo Poccia's announcement](https://aws.amazon.com/blogs/aws/qwen-models-are-now-available-in-amazon-bedrock/); `qwen3-coder-next` was added in the Feb 2026 expansion. Other Bedrock-hosted open-weight models (DeepSeek-V3.1, Llama 3.x, Mistral) aren't added here yet because we haven't verified an assumed-precision number — post in Kaggle Discussion if you have one you'd like added.
 
 ## License caveats
 
 A couple of widely-discussed coder models have license terms that block competition use:
 
 - **Codestral 22B / Codestral Mamba** — Mistral's non-production license. Not eligible.
-- Anything with a "research only" or "non-commercial" tag that doesn't permit benchmark publication. PR-add only after confirming the license.
+- Anything with a "research only" or "non-commercial" tag that doesn't permit benchmark publication. Mention any license concerns when you request the model in Discussion.
 
 The rest of the rows above are MIT, Apache-2.0, or model-specific permissive licenses that permit benchmark submission.
 
@@ -163,10 +165,13 @@ The rest of the rows above are MIT, Apache-2.0, or model-specific permissive lic
 - **Bedrock Custom Model Import (CMI)** — does let you bring your own weights, but it's Provisioned-Throughput-only ($21–50/hr per model unit, 1- or 6-month commit), not a serverless pay-per-token option. Not practical for a hackathon team. (Bedrock's *fully-managed* Qwen3-Coder lineup IS eligible — see the "Bedrock fully-managed (approximate)" section above.)
 - **Generic OpenAI-compatible APIs that don't disclose `(model, quantization)`.** If the provider doesn't say what's under the hood, your VRAM number can't be verified.
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-- **Multi-GPU tensor parallelism within a single model's forward pass** *claimed as part of your footprint*. Picking a row that maps to >48 GB and serving it on a multi-GPU box is fine — your scored footprint is the table value, not your hardware.
+
+**A note on multi-GPU serving:** how you actually run the model — single GPU, multiple GPUs with tensor parallelism, a sharded MoE deployment, a multi-node cluster — doesn't affect your score. The scored footprint is the table value for your `(model, quantization)` row, full stop. That's why Kimi-K2.7-Code at 510 GB and Qwen-Coder-7B-AWQ at 7 GB can both appear in the same table: the leaderboard just cares what was loaded, not where.
 
 ## Requesting an addition
 
-1. Open a PR editing this file. Add a row with the HuggingFace model id, quantization, reported VRAM, and a one-line note.
-2. In the PR description, show your VRAM math (params × bits / 8 + KV estimate) or link to a model card that publishes the footprint.
-3. We'll merge fast — generally same-day during the semester. Once merged, your model is eligible for any team.
+1. Post in the **Kaggle Discussion tab** with the HuggingFace model id, the quantization you want listed, and a one-line context note (what family, why it's interesting).
+2. If you have a VRAM estimate, include it (params × bits / 8 + a few GB for KV cache at 16k context). If not, organizers will work one out from the model card.
+3. Organizers add the row to this file, usually within a day or two. Once it's listed, your model is eligible for any team to use.
+
+The numbers don't have to be perfect — see the note at the top about "approximate but good enough." We'd rather add a model with a slightly fuzzy estimate than block the catalog from growing.

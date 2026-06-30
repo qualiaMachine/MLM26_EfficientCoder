@@ -65,12 +65,13 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-- **Opaque hosted providers** (Amazon Bedrock, generic chat APIs) where you can't pin the exact `(model, quantization)` to a `MODELS.md` row. Fine for development; can't be your submission's model.
-- **Multi-GPU tensor parallelism within a single forward pass.** Serving a model that maps to >48 GB on a multi-GPU machine is fine — your scored footprint is the table value, not your hardware.
+- **Opaque hosted providers** (Bedrock Custom Model Import, generic chat APIs that don't disclose `(model, quantization)`) where you can't pin the exact row in `MODELS.md`. Fine for development; can't be your submission's model. (Bedrock's *fully-managed* Qwen3-Coder lineup is eligible via the approximate-VRAM mapping in `MODELS.md`.)
+
+**Multi-GPU serving is fine.** How you actually run the model — single GPU, tensor-parallel across many, sharded MoE deployment, multi-node cluster — does not affect your score. The scored footprint is always the table value for your `(model, quantization)` row.
 
 **Per-task budget:**
-- ≤100 turns per task (Terminal-Bench default)
-- No human-in-the-loop at evaluation time
+- **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
+- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop. A finale-time wall-clock cap may apply to keep the reproducibility queue moving — number TBD.
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
