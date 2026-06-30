@@ -228,7 +228,7 @@ You need somewhere to run your agent. Options, roughly easiest → most powerful
 ### Hosted endpoints (no GPU required)
 
 - **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free hosted, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM rate limit across all calls. Good for prompt iteration and limited eval runs; rate cap makes a full 89-task sweep slow but doable.
-- **Amazon Bedrock** — Pay-per-token, hosts several Qwen3-Coder variants, DeepSeek-V3.1, Llama 3.x, MoE models. **Fully-managed Bedrock endpoints are not eligible** as your submission's model — AWS doesn't publish the serving quantization, so the VRAM number can't be verified. **Bedrock Custom Model Import (CMI) is eligible**: upload an AWQ/Int4 checkpoint that already exists in `MODELS.md`, Bedrock just serves it, your scored footprint is the checkpoint's. CMI is GA in us-east-1, us-west-2, eu-central-1. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
+- **Amazon Bedrock** — Pay-per-token, hosts several Qwen3-Coder variants, DeepSeek-V3.1, Llama 3.x, MoE models. **Not eligible as your submission's model.** Fully-managed Bedrock endpoints don't publish the serving quantization (no verifiable VRAM number), and Bedrock Custom Model Import is Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commitment — not viable for a hackathon team. Fine for dev-time prompt exploration. If you want to use AWS for your submitted run, rent an EC2 or SageMaker GPU instance and run vLLM yourself. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
 
 ### Free GPU notebooks (dev / iteration)
 
@@ -265,7 +265,7 @@ Be kind, be specific, search before you ask.
 No. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
 
 **Can I use Amazon Bedrock?**
-Two answers. For **fully-managed** Bedrock models (`Qwen3-Coder-30B-A3B`, DeepSeek-V3.1, etc.), no — AWS doesn't disclose the serving quantization, so VRAM can't be pinned. Fine for development. For **Bedrock Custom Model Import (CMI)**, yes — you upload a known checkpoint that's already in `MODELS.md`, Bedrock just serves it, the scored footprint is the checkpoint's. Use CMI if you want to leverage Bedrock infrastructure for your submitted run.
+No, not for the submitted run. Fully-managed Bedrock endpoints don't disclose the serving quantization, and Bedrock Custom Model Import is Provisioned-Throughput-only ($21–50/hr per model unit, 1–6 month commit) — not a serverless pay-per-token option, and not viable for a hackathon team. Bedrock is fine for development. If you want to use AWS for your real run, rent an EC2 or SageMaker GPU instance and self-host with vLLM.
 
 **My model isn't in `MODELS.md`. What do I do?**
 Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.

@@ -52,7 +52,7 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) so the leaderboard can compute its VRAM-weighted score. Closed-weight models (GPT, Claude, Gemini) and opaque-quantization providers (fully-managed Bedrock, generic OpenAI-compatible chat APIs that don't disclose `(model, quantization)`) are out of scope for the submitted run. Bedrock **Custom Model Import** with a checkpoint that's in `MODELS.md` is fine. Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB reported VRAM).
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) so the leaderboard can compute its VRAM-weighted score. Closed-weight models (GPT, Claude, Gemini), opaque-quantization providers (fully-managed Bedrock, generic OpenAI-compatible chat APIs that don't disclose `(model, quantization)`), and Bedrock Custom Model Import (Provisioned-Throughput-only, not viable for a hackathon team) are out of scope for the submitted run. If you want to use AWS, rent an EC2 or SageMaker GPU instance and self-host with vLLM. Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB reported VRAM).
 
 ## RunAI (UW participants)
 

@@ -147,13 +147,10 @@ The rest of the rows above are MIT, Apache-2.0, or model-specific permissive lic
 ## What's not eligible
 
 - **Bedrock fully-managed inference** — AWS doesn't publish the GPU class or serving quantization for fully-managed endpoints, so a hosted call to `Qwen3-Coder-30B-A3B-Instruct` on Bedrock can't be mapped to a `MODELS.md` row. Use Bedrock freely for development, but pick a transparent endpoint for your final run.
+- **Bedrock Custom Model Import (CMI)** — CMI does let you bring your own weights, but it's Provisioned-Throughput-only ($21–50/hr per model unit, 1- or 6-month commit), not a serverless pay-per-token option. Not practical for a hackathon team. If you want to use AWS, rent an EC2 or SageMaker GPU instance directly and run vLLM yourself — that's just self-hosting on cloud compute, which is fine.
 - **Generic OpenAI-compatible APIs that don't disclose `(model, quantization)`.** Same problem. If the provider doesn't say what's under the hood, your VRAM number can't be verified.
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
 - **Multi-GPU tensor parallelism within a single model's forward pass** *claimed as part of your footprint*. Picking a row that maps to >48 GB and serving it on a multi-GPU box is fine — your scored footprint is the table value, not your hardware.
-
-### What IS eligible from Bedrock
-
-**Bedrock Custom Model Import (CMI)** is fine: you upload your own checkpoint (e.g., `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ`) to Bedrock, Bedrock just serves it. Since the weights are a known `MODELS.md` row, the VRAM is verifiable. AWS's choice of inference hardware underneath doesn't matter — the scored footprint is the checkpoint's, not the hardware's. Caveat: CMI has been GA since mid-2025 in us-east-1, us-west-2, and eu-central-1.
 
 ## Requesting an addition
 
