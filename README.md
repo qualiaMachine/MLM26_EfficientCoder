@@ -37,7 +37,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 - **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
 - **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
-- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be added by PR.
+- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be requested via the Kaggle Discussion tab.
 - **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
 
 ### What the challenge is built on
@@ -236,7 +236,7 @@ Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. Th
 
 ### UW–Madison participants (additional)
 
-- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are listed in [`MODELS.md`](MODELS.md) or PR-addable. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
+- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are already listed in [`MODELS.md`](MODELS.md); anything missing can be requested in the Kaggle Discussion tab. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
 - **UW-hosted Qwen-Coder endpoint** — A shared Qwen-Coder deployment for MLM26 participants is available through ML+X. Request access via the kickoff form.
 - **CHTC (Center for High Throughput Computing)** ([chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/)) — Free shared campus GPU pool, good for batch sweeps and long-running fine-tunes.
 
@@ -266,7 +266,7 @@ Yes, with caveats. The **fully-managed pay-per-token Qwen3-Coder lineup** (`30B-
 Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.
 
 **Can I fine-tune a model for this?**
-Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to PR your fine-tuned checkpoint into `MODELS.md` so the leaderboard can score it.
+Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to request your fine-tuned checkpoint be added to `MODELS.md` (via the Kaggle Discussion tab) so the leaderboard can score it.
 
 **Can I use multiple models (e.g., a small planner + a larger coder)?**
 Yes, but the submission card carries a single model row. If you use two models, your scored VRAM and token count must reflect the larger / costlier one (or sum), and you should be ready to defend that on the reproducibility check.
