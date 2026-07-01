@@ -247,27 +247,34 @@ Full instructions:
 
 ## Resources
 
-You need somewhere to run your agent. Options, roughly easiest → most powerful:
+A submitted run has two separate compute needs: **the machine that runs Harbor + your agent** (needs Docker host access), and **the endpoint that serves the model** (any OpenAI-compatible HTTP endpoint). They can be the same machine or different machines. Options for each below.
 
-### Hosted endpoints (no GPU required)
+### Where to run Harbor + your agent (needs Docker)
 
-- **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free hosted, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM rate limit across all calls. Good for prompt iteration and limited eval runs; rate cap makes a full 89-task sweep slow but doable.
-- **Amazon Bedrock** — Pay-per-token, fully-managed serverless access to the Qwen3 lineup: `qwen3-coder-30b-a3b`, `qwen3-coder-480b-a35b`, `qwen3-coder-next`, `qwen3-235b-a22b-instruct-2507`, and `qwen3-32b`. **Eligible with an approximate VRAM mapping**: AWS doesn't formally publish the serving quantization, but the practical assumption is FP8 (the smallest precision Qwen publishes a checkpoint for, consistent with Bedrock's pricing). See [`MODELS.md`](MODELS.md) "Bedrock fully-managed (approximate)" for the assumed numbers. Bedrock **Custom Model Import** is Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commit — not viable for hackathon teams. If you want AWS for self-hosting, rent an EC2 or SageMaker GPU instance and run vLLM yourself. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
+Harbor spins up a fresh Docker container per Terminal-Bench task, so the machine you run `harbor run` from needs host Docker. That rules out Kaggle Notebooks and Google Colab — both explicitly block the privileged access Docker requires. Viable options:
 
-### Free GPU notebooks (dev / iteration)
+- **Your own machine** — laptop, workstation, or lab machine with Docker Desktop (macOS/Windows) or Docker Engine (Linux). Cheapest option. Give Docker at least ~30 GB of disk for task images.
+- **A rented Linux VM** — Lambda Labs, RunPod, Vast.ai, Hetzner, EC2, GCE. Any VM you have root on and can install Docker on. If you're also self-hosting the model on the same box, get one with a GPU that fits your `MODELS.md` row.
+- **UW-Madison RunAI pod** — available to UW participants; comes preconfigured with Docker.
 
-- **Kaggle Notebooks** ([kaggle.com/docs/notebooks](https://www.kaggle.com/docs/notebooks)) — Available to Community Hackathon participants. Free tier: T4 ×2 (32 GB total VRAM), P100 16 GB, or TPU v3-8; 30 hr/week GPU quota; 12 hr session cap; ~29 GB host RAM; 20-min idle timeout. The 32 GB dual-T4 setup can host Qwen2.5-Coder-32B-AWQ via vLLM `--tensor-parallel-size 2` — workable but PCIe-only comms make inference materially slower than a single 48 GB card.
-- **Google Colab (free tier)** ([colab.research.google.com](https://colab.research.google.com/)) — Single T4 16 GB, ~13 GB host RAM, ~12 hr sessions with 90-min idle disconnect, ~15-30 GPU-hr/week dynamic quota. A 32B model does not fit on a single T4; use this for prompt engineering with smaller models (≤14B AWQ) only. Colab Pro+ has A100 access for paid users.
+### Where to serve the model (any OpenAI-compatible endpoint)
 
-### Local hardware
+The model server is independent. Any endpoint your agent code can HTTP-POST to works.
 
-Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The suggested anchor (`Qwen2.5-Coder-32B-Instruct-AWQ`, 28 GB) runs comfortably on an RTX A6000 48 GB, L40S 48 GB, RTX Pro 6000 96 GB (or half-slice thereof), or any 32 GB+ card with reduced context. See [`starter/docs/byo_model.md`](starter/docs/byo_model.md) for Ollama / vLLM setup.
+**Hosted (no GPU required):**
 
-### UW–Madison participants (additional)
+- **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM across all calls. Good for prompt iteration and small eval runs; the rate cap makes a full 89-task sweep slow but doable.
+- **Amazon Bedrock** — Pay-per-token, fully-managed access to the Qwen3 lineup (`qwen3-coder-30b-a3b`, `qwen3-coder-480b-a35b`, `qwen3-coder-next`, `qwen3-235b-a22b-instruct-2507`, `qwen3-32b`). AWS doesn't formally publish the serving quantization, so the VRAM mapping in [`MODELS.md`](MODELS.md) is an approximation based on FP8. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
+- **NRP managed-LLM endpoint** (UW participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. All already in `MODELS.md`. [nrp.ai/llms](https://nrp.ai/llms/)
+- **UW-hosted Qwen-Coder endpoint** — a shared deployment for MLM26 participants through ML+X. Request access via the kickoff form.
 
-- **NRP / Nautilus managed-LLM endpoint** ([nrp.ai/llms](https://nrp.ai/llms/)) — UW researchers authenticate via CILogon SSO and hit an OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4 (12B/31B), MiniMax-M2 (230B), GPT-OSS-120B, and more. All are already listed in [`MODELS.md`](MODELS.md); anything missing can be requested in the Kaggle Discussion tab. NRP also lets you spin up your own GPU pod with vLLM (A100, L40S, A40, RTX 4090, etc.) — request access at [nrp.ai/get-access](https://nrp.ai/get-access/).
-- **UW-hosted Qwen-Coder endpoint** — A shared Qwen-Coder deployment for MLM26 participants is available through ML+X. Request access via the kickoff form.
-- **CHTC (Center for High Throughput Computing)** ([chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/)) — Free shared campus GPU pool, good for batch sweeps and long-running fine-tunes.
+**Self-hosted on your own GPU or a rented one:**
+
+- Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The suggested anchor (`Qwen2.5-Coder-32B-Instruct-AWQ`, 28 GB) runs comfortably on an RTX A6000 48 GB, L40S 48 GB, RTX Pro 6000 96 GB (or half-slice), or any 32 GB+ card with reduced context. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
+- **NRP GPU pods** (UW participants) — A100, L40S, A40, RTX 4090, etc. Spin up your own vLLM. [nrp.ai/get-access](https://nrp.ai/get-access/).
+- **CHTC** (UW participants) — [chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/). Free shared campus GPU pool, good for batch sweeps and fine-tuning.
+
+**Kaggle Notebooks and Google Colab** can host a model server behind a tunnel (ngrok, cloudflared) so a remote Harbor machine can reach them — but it's fragile (Colab drops after ~90 min idle, Kaggle caps sessions at 12 hr, free tunnel providers have request limits) and slower than any of the alternatives above. Fine for prompt iteration; not recommended for the submitted eval run.
 
 ---
 
