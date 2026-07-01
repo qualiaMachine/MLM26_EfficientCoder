@@ -62,7 +62,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Open a PR to add any open-weight model you want to use that isn't already listed; we merge fast.
+**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Want to use a model that isn't listed? Post in the Kaggle Discussion tab — organizers add rows on request, usually within a day or two.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
@@ -292,7 +292,7 @@ No. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
 Yes, with caveats. The **fully-managed pay-per-token Qwen3-Coder lineup** (`30B-A3B`, `480B-A35B`, `Coder-Next`, `Qwen3-32B`) is eligible — see [`MODELS.md`](MODELS.md) "Bedrock fully-managed (approximate)" for the assumed FP8 VRAM numbers. AWS doesn't officially state the serving precision, so our mapping is a best-effort approximation that we'll correct if AWS confirms otherwise. **Bedrock Custom Model Import** is not viable (Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commit). If you want AWS for self-hosting, rent an EC2 or SageMaker GPU instance and self-host with vLLM — that's just cloud compute, fine like any other rented GPU.
 
 **My model isn't in `MODELS.md`. What do I do?**
-Open a PR adding it. Include the HuggingFace link, the published quantization, and a one-line VRAM justification (weights size + KV cache at 16k context). We merge quickly — usually same-day during the semester.
+Post in the Kaggle Discussion tab with the HuggingFace link, the quantization you want listed, and (if you have it) a quick VRAM estimate. Organizers add the row, usually within a day or two.
 
 **Can I fine-tune a model for this?**
 Yes. Document it in the writeup. Fine-tuned weights must be either public or reproducible from the public base model + your published LoRA / adapter, and you'll likely need to request your fine-tuned checkpoint be added to `MODELS.md` (via the Kaggle Discussion tab) so the leaderboard can score it.
