@@ -173,7 +173,7 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
-| Public GitHub repo with tagged commit | Yes/No |
+| Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
 
 ---
 
@@ -210,11 +210,11 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) |
 | **Leaderboard score** | **`0.00737`** | `TB_score / log10(VRAM × total_tokens)²` — for this example, `0.42 / log10(28 × 1,263,800)²` |
 
-### Part 2: Full submission (attached to your Kaggle Writeup)
+### Part 2: Writeup
 
-1. **Writeup** (≤5,000 words). Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
-2. **Public notebook.** Your agent code as a public notebook. Should be runnable or clearly documented.
-3. **Public GitHub repo.** Complete agent code, README with reproduction instructions, tagged release or commit hash matching your reported scores (e.g., `git tag v1.0-submission`), Terminal-Bench-compatible agent (runnable via `harbor run --agent-import-path`). License: MIT or Apache 2.0.
+A single writeup (≤5,000 words) attached to your Kaggle submission. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
+
+Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
 ---
 
