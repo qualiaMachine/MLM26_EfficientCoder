@@ -10,7 +10,7 @@ The last two years have transformed how software gets built. Frontier coding ass
 
 Open-weight models have closed enough of the raw-quality gap that a credible coding assistant can now plausibly run locally. *Plausibly*, but not yet *well*. MLM26 is a semester-long collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), the industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. The leaderboard rewards both raw performance and efficiency, so a 14B model wrapped in a thoughtful agent loop can credibly beat a 480B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
-This is a collaborative challenge, not a prize competition. There are no cash prizes and no reason to hoard ideas — share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup; explain what you added. The best outcomes happen when everyone's baseline keeps rising. UW–Madison participants get weekly sprints, office hours, and shared GPU access through ML+X; everyone else is welcome to participate remotely with the same starter code, benchmark, and submission pipeline.
+This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding. That's the point. UW–Madison participants get weekly sprints, office hours, and shared GPU access through ML+X; everyone else is welcome to participate remotely with the same starter code, benchmark, and submission pipeline.
 
 ---
 
@@ -207,12 +207,6 @@ Structured metadata used for automated ranking:
 1. **Writeup** (≤5,000 words). Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
 2. **Public notebook.** Your agent code as a public notebook. Should be runnable or clearly documented.
 3. **Public GitHub repo.** Complete agent code, README with reproduction instructions, tagged release or commit hash matching your reported scores (e.g., `git tag v1.0-submission`), Terminal-Bench-compatible agent (runnable via `harbor run --agent-import-path`). License: MIT or Apache 2.0.
-
----
-
-## Awards
-
-Top of the leaderboard wins. **UW–Madison local awards** — UW participants are eligible for additional recognition based on in-person engagement. Details at kickoff.
 
 ---
 
