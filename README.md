@@ -70,7 +70,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **Per-task budget:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
-- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop. A finale-time wall-clock cap may apply to keep the reproducibility queue moving — number TBD.
+- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop.
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
