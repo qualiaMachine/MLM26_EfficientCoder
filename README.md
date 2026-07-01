@@ -68,8 +68,6 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
 - **Any endpoint that won't tell you what it's serving.** If a provider doesn't disclose the exact `(model, quantization)` behind their API, you can't pin your submission to a `MODELS.md` row. Fine for prototyping, but your submitted run needs to use a listed model on an endpoint that names it.
 
-**Multi-GPU serving is fine.** How you actually run the model — single GPU, tensor-parallel across many, sharded MoE deployment, multi-node cluster — does not affect your score. The scored footprint is always the table value for your `(model, quantization)` row.
-
 **Per-task budget:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
 - **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop. A finale-time wall-clock cap may apply to keep the reproducibility queue moving — number TBD.
