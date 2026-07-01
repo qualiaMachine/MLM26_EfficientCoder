@@ -66,7 +66,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-- **Opaque hosted providers** (Bedrock Custom Model Import, generic chat APIs that don't disclose `(model, quantization)`) where you can't pin the exact row in `MODELS.md`. Fine for development; can't be your submission's model. (Bedrock's *fully-managed* Qwen3-Coder lineup is eligible via the approximate-VRAM mapping in `MODELS.md`.)
+- **Any endpoint that won't tell you what it's serving.** If a provider doesn't disclose the exact `(model, quantization)` behind their API, you can't pin your submission to a `MODELS.md` row. Fine for prototyping, but your submitted run needs to use a listed model on an endpoint that names it.
 
 **Multi-GPU serving is fine.** How you actually run the model — single GPU, tensor-parallel across many, sharded MoE deployment, multi-node cluster — does not affect your score. The scored footprint is always the table value for your `(model, quantization)` row.
 
