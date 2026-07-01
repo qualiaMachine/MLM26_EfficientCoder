@@ -185,22 +185,30 @@ During the semester, share early and often via the Kaggle Discussion tab: post d
 
 ### Part 1: Submission card
 
-Structured metadata used for automated ranking:
+Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
-| Field | Example |
-|---|---|
-| Team name | Terminal Velocity |
-| GitHub repo URL | github.com/team/agent |
-| Commit tag | `v1.0-submission` |
-| Model (from `MODELS.md`) | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` |
-| Quantization (from `MODELS.md`) | AWQ 4-bit |
-| Reported VRAM (from `MODELS.md`) | 28 GB |
-| Terminal-Bench score | 0.42 (37/89 tasks passed) |
-| Total tokens (across 89 tasks) | 1,263,800 |
-| Tasks evaluated | All 89 |
-| **Leaderboard score** (auto) | **0.00737** = 0.42 / log10(28 × 1,263,800)² |
-| GPU used (informational) | RTX A6000 48 GB |
-| Mean wall-clock per task (informational) | 3m 12s |
+**Fields you fill in:**
+
+| Field | Example | Format |
+|---|---|---|
+| Team name | Terminal Velocity | free text |
+| GitHub repo URL | `github.com/team/agent` | URL |
+| Commit tag / SHA | `v1.0-submission` | git ref pointing at the exact code you ran |
+| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a row in [`MODELS.md`](MODELS.md) |
+| Quantization | `AWQ 4-bit` | one of the values below |
+| Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
+| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` |
+| GPU used | `RTX A6000 48 GB` | informational, not scored |
+| Mean wall-clock per task | `3m 12s` | informational, not scored |
+
+**Valid quantization values** (must match the `MODELS.md` row for your chosen model): `bf16`, `FP16`, `FP8`, `Int8`, `AWQ 4-bit`, `GPTQ 4-bit`, `Int4`, `MXFP4`, `NVFP4`, `w4a16 (QAT)`.
+
+**Fields computed for you:**
+
+| Field | Example | How it's derived |
+|---|---|---|
+| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) |
+| **Leaderboard score** | **`0.00737`** | `TB_score / log10(VRAM × total_tokens)²` — for this example, `0.42 / log10(28 × 1,263,800)²` |
 
 ### Part 2: Full submission (attached to your Kaggle Writeup)
 
