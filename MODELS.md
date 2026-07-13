@@ -1,10 +1,10 @@
 # Approved models
 
-The MLM26 leaderboard scores submissions by a function of **Terminal-Bench score**, **reported VRAM**, and **total tokens consumed**. To make the VRAM input verifiable without forcing every team to run nvidia-smi, we publish a canonical table of `(model, quantization)` → reported VRAM. **Submissions must use a model listed here.**
+MLM26 submissions must use a model listed here with a reported VRAM of **48 GB or less**. Ranking is by Terminal-Bench score (ties broken by fewer total tokens). To make the VRAM limit verifiable without forcing every team to run nvidia-smi, we publish a canonical table of `(model, quantization)` → reported VRAM — you pick a row, and the row decides eligibility. Rows above 48 GB stay listed for prototyping reference but can't be submitted.
 
-> Want to use a model that isn't listed? Post in the Kaggle Discussion tab with the HuggingFace link, the published quantization, and (if you have it) a quick VRAM estimate — organizers will add it to the table, usually within a day or two. There is no penalty for being first to ask; the leaderboard formula is the same for everyone, and we'd rather expand the catalog than gatekeep it.
+> Want to use a model that isn't listed? Post in the Kaggle Discussion tab with the HuggingFace link, the published quantization, and (if you have it) a quick VRAM estimate — organizers will add it to the table, usually within a day or two. There is no penalty for being first to ask; the eligibility rule is the same for everyone, and we'd rather expand the catalog than gatekeep it.
 
-> A note on VRAM numbers: the values in this table are **approximate but good enough for ranking**. They assume a 16k-token context window, single-batch serving, and the published checkpoint as released — peak VRAM in practice can be a few GB higher or lower depending on your runner and how much context you push. Since the formula uses `log10(VRAM × tokens)^2`, that noise is small relative to the gaps the leaderboard actually cares about.
+> A note on VRAM numbers: the values in this table are **approximate but good enough for eligibility**. They assume a 16k-token context window, single-batch serving, and the published checkpoint as released — peak VRAM in practice can be a few GB higher or lower depending on your runner and how much context you push. Eligibility is decided by the table value, not by anything you measure, so that noise never affects your submission.
 
 ## How "reported VRAM" is computed
 
@@ -52,7 +52,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Provided model.** Served for MLM26 participants on the UW-hosted shared endpoint (see [README → Resources](README.md#resources)); key via the kickoff form. Reasoning model with coder tool-calling. |
+| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | Served on a shared hosted endpoint for participants — setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). Reasoning model with coder tool-calling. |
 
 ### DeepSeek-Coder family
 

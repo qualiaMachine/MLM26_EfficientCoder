@@ -6,11 +6,11 @@ Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by 
 
 ## Overview
 
-The last two years have transformed how software gets built. Frontier coding assistants — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real collaborators. They are remarkable, but they are also closed, expensive, and untrusting. Every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive has to take extreme caution to ensure nothing gets leaked.
+The last two years have transformed how software gets built. Frontier coding agents — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real (if junior) collaborators. They are remarkable, but they are also closed and expensive: every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive data has to be careful nothing leaks.
 
-Open-weight models have closed enough of the raw-quality gap that a credible coding assistant can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. The challenge evaluation rewards both raw performance and efficiency, so a 14B model wrapped in a thoughtful agent loop can credibly beat a 480B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
+Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission must fit under a 48 GB VRAM limit, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
-This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding. That's the point. UW–Madison participants get weekly sprints, office hours, and shared GPU access through ML+X; everyone else is welcome to participate remotely with the same starter code, benchmark, and submission pipeline.
+This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
 ---
 
@@ -29,16 +29,15 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability.
-- **Beats the leaderboard**, which rewards a single weighted score combining Terminal-Bench accuracy, model footprint, and tokens per task.
+- **Beats the leaderboard** — ranked by Terminal-Bench score among models that fit under the 48 GB VRAM limit, with fewer total tokens breaking ties.
 
-Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal ReAct loop — a launchpad, not a solution.
+Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
 
 ### What we provide
 
-- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
+- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; your job is to improve it.
 - **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
-- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be requested via the Kaggle Discussion tab.
-- **A provided model endpoint** (UW participants) — a shared `Qwen/Qwen3.6-27B-FP8` deployment hosted through ML+X, ready to drop into the starter's `.env` with no GPU of your own. Request the API key via the kickoff form; connection details in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
+- **A curated model catalog** in [`MODELS.md`](MODELS.md) — the open-weight models eligible for the leaderboard, each with a canonical reported VRAM number checked against the 48 GB limit. Entries above the limit stay listed for prototyping reference; new models can be requested via the Kaggle Discussion tab.
 - **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
 
 ### Terminal-Bench
@@ -63,7 +62,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Default provided model: `Qwen/Qwen3.6-27B-FP8` (32 GB), served on the UW-hosted shared endpoint (see [Resources](#resources)). Self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Want to use a model that isn't listed? Post in the Kaggle Discussion tab — organizers add rows on request, usually within a day or two.
+**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md) with a reported VRAM of **48 GB or less**. That table maps each `(model, quantization)` to a canonical *reported VRAM* — you don't measure VRAM yourself, you pick a row, and the row decides eligibility. **Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Want to use a model that isn't listed? Post in the Kaggle Discussion tab — organizers add rows on request, usually within a day or two.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
@@ -71,7 +70,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **Per-task budget:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
-- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop; the leaderboard formula already penalizes verbose agents through the `total_tokens` term, so you don't have to be told to stop.
+- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. Total tokens only break leaderboard ties, but a verbose loop is also a slow one — your own patience will enforce a budget.
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
 
@@ -105,32 +104,12 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 
 ### Scoring
 
-Submissions are ranked on a single weighted score:
+Two rules:
 
-```
-leaderboard_score = TB_score / log10(reported_VRAM_GB × total_tokens)^2
-```
+1. **VRAM limit (eligibility).** Your model's *reported VRAM* — the canonical number for your `(model, quantization)` row in [`MODELS.md`](MODELS.md) — must be **48 GB or less**. You don't measure VRAM yourself; you pick a row, and the row decides eligibility.
+2. **Ranking.** Submissions are ranked by **`TB_score`** — mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`). Ties are broken by fewer **`total_tokens`** — the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
 
-Where:
-- **`TB_score`** is your mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`).
-- **`reported_VRAM_GB`** is the canonical number for your `(model, quantization)` row in [`MODELS.md`](MODELS.md). You don't measure it; you pick a row.
-- **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
-
-Worked example: a `Qwen2.5-Coder-32B-AWQ` submission (28 GB) that scores 0.42 on Terminal-Bench with 1,263,800 total tokens across the 89 tasks lands at `0.42 / log10(28 × 1,263,800)^2` = `0.42 / 7.55^2` = `0.42 / 57.0` = **0.00737**.
-
-The squared log denominator makes efficiency a real design pressure: a leaner agent can credibly outrank a more capable but more expensive one. Raw performance still matters — a sufficiently strong TB score wins regardless — but it has to genuinely outpace the footprint penalty, not just edge ahead by a sliver.
-
-### Head-to-head comparisons
-
-Each row shows two hypothetical submissions and which one wins under the formula. These are illustrative; real submissions will land all over the place.
-
-| Submission A | Submission B | Winner | Why |
-|---|---|---|---|
-| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-7B-AWQ (7 GB), TB 0.30, 500k tokens → **0.00700** | **A** | Raw capability gap (0.42 vs 0.30) wins. The 7B is leaner but not lean enough to close 12 points of TB score. |
-| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Qwen2.5-Coder-14B-AWQ (12 GB), TB 0.38, 800k tokens → **0.00780** | **B** | A clever 14B agent at 4 points lower raw score wins by being meaningfully leaner. |
-| Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | Same Qwen-32B, TB 0.42, **2.5M** tokens → **0.00682** | **A** | Same model, same TB score — the leaner agent loop wins. A verbose loop costs you real ranking. |
-| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen2.5-Coder-32B-AWQ (28 GB), TB 0.42, 1.26M tokens → **0.00737** | **A** | Even with an 18× footprint penalty, Kimi's 23-point raw advantage carries the day. Raw capability still dominates when the gap is large. |
-| Kimi-K2.7-Code (510 GB), TB 0.65, 1M tokens → **0.00857** | Qwen3-Coder-30B-A3B via Bedrock (35 GB), TB 0.50, 1M tokens → **0.00878** | **B** | A 15-point raw gap is no longer enough — the smaller MoE wins on efficiency. Footprint matters when the raw scores are within ~30%. |
+The limit is what makes this a scaffold-engineering challenge rather than a model-shopping one: everyone picks from models that fit on a single serious GPU, and the ranking rewards whoever gets the most out of that pool.
 
 ### Computing your submission numbers
 
@@ -153,11 +132,11 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
 find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 ```
 
-These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard recomputes `leaderboard_score` from them — you don't need to compute it yourself, but the worked example above is the formula you'd use to sanity-check.
+These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. Ranking is by Terminal-Bench score, with total tokens breaking ties — nothing else is computed.
 
 ### Reproducibility check (finale)
 
-There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above. At the finale, organizers re-run the top ~10 submissions to confirm the result:
+There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is Terminal-Bench score, under the VRAM limit. At the finale, organizers re-run the top ~10 submissions to confirm the result:
 
 1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
 2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the semester. Significantly lower private-set scores get investigated for task-specific hardcoding.
@@ -170,7 +149,7 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 | Requirement | Pass/Fail |
 |---|---|
 | Submission card fully filled out | Yes/No |
-| Model + quantization listed in [`MODELS.md`](MODELS.md) | Yes/No |
+| Model + quantization listed in [`MODELS.md`](MODELS.md) with reported VRAM ≤ 48 GB | Yes/No |
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
@@ -198,7 +177,7 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a row in [`MODELS.md`](MODELS.md) |
 | Quantization | `AWQ 4-bit` | one of the values below |
 | Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
-| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` |
+| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — used only to break ties |
 | GPU used | `RTX A6000 48 GB` | informational, not scored |
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
 
@@ -208,8 +187,7 @@ Structured metadata used for automated ranking. Evaluation is always against all
 
 | Field | Example | How it's derived |
 |---|---|---|
-| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) |
-| **Leaderboard score** | **`0.00737`** | `TB_score / log10(VRAM × total_tokens)²` — for this example, `0.42 / log10(28 × 1,263,800)²` |
+| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) — must be **≤ 48 GB** for the submission to be eligible |
 
 ### Part 2: Writeup
 
@@ -229,7 +207,7 @@ The fastest path from "I registered" to "my agent has a Terminal-Bench score" li
    ```bash
    harbor run -d terminal-bench-sample@2.0 -a oracle
    ```
-4. **Set up a model endpoint** — UW participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form; `.env` values in [`starter/docs/byo_model.md`](starter/docs/byo_model.md)) — no GPU needed. Otherwise Ollama is easiest: `ollama pull qwen2.5-coder:14b` works on smaller GPUs for first-week dev.
+4. **Set up a model endpoint** — Ollama is easiest: `ollama pull qwen2.5-coder:14b` works on smaller GPUs for first-week dev. All options in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
 5. **Run the baseline** on a single task to confirm everything is wired up.
 
 Full instructions:
@@ -239,7 +217,7 @@ Full instructions:
 | [`starter/README.md`](starter/README.md) | Setup in ~15 minutes, the weekly loop, where to dig in |
 | [`starter/docs/walkthrough.md`](starter/docs/walkthrough.md) | End-to-end: Docker → uv → Harbor → first model → first score |
 | [`starter/docs/docker_setup.md`](starter/docs/docker_setup.md) | Per-OS Docker install + common failures |
-| [`starter/docs/byo_model.md`](starter/docs/byo_model.md) | Provided UW endpoint, Ollama, vLLM, hosted endpoints, `.env` config |
+| [`starter/docs/byo_model.md`](starter/docs/byo_model.md) | Ollama, vLLM, hosted endpoints, `.env` config |
 | [`starter/docs/harbor.md`](starter/docs/harbor.md) | Harbor mental model, custom agents, leaderboard submission |
 | [`starter/docs/safety.md`](starter/docs/safety.md) | Sandbox guidance, what to keep away from your dev loop |
 | [`starter/docs/troubleshooting.md`](starter/docs/troubleshooting.md) | First-week issues, in order of likelihood |
@@ -266,8 +244,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 - **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM across all calls. Good for prompt iteration and small eval runs; the rate cap makes a full 89-task sweep slow but doable.
 - **Amazon Bedrock** — Pay-per-token, fully-managed access to the Qwen3 lineup (`qwen3-coder-30b-a3b`, `qwen3-coder-480b-a35b`, `qwen3-coder-next`, `qwen3-235b-a22b-instruct-2507`, `qwen3-32b`). AWS doesn't formally publish the serving quantization, so the VRAM mapping in [`MODELS.md`](MODELS.md) is an approximation based on FP8. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
-- **NRP managed-LLM endpoint** (UW participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. All already in `MODELS.md`. [nrp.ai/llms](https://nrp.ai/llms/)
-- **Provided model endpoint** (UW participants) — the default for MLM26: a shared `Qwen/Qwen3.6-27B-FP8` deployment hosted through ML+X on campus RunAI (32 GB row in [`MODELS.md`](MODELS.md); reasoning + coder tool-calling, 250k context). Request the API key via the kickoff form; `.env` values and usage notes in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). Capacity is shared across teams — keep eval concurrency low and see the etiquette notes in the doc.
+- **NRP managed-LLM endpoint** (UW participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. Most of these exceed the 48 GB submission limit — useful for prototyping and comparison, not for the submitted run. [nrp.ai/llms](https://nrp.ai/llms/)
 
 **Self-hosted on your own GPU or a rented one:**
 
@@ -318,7 +295,7 @@ No — work with whatever subset is useful for debugging. For the leaderboard, y
 Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [Resources](#resources). UW participants: the provided `Qwen3.6-27B-FP8` endpoint needs no GPU at all — that's what it's for. For dev, NVIDIA's API catalog and Kaggle Notebooks also work without local hardware, and UW participants can additionally hit the NRP managed-LLM endpoint. Whatever model you finally submit must be a row in `MODELS.md`.
+See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks both work without local hardware. Whatever model you finally submit must be a row in `MODELS.md`.
 
 **I'm not at UW.**
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
@@ -342,8 +319,8 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 
 ## Organizer notes (delete before publishing)
 
-- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B and Qwen3-Coder-480B-A35B too.
-- [ ] Stand up the leaderboard-score auto-calculator (takes submission card → returns `TB_score / log10(VRAM × total_tokens)^2`).
+- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B too.
+- [ ] Stand up the submission-card validator (checks the model row is ≤ 48 GB reported VRAM and the token/score fields parse).
 - [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
 - [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)

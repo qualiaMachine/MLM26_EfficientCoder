@@ -252,7 +252,7 @@ build-cython-ext    ✓  reward: 1.0    (or ✗  reward: 0.0)
 
 The agent reads the task instruction, explores the container, attempts to solve the task with shell commands, and either passes or fails the test suite.
 
-**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's the point. Your job over the semester is to make it better.
+**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's expected. Your job over the semester is to make it better.
 
 ### Where results go
 
