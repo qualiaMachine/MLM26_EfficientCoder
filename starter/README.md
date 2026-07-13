@@ -1,8 +1,8 @@
-# MLM26 Coding Agent Starter
+# Coding Agent Starter
 
 The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
-Challenge brief, rules, schedule, and judging: see the [MLM26 README](../README.md).
+Challenge brief, rules, schedule, and judging: see the [challenge README](../README.md).
 
 ## Setup (15 minutes, once)
 
@@ -52,7 +52,7 @@ Watch the logs: instruction in, commands out, verdict at the end. Results land i
 ## The weekly loop
 
 ```bash
-./scripts/run_subset.sh            # run the official MLM26 public subset
+./scripts/run_subset.sh            # run the official public subset
 ```
 
 Then self-report on the Kaggle leaderboard thread:
@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): pick a model from [`MODELS.md`](../MODELS.md) with a reported VRAM of **48 GB or less** (request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. Ranking is by Terminal-Bench score; ties are broken by fewer total tokens. Default provided model (UW participants): `Qwen/Qwen3.6-27B-FP8` (32 GB) on the shared UW-hosted endpoint — see [docs/byo_model.md](docs/byo_model.md). Self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in [`MODELS.md`](../MODELS.md) (short list, 7–35 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. Ranking is by Terminal-Bench score; ties are broken by fewer total tokens. Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — UW participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Docs
 

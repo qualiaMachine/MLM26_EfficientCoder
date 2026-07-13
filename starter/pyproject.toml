@@ -1,7 +1,7 @@
 [project]
 name = "mlm26-agent"
 version = "0.1.0"
-description = "MLM26 baseline coding agent for Terminal-Bench 2.0 (via Harbor)"
+description = "Baseline coding agent for Terminal-Bench 2.0 (via Harbor)"
 requires-python = ">=3.12"
 dependencies = [
     "harbor>=0.13",

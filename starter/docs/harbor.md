@@ -24,7 +24,7 @@ Your agent never touches your filesystem — it acts on the container through `e
 | Dataset | Tasks | Use |
 |---|---|---|
 | `terminal-bench-sample@2.0` | 10 | Setup verification, quick iteration |
-| `terminal-bench@2.0` | 89 | The real benchmark; the MLM26 public subset is drawn from it |
+| `terminal-bench@2.0` | 89 | The real benchmark; the challenge public subset is drawn from it |
 | `terminal-bench-pro@1.0` | 200 | Extended public set, useful for Track B analysis |
 
 List everything with `harbor datasets list`.
@@ -39,7 +39,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent -i build-cython-ext
 
-# Run the MLM26 public subset (what you self-report)
+# Run the public subset (what you self-report)
 ./scripts/run_subset.sh
 
 # Useful flags

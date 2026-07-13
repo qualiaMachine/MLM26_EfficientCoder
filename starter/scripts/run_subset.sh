@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run your agent against the official MLM26 public subset (eval/public_subset.txt).
+# Run your agent against the official public subset (eval/public_subset.txt).
 # This is the score you self-report on the leaderboard thread each week.
 #
 #   ./scripts/run_subset.sh
