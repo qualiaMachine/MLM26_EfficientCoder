@@ -292,7 +292,7 @@ Yes, if the base is an approved model. The fine-tune counts as its base model's 
 Yes, as long as every model involved is on the approved list. The submission card carries the largest model's row; token counts sum across all models, and you should be ready to defend the setup on the reproducibility check.
 
 **Can I submit my agent to the public Terminal-Bench leaderboard?**
-Yes, please. Independent of MLM. It's a real leaderboard and a real artifact.
+Yes, please. It's independent of this challenge — a real leaderboard and a real artifact.
 
 **Do I need to use the entire Terminal-Bench task set during the semester?**
 No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top 5 on a held-out subset to catch task-specific hardcoding.
