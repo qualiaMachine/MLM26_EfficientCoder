@@ -87,4 +87,4 @@ LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 
 ## Swapping models
 
-Everything is `.env`-driven — swap models as often as you like during the semester. You can also pass `-m provider/model` to `harbor run` to record which model a job used (the agent strips the provider prefix automatically; `LLM_MODEL` takes precedence if both are set).
+Everything is `.env`-driven — swap models as often as you like during the competition. You can also pass `-m provider/model` to `harbor run` to record which model a job used (the agent strips the provider prefix automatically; `LLM_MODEL` takes precedence if both are set).

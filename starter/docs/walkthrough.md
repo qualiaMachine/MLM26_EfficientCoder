@@ -252,7 +252,7 @@ build-cython-ext    ✓  reward: 1.0    (or ✗  reward: 0.0)
 
 The agent reads the task instruction, explores the container, attempts to solve the task with shell commands, and either passes or fails the test suite.
 
-**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's expected. Your job over the semester is to make it better.
+**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's expected. Your job over the competition is to make it better.
 
 ### Where results go
 
@@ -394,7 +394,7 @@ harbor run -d terminal-bench-sample@2.0 \
 
 Because you used `uv pip install -e starter/` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?
 
-This is the development loop for the semester:
+This is the development loop for the competition:
 1. **Hypothesize** — "the agent fails because it doesn't read the instructions first"
 2. **Change** — modify prompts, tools, or the loop
 3. **Test** — run against a task (or the full subset)
@@ -425,6 +425,6 @@ This is the development loop for the semester:
 
 - **Week 1:** Get this walkthrough done. Have a working baseline with a score.
 - **Week 2:** Run the full public subset. Record your baseline score.
-- **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the semester.
+- **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the competition.
 
 Full challenge schedule, rules, and judging criteria: [challenge README](../../README.md).

@@ -128,7 +128,7 @@ These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what
 There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top 5 submissions to confirm the result:
 
 1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
-2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the semester. Significantly lower private-set scores get investigated for task-specific hardcoding.
+2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the competition. Significantly lower private-set scores get investigated for task-specific hardcoding.
 3. **Token + model verification** — confirm `total_tokens` matches the submission card and that the running agent is talking to the same model row claimed in the card.
 
 Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or model/quantization mismatches disqualify.
@@ -150,9 +150,9 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 
 ## Submitting your solution
 
-**One submission per team, at the end of the semester.** There is no live leaderboard and no mid-semester submissions — focus on building and understanding, not chasing a number.
+**One submission per team, at the end of the competition.** There is no live leaderboard and no mid-competition submissions — focus on building and understanding, not chasing a number.
 
-During the semester, share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
+During the competition, share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
 ### Part 1: Submission card
 
@@ -294,7 +294,7 @@ Yes, as long as every model involved is on the approved list. The submission car
 **Can I submit my agent to the public Terminal-Bench leaderboard?**
 Yes, please. It's independent of this challenge — a real leaderboard and a real artifact.
 
-**Do I need to use the entire Terminal-Bench task set during the semester?**
+**Do I need to use the entire Terminal-Bench task set during the competition?**
 No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top 5 on a held-out subset to catch task-specific hardcoding.
 
 **My team is just me. / My team is four people.**
@@ -306,7 +306,7 @@ See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks 
 **I'm not at UW.**
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
-**Will there be a live leaderboard during the semester?**
+**Will there be a live leaderboard during the competition?**
 No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top 5 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
@@ -346,4 +346,4 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 - [ ] Coordinate with Kaggle on Community Hackathon setup
 - [ ] Final pass on safety doc with UW research-IT
 - [ ] Create Google Form for final submissions
-- [ ] PR review SLA for `MODELS.md` additions during the semester (target: same-day)
+- [ ] PR review SLA for `MODELS.md` additions during the competition (target: same-day)
