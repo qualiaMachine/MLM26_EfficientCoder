@@ -1,8 +1,8 @@
-# MLM26 Coding Agent Starter
+# Coding Agent Starter
 
 The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
-Challenge brief, rules, schedule, and judging: see the [MLM26 README](../README.md).
+Challenge brief, rules, schedule, and judging: see the [challenge README](../README.md).
 
 ## Setup (15 minutes, once)
 
@@ -52,7 +52,7 @@ Watch the logs: instruction in, commands out, verdict at the end. Results land i
 ## The weekly loop
 
 ```bash
-./scripts/run_subset.sh            # run the official MLM26 public subset
+./scripts/run_subset.sh            # run the official public subset
 ```
 
 Then self-report on the Kaggle leaderboard thread:

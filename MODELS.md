@@ -1,6 +1,6 @@
 # Approved models
 
-MLM26 submissions must use a model listed here with a reported VRAM of **48 GB or less**. Ranking is by Terminal-Bench score (ties broken by fewer total tokens). To make the VRAM limit verifiable without forcing every team to run nvidia-smi, we publish a canonical table of `(model, quantization)` → reported VRAM — you pick a row, and the row decides eligibility. Rows above 48 GB stay listed for prototyping reference but can't be submitted.
+Submissions must use a model listed here with a reported VRAM of **48 GB or less**. Ranking is by Terminal-Bench score (ties broken by fewer total tokens). To make the VRAM limit verifiable without forcing every team to run nvidia-smi, we publish a canonical table of `(model, quantization)` → reported VRAM — you pick a row, and the row decides eligibility. Rows above 48 GB stay listed for prototyping reference but can't be submitted.
 
 > Want to use a model that isn't listed? Post in the Kaggle Discussion tab with the HuggingFace link, the published quantization, and (if you have it) a quick VRAM estimate — organizers will add it to the table, usually within a day or two. There is no penalty for being first to ask; the eligibility rule is the same for everyone, and we'd rather expand the catalog than gatekeep it.
 

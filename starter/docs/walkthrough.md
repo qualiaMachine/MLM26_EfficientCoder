@@ -91,7 +91,7 @@ You should see something like `uv 0.7.x` or newer. You don't need to install Pyt
 
 ## Step 3: Clone the repo and install the starter agent
 
-The MLM26 repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory. The virtual environment lives at the repo root so it's shared across everything.
+This repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory. The virtual environment lives at the repo root so it's shared across everything.
 
 ```bash
 git clone git@github.com:qualiaMachine/MLM26.git
@@ -107,7 +107,7 @@ uv pip install -e starter/
 ```
 
 What just happened:
-- `git clone` downloaded the MLM26 repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
+- `git clone` downloaded the challenge repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
 - `cd MLM26` puts you at the repo root — the venv lives here.
 - `uv venv --python 3.12` created a `.venv/` directory with an isolated Python 3.12. If you don't have 3.12, uv downloaded it for you.
 - `source .venv/bin/activate` activated the venv. Your prompt should now show `(.venv)` at the start.
@@ -303,9 +303,9 @@ harbor run -d terminal-bench-sample@2.0 \
 
 ---
 
-## Step 8: Run the MLM26 public subset (the real score)
+## Step 8: Run the public subset (the real score)
 
-The sample set is just 10 tasks for setup verification. The MLM26 public subset is what you self-report on the leaderboard. Once it's announced at kickoff (task names go in `eval/public_subset.txt`), run:
+The sample set is just 10 tasks for setup verification. The public subset is what you self-report on the leaderboard. Once it's announced at kickoff (task names go in `eval/public_subset.txt`), run:
 
 ```bash
 ./scripts/run_subset.sh
@@ -411,7 +411,7 @@ This is the development loop for the semester:
 | Verify Harbor works | `harbor run -d terminal-bench-sample@2.0 -a oracle` |
 | Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:BaselineAgent -i <task-name>` |
 | Run your agent on all sample tasks | `./scripts/run_baseline.sh` |
-| Run the MLM26 public subset | `./scripts/run_subset.sh` |
+| Run the public subset | `./scripts/run_subset.sh` |
 | Run tasks in parallel | Add `-n 4` (or however many your RAM supports) |
 | Use a specific model | Add `-m ollama/qwen2.5-coder:32b` or set `LLM_MODEL` in `.env` |
 | See available tasks | `harbor datasets list` |
@@ -427,4 +427,4 @@ This is the development loop for the semester:
 - **Week 2:** Run the full public subset. Record your baseline score.
 - **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the semester.
 
-Full challenge schedule, rules, and judging criteria: [MLM26 README](../../README.md).
+Full challenge schedule, rules, and judging criteria: [challenge README](../../README.md).

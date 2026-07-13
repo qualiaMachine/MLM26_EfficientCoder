@@ -304,7 +304,7 @@ Welcome. The challenge is fully open. You won't have access to weekly sprints, o
 No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top ~10 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
-We're users and fans — but MLM26 is a separate event. We don't speak for the Terminal-Bench maintainers.
+We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
 
 ---
 
@@ -319,7 +319,7 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 
 ## Organizer notes (delete before publishing)
 
-- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for MLM26 participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B too.
+- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared Qwen2.5-Coder-32B-AWQ endpoint for challenge participants, in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the suggested anchor model. Worth asking about Qwen3-Coder-30B-A3B too.
 - [ ] Stand up the submission-card validator (checks the model row is ≤ 48 GB reported VRAM and the token/score fields parse).
 - [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
 - [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).

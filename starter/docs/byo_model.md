@@ -10,7 +10,7 @@ LLM_API_KEY=...    # anything non-empty for local endpoints
 
 ## Provided endpoint (UW participants — default)
 
-ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for MLM26 participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
+ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
 
 ```bash
 # .env
