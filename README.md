@@ -35,12 +35,12 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
 
-### What we provide
+### Starter materials
 
-- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; your job is to improve it.
-- **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
-- **A short approved model list** in [`MODELS.md`](MODELS.md) — six `(model, quantization)` rows across four model families, spanning 7–35 GB so hardware from a gaming laptop to a single workstation card can compete. Additions can be requested via the Kaggle Discussion tab.
-- **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW–Madison participants) shared GPU access through ML+X, NRP, and CHTC.
+- [`starter/`](starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
+- [`starter/docs/`](starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
+- [`MODELS.md`](MODELS.md) — the approved model list: six `(model, quantization)` rows, 7–35 GB. Additions can be requested via the Kaggle Discussion tab.
+- [Resources](#resources) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
 
