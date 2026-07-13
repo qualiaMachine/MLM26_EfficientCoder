@@ -20,6 +20,19 @@ For **MoE models**: use *total* params for the weights term, not active params �
 
 For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the same model — they're within ~10% of each other and the table's resolution doesn't care.
 
+### Sanity-checking a number yourself
+
+[`starter/scripts/estimate_vram.py`](starter/scripts/estimate_vram.py) computes the formula above from a HuggingFace repo id — weights from the published checkpoint's actual file sizes (so quantized checkpoints are handled automatically), KV cache from the model's config. No GPU or model download needed:
+
+```bash
+python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
+# weights 19.4 GB + KV @ 16k 4.3 GB + 2 GB headroom ≈ 25.7 GB  (table row: 28 GB)
+```
+
+Landing within a few GB of the table row is expected and fine. When proposing a new row, include this output in your Kaggle Discussion post.
+
+Don't sanity-check with `nvidia-smi` alone: serving stacks preallocate. vLLM grabs ~90% of visible GPU memory at startup and turns the surplus into KV-cache pool, so the reading sits near the card's ceiling regardless of the model. If you want a live number, take the "model weights take X GiB" line from vLLM's startup log and add the KV term from the script.
+
 ## Reported VRAM table
 
 ### Qwen2.5-Coder family
