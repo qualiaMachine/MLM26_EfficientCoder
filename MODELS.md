@@ -52,7 +52,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Provided model.** Served for MLM26 participants on the UW-hosted shared endpoint (see [README → Resources](README.md#resources)); key via the kickoff form. Reasoning model with coder tool-calling. |
+| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | Served on a shared hosted endpoint for participants — setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). Reasoning model with coder tool-calling. |
 
 ### DeepSeek-Coder family
 
