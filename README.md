@@ -35,7 +35,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 ### What we provide
 
-- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
+- **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; your job is to improve it.
 - **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
 - **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be requested via the Kaggle Discussion tab.
 - **A provided model endpoint** (UW participants) — a shared `Qwen/Qwen3.6-27B-FP8` deployment hosted through ML+X, ready to drop into the starter's `.env` with no GPU of your own. Request the API key via the kickoff form; connection details in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
