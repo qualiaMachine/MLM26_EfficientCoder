@@ -72,7 +72,7 @@ If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start
 
 ## Step 2: Install uv and Python 3.12
 
-[uv](https://docs.astral.sh/uv/) is a fast Python package manager that can also fetch Python versions for you. Harbor (the Terminal-Bench harness) requires Python 3.12+.
+[uv](https://docs.astral.sh/uv/) is a fast Python package manager that can also fetch Python versions for you. Harbor (the Terminal-Bench evaluation framework) requires Python 3.12+.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh

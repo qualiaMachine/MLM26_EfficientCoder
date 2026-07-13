@@ -1,6 +1,6 @@
 # Harbor orientation
 
-[Harbor](https://www.harborframework.com/docs) is the official harness for Terminal-Bench 2.0, from the creators of Terminal-Bench. It handles everything that isn't your agent: pulling task definitions, building and destroying Docker containers, enforcing timeouts, running the verifier, and aggregating scores.
+[Harbor](https://www.harborframework.com/docs) is the official evaluation framework for Terminal-Bench 2.0, from the creators of Terminal-Bench. It handles everything that isn't your agent: pulling task definitions, building and destroying Docker containers, enforcing timeouts, running the verifier, and aggregating scores.
 
 ## The mental model
 
