@@ -8,9 +8,9 @@ LLM_MODEL=...      # model id as the endpoint knows it
 LLM_API_KEY=...    # anything non-empty for local endpoints
 ```
 
-## Provided endpoint (UW participants — default)
+## Provided endpoint (UW–Madison participants — default)
 
-ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
+ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW–Madison participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
 
 ```bash
 # .env
@@ -36,7 +36,7 @@ Things to know about this endpoint:
 
 - **The model id is a checkpoint path** (`/mnt/shared-models/qwen3.6-27B-fp8`), not a HuggingFace repo id — vLLM serves it under the path it was loaded from. The `curl` above shows the exact string to put in `LLM_MODEL`. For your *submission card*, the corresponding `MODELS.md` row is `Qwen/Qwen3.6-27B-FP8` (32 GB).
 - **It's a reasoning model.** Thinking tokens count against the completion budget, so set `LLM_MAX_TOKENS` to 4096 or higher — at the starter default of 2048 the model can spend the whole budget thinking and return an empty answer. Thinking arrives in `reasoning_content`, separate from the final `content`.
-- **Long context, cheap re-prompting.** 250k-token context window with prefix caching enabled, so re-sending the growing conversation each turn (what the starter loop does) is fast. Total tokens still break leaderboard ties, so lean context management isn't wasted effort.
+- **Long context, cheap re-prompting.** 250k-token context window with prefix caching enabled, so re-sending the growing conversation each turn (what the starter loop does) is fast. Every million tokens costs 0.01 leaderboard points, so lean context management still pays.
 - **Capacity is shared across all teams** (a handful of concurrent sequences). Keep `harbor run -n` at 2–4 and give a heads-up in the team channel before kicking off a full 89-task sweep.
 
 ## Ollama (easiest local option)
@@ -83,8 +83,8 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use one of the approved models in [`MODELS.md`](../../MODELS.md). Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed `qwen3-coder-30b-a3b` counts as the approved FP8 row; Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — the UW-hosted endpoint above, or self-host it from HuggingFace; the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use one of the approved models in [`MODELS.md`](../../MODELS.md). Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed `qwen3-coder-30b-a3b` counts as the approved FP8 row; Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — the UW–Madison-hosted endpoint above, or self-host it from HuggingFace; the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Swapping models
 
-Everything is `.env`-driven — swap models as often as you like during the semester. You can also pass `-m provider/model` to `harbor run` to record which model a job used (the agent strips the provider prefix automatically; `LLM_MODEL` takes precedence if both are set).
+Everything is `.env`-driven — swap models as often as you like during the competition. You can also pass `-m provider/model` to `harbor run` to record which model a job used (the agent strips the provider prefix automatically; `LLM_MODEL` takes precedence if both are set).

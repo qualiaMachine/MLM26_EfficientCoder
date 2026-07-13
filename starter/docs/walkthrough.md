@@ -13,7 +13,7 @@ Terminal-Bench runs every task inside a fresh Docker container. Your agent never
 
 ### macOS
 
-Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar.
+Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar, and it must be running whenever you use Harbor. Homebrew alternative: `brew install --cask docker`, then launch Docker from Applications once.
 
 ### Linux (Ubuntu/Debian)
 
@@ -22,7 +22,7 @@ curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 ```
 
-**Log out and back in** (or run `newgrp docker`) for the group change to take effect.
+**Log out and back in** (or run `newgrp docker`) for the group change to take effect. Other distros: see the [Docker Engine install docs](https://docs.docker.com/engine/install/).
 
 ### Windows
 
@@ -33,7 +33,7 @@ All challenge work happens inside **WSL2** (Windows Subsystem for Linux), not Po
 wsl --install
 ```
 
-Reboot. A terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it. Then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** — press the Windows key, type **Ubuntu**, and click the app (or use Windows Terminal's Ubuntu tab).
+Reboot. A terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it. Then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** — press the Windows key, type **Ubuntu**, and click the app (or use Windows Terminal's Ubuntu tab). Keep the repo inside the WSL2 filesystem (`~/...`), not `/mnt/c/...` — it's dramatically faster.
 
 ### Verify Docker works
 
@@ -66,7 +66,7 @@ To generate this message, Docker took the following steps:
 
 If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
 
-If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). See [docker_setup.md](docker_setup.md) for more troubleshooting.
+If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). More Docker failures are covered in [troubleshooting.md](troubleshooting.md).
 
 ---
 
@@ -166,7 +166,7 @@ If tasks fail here, the problem is Docker, not your agent. Common issues:
 
 The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
-> **UW participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
+> **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
 
 Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only).
 
@@ -199,7 +199,7 @@ curl http://localhost:11434/v1/models
 
 You should see a JSON response listing your pulled model(s). If you get "connection refused," start the server with `ollama serve`.
 
-Using the provided UW endpoint instead? Same check, with your key:
+Using the provided UW–Madison endpoint instead? Same check, with your key:
 
 ```bash
 curl https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1/models \
@@ -252,7 +252,7 @@ build-cython-ext    ✓  reward: 1.0    (or ✗  reward: 0.0)
 
 The agent reads the task instruction, explores the container, attempts to solve the task with shell commands, and either passes or fails the test suite.
 
-**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's expected. Your job over the semester is to make it better.
+**Don't panic if it fails.** The baseline with a 7B model will fail most tasks — that's expected. Your job over the competition is to make it better.
 
 ### Where results go
 
@@ -394,7 +394,7 @@ harbor run -d terminal-bench-sample@2.0 \
 
 Because you used `uv pip install -e starter/` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?
 
-This is the development loop for the semester:
+This is the development loop for the competition:
 1. **Hypothesize** — "the agent fails because it doesn't read the instructions first"
 2. **Change** — modify prompts, tools, or the loop
 3. **Test** — run against a task (or the full subset)
@@ -425,6 +425,6 @@ This is the development loop for the semester:
 
 - **Week 1:** Get this walkthrough done. Have a working baseline with a score.
 - **Week 2:** Run the full public subset. Record your baseline score.
-- **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the semester.
+- **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the competition.
 
 Full challenge schedule, rules, and judging criteria: [challenge README](../../README.md).
