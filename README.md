@@ -2,6 +2,7 @@
 
 Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
+
 ---
 
 ## Overview
@@ -11,6 +12,7 @@ The last two years have transformed how software gets built. Frontier coding age
 Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–35 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
+
 
 ---
 
@@ -29,7 +31,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability.
-- **Beats the leaderboard** — ranked by Terminal-Bench score across the approved models, with fewer total tokens breaking ties.
+- **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
 Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
 
@@ -70,39 +72,9 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 **Per-task budget:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
-- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. Total tokens only break leaderboard ties, but a verbose loop is also a slow one — your own patience will enforce a budget.
+- **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. The token penalty (0.01 per million) already charges verbose agents, so no cap is needed.
 
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
-
-### Contact
-
-Chris Endemann (endemann@wisc.edu) — ML+X, UW–Madison.
-
-Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
-
----
-
-## Agent safety
-
-**Terminal-Bench's sandbox does the heavy lifting.** Every task runs in a fresh Docker container with no host access, destroyed afterward. Inside `harbor run`, your agent can't hurt you. Don't undo that:
-
-- Don't mount your home directory, SSH keys, or `~/.gitconfig` into containers.
-- Don't bake real credentials into images or `.env` files you commit. Use throwaway keys.
-- `.env` is gitignored in the starter — keep it that way.
-
-**The danger zone is your own dev loop.** When you test agent code *outside* Harbor (e.g., pointing your loop at a local shell "just to see"), it has whatever access you have:
-
-- Develop in a scratch directory, never your home directory or a repo you care about.
-- Never give a dev agent access to directories containing `.git` remotes, credentials, or anything you can't lose.
-- Remember the classics: `git clean -fdx`, `docker system prune`, `find ... -exec rm`, `>` truncation. An agent will eventually try one.
-
-**API keys deserve their own paragraph, because your agent can read files.** Anything an agent `cat`s — including `.env` — enters the model conversation and the endpoint's logs. During `harbor run` you're fine: task containers don't inherit your host environment. The exposure is dev-loop testing with local shell access. In order of effort:
-
-- Use a throwaway key created for this event, never a personal or work key. If an agent may have read it, treat it as burned and rotate it.
-- Keep `.env` out of any directory you point a dev agent at — the agent needs the key *in its process environment* to call the endpoint, not on disk where it explores.
-- If you already use a secrets manager, inject at runtime instead of keeping a plaintext file: e.g. `op run --env-file .env.tpl -- ./scripts/run_baseline.sh` (1Password CLI), or the `pass`/Bitwarden equivalents. Know the limit: this removes the at-rest file, but the running agent still holds the key in memory — no tool changes the "rotate if touched" rule.
-
-**If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
 
 ---
 
@@ -110,12 +82,23 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 
 ### Scoring
 
-Two rules:
+One eligibility rule, one formula.
 
-1. **Approved model (eligibility).** Your submitted run must use one of the `(model, quantization)` rows in [`MODELS.md`](MODELS.md). Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its 4-bit row.
-2. **Ranking.** Submissions are ranked by **`TB_score`** — mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`). Ties are broken by fewer **`total_tokens`** — the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
+**Eligibility.** Your submitted run must use one of the `(model, quantization)` rows in [`MODELS.md`](MODELS.md). Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its 4-bit row.
 
-The limit is what makes this a scaffold-engineering challenge rather than a model-shopping one: everyone picks from models that fit on a single serious GPU, and the ranking rewards whoever gets the most out of that pool.
+**Score.**
+
+```
+leaderboard_score = TB_score − 0.01 × (total_tokens / 1,000,000)
+```
+
+Where:
+- **`TB_score`** is your mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`) — a value between 0 and 1.
+- **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
+
+The weighting in plain English: **every million tokens costs one point** (0.01) of Terminal-Bench score. A typical run spends 1–3M tokens, so the penalty lands around 0.01–0.03 — enough to decide races between agents of similar capability, never enough to beat a real capability gap. Worked example: TB 0.42 with 1.26M tokens scores `0.42 − 0.0126 = 0.407`; the same agent rerun with a verbose loop at 2.5M tokens drops to `0.395`.
+
+The approved-model list plus the token penalty is what makes this a scaffold-engineering challenge: everyone picks from the same small pool of models, and the ranking rewards whoever gets the most out of it, most economically.
 
 ### Computing your submission numbers
 
@@ -138,11 +121,11 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
 find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 ```
 
-These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. Ranking is by Terminal-Bench score, with total tokens breaking ties — nothing else is computed.
+These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
 
 ### Reproducibility check (finale)
 
-There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is Terminal-Bench score, under the VRAM limit. At the finale, organizers re-run the top ~10 submissions to confirm the result:
+There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top ~10 submissions to confirm the result:
 
 1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
 2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the semester. Significantly lower private-set scores get investigated for task-specific hardcoding.
@@ -160,6 +143,7 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
 | Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
+
 
 ---
 
@@ -183,7 +167,7 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a row in [`MODELS.md`](MODELS.md) |
 | Quantization | `AWQ 4-bit` | one of the values below |
 | Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
-| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — used only to break ties |
+| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — feeds the token penalty |
 | GPU used | `RTX A6000 48 GB` | informational, not scored |
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
 
@@ -194,12 +178,14 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Field | Example | How it's derived |
 |---|---|---|
 | Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) — informational; eligibility is simply being on the list |
+| **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
 ### Part 2: Writeup
 
 A single writeup (≤5,000 words) attached to your Kaggle submission. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
+
 
 ---
 
@@ -225,6 +211,7 @@ Full instructions:
 | [`starter/docs/byo_model.md`](starter/docs/byo_model.md) | Ollama, vLLM, hosted endpoints, `.env` config |
 | [`starter/docs/harbor.md`](starter/docs/harbor.md) | Harbor mental model, custom agents, leaderboard submission |
 | [`starter/docs/troubleshooting.md`](starter/docs/troubleshooting.md) | First-week issues, in order of likelihood |
+
 
 ---
 
@@ -258,6 +245,32 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 **Kaggle Notebooks and Google Colab** can host a model server behind a tunnel (ngrok, cloudflared) so a remote Harbor machine can reach them — but it's fragile (Colab drops after ~90 min idle, Kaggle caps sessions at 12 hr, free tunnel providers have request limits) and slower than any of the alternatives above. Fine for prompt iteration; not recommended for the submitted eval run.
 
+
+---
+
+## Agent safety
+
+**Terminal-Bench's sandbox does the heavy lifting.** Every task runs in a fresh Docker container with no host access, destroyed afterward. Inside `harbor run`, your agent can't hurt you. Don't undo that:
+
+- Don't mount your home directory, SSH keys, or `~/.gitconfig` into containers.
+- Don't bake real credentials into images or `.env` files you commit. Use throwaway keys.
+- `.env` is gitignored in the starter — keep it that way.
+
+**The danger zone is your own dev loop.** When you test agent code *outside* Harbor (e.g., pointing your loop at a local shell "just to see"), it has whatever access you have:
+
+- Develop in a scratch directory, never your home directory or a repo you care about.
+- Never give a dev agent access to directories containing `.git` remotes, credentials, or anything you can't lose.
+- Remember the classics: `git clean -fdx`, `docker system prune`, `find ... -exec rm`, `>` truncation. An agent will eventually try one.
+
+**API keys deserve their own paragraph, because your agent can read files.** Anything an agent `cat`s — including `.env` — enters the model conversation and the endpoint's logs. During `harbor run` you're fine: task containers don't inherit your host environment. The exposure is dev-loop testing with local shell access. In order of effort:
+
+- Use a throwaway key created for this event, never a personal or work key. If an agent may have read it, treat it as burned and rotate it.
+- Keep `.env` out of any directory you point a dev agent at — the agent needs the key *in its process environment* to call the endpoint, not on disk where it explores.
+- If you already use a secrets manager, inject at runtime instead of keeping a plaintext file: e.g. `op run --env-file .env.tpl -- ./scripts/run_baseline.sh` (1Password CLI), or the `pass`/Bitwarden equivalents. Know the limit: this removes the at-rest file, but the running agent still holds the key in memory — no tool changes the "rotate if touched" rule.
+
+**If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
+
+
 ---
 
 ## Communication
@@ -269,6 +282,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 - **Terminal-Bench Discord** — separate, upstream community. Worth joining.
 
 Be kind, be specific, search before you ask.
+
 
 ---
 
@@ -310,6 +324,15 @@ No live leaderboard. Run Terminal-Bench locally, track your own progress, share 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
 
+
+---
+
+## Contact
+
+Chris Endemann (endemann@wisc.edu) — ML+X, UW–Madison.
+
+Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
+
 ---
 
 ## Citation
@@ -318,6 +341,7 @@ We're users and fans — but this challenge is a separate event. We don't speak 
 Chris Endemann et al. MLM26: Local Coding Agent Challenge.
 https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 ```
+
 
 ---
 

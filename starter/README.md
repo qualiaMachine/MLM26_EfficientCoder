@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in [`MODELS.md`](../MODELS.md) (short list, 7–35 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. Ranking is by Terminal-Bench score; ties are broken by fewer total tokens. Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — UW participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in [`MODELS.md`](../MODELS.md) (short list, 7–35 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score − 0.01 × (total_tokens / 1M)` — every million tokens costs one TB point, so lean loops pay. Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — UW participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Docs
 

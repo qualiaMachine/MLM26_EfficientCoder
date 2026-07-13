@@ -1,6 +1,6 @@
 # Approved models
 
-Submissions must use one of the models below. The list is deliberately short so the competition is about how you build the scaffold, not which model you found. Ranking is by Terminal-Bench score, with ties broken by fewer total tokens.
+Submissions must use one of the models below. The list is deliberately short so the competition is about how you build the scaffold, not which model you found. Scoring is Terminal-Bench score minus a small token penalty — see the [README's Evaluation section](README.md#evaluation).
 
 Development is unrestricted — prototype against any open-weight model or endpoint you like. The approved list governs the *submitted* run only.
 
