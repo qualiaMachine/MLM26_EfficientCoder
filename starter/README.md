@@ -1,6 +1,6 @@
 # MLM26 Coding Agent Starter
 
-The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 harness. Your job is to make it better.
+The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
 Challenge brief, rules, schedule, and judging: see the [MLM26 README](../README.md).
 
@@ -27,7 +27,7 @@ uv pip install -e starter/         # installs harbor + this agent package (edita
 
 > Best practice: one venv per project, always activated when you work. The venv lives at the repo root; the agent code lives in `starter/`. If `harbor` is "not found" later, you forgot to activate. The `-e` (editable) install means your edits to `starter/agent/` take effect immediately — no reinstall needed. It also makes your agent importable by Harbor's `--agent-import-path`.
 
-**3. Verify the harness** (no model needed — the oracle replays each task's known solution):
+**3. Verify Harbor** (no model needed — the oracle replays each task's known solution):
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 -a oracle

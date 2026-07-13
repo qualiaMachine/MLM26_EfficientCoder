@@ -26,7 +26,7 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `Qwen/Qwen2.5-Coder-0.5B-Instruct` | bf16 | 2 GB | Tiny — useful for testing the harness on CPU/iGPU. |
+| `Qwen/Qwen2.5-Coder-0.5B-Instruct` | bf16 | 2 GB | Tiny — useful for testing your scaffold end-to-end on CPU/iGPU. |
 | `Qwen/Qwen2.5-Coder-1.5B-Instruct` | bf16 | 4 GB | |
 | `Qwen/Qwen2.5-Coder-3B-Instruct` | bf16 | 7 GB | Smallest one that can solve easy tasks unaided. |
 | `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` | AWQ 4-bit | 7 GB | |
