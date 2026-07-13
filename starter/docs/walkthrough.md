@@ -311,7 +311,7 @@ The sample set is just 10 tasks for setup verification. The public subset is wha
 ./scripts/run_subset.sh
 ```
 
-This reads the task names from `eval/public_subset.txt` and runs your agent against each one from the full Terminal-Bench 2.0 dataset. The aggregate score at the end is what you post to the Kaggle leaderboard thread.
+This reads the task names from `eval/public_subset.txt` and runs your agent against each one from the full Terminal-Bench 2.0 dataset. The aggregate score at the end is what you post in the Kaggle Discussion tab (the live leaderboard is for full 89-task runs).
 
 ---
 

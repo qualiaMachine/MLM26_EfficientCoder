@@ -55,7 +55,7 @@ Watch the logs: instruction in, commands out, verdict at the end. Results land i
 ./scripts/run_subset.sh            # run the official public subset
 ```
 
-Then self-report on the Kaggle leaderboard thread:
+Then post your subset results in the Kaggle Discussion tab (the live leaderboard is for full 89-task runs):
 
 1. **Score** — the aggregate printed at the end of the run
 2. **Command + job name** — what you ran, and the `jobs/<job-name>` it produced
