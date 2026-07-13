@@ -24,10 +24,10 @@ The **scaffold** is where that work happens. It's the code wrapped around the mo
 
 > **Terminology.** Two words carry specific meanings throughout these docs:
 >
-> - **Scaffold** — the code *you* write around the model: prompting, context management, parsing responses into commands, error recovery, deciding when to stop. This is the part you compete on. Elsewhere you'll see the same idea called *scaffolding* (the usual term in academic papers and model evaluations), an *agent harness*, or an *orchestration layer*.
-> - **Evaluation framework** — [Harbor](https://www.harborframework.com/), the fixed infrastructure that runs Terminal-Bench: it spins up each task's Docker container, invokes your agent, and grades the final state. You don't modify it. Elsewhere often called an *eval harness*.
+> - **Scaffold** — the code *you* write around the model: prompting, context management, parsing responses into commands, error recovery, deciding when to stop. This is the part you compete on. The same concept goes by several names: *scaffolding* is the usual term in academic papers and model evaluations, while industry increasingly says **agent harness** ("agent = model + harness") — you'll see that phrasing constantly in blog posts and product docs, and it may well be winning. They're synonyms.
+> - **Evaluation framework** — [Harbor](https://www.harborframework.com/), the fixed infrastructure that runs Terminal-Bench: it spins up each task's Docker container, invokes your agent, and grades the final state. You don't modify it. Elsewhere often called an *eval harness* or *test harness*.
 >
-> They nest: Harbor runs your scaffold, and your scaffold runs the model.
+> They nest: Harbor runs your scaffold, and your scaffold runs the model. We stick with *scaffold* in these docs only because "harness" gets used on both sides of that line — when you meet it in the wild, context tells you which is meant.
 
 ### Goal
 
