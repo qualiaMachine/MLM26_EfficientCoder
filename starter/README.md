@@ -35,7 +35,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 
 If this scores ~100%, Docker + Harbor work. If not: [docs/troubleshooting.md](docs/troubleshooting.md).
 
-**4. Point at a model.** Easiest is [Ollama](https://ollama.com/download); all options in [docs/byo_model.md](docs/byo_model.md):
+**4. Point at a model.** UW participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form). Otherwise easiest is [Ollama](https://ollama.com/download). All options in [docs/byo_model.md](docs/byo_model.md):
 
 ```bash
 cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): pick a model from [`MODELS.md`](../MODELS.md) (request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score / log10(reported_VRAM × total_tokens)^2`, so footprint and token use both meaningfully bite — a clever small model can outrank a more capable but more expensive one. Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Constraints that always apply (full rules in the [challenge README](../README.md)): pick a model from [`MODELS.md`](../MODELS.md) (request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score / log10(reported_VRAM × total_tokens)^2`, so footprint and token use both meaningfully bite — a clever small model can outrank a more capable but more expensive one. Default provided model (UW participants): `Qwen/Qwen3.6-27B-FP8` (32 GB) on the shared UW-hosted endpoint — see [docs/byo_model.md](docs/byo_model.md). Self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Docs
 
@@ -85,7 +85,7 @@ Constraints that always apply (full rules in the [challenge README](../README.md
 | [docs/walkthrough.md](docs/walkthrough.md) | **Start here.** End-to-end guide: Docker → uv → Harbor → model → first score → making changes |
 | [docs/docker_setup.md](docs/docker_setup.md) | Per-OS Docker install + common failures |
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
-| [docs/byo_model.md](docs/byo_model.md) | Ollama / vLLM / hosted endpoints, `.env` config |
+| [docs/byo_model.md](docs/byo_model.md) | Provided UW endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | First-week issues, in order of likelihood |
 | [docs/safety.md](docs/safety.md) | The rules that keep your laptop alive |
 

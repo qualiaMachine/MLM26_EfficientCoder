@@ -48,6 +48,12 @@ For **GGUF/Q4_K_M** equivalents (Ollama users), use the AWQ 4-bit row for the sa
 | `Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8` | FP8 | 500 GB | Hosted-only (NRP, Bedrock-via-CMI). |
 | `Qwen/Qwen3-Coder-480B-A35B-Instruct` | bf16 | ~1000 GB | Hosted-only. |
 
+### Qwen3.6 family
+
+| Model | Quantization | Reported VRAM | Notes |
+|---|---|---|---|
+| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Provided model.** Served for MLM26 participants on the UW-hosted shared endpoint (see [README → Resources](README.md#resources)); key via the kickoff form. Reasoning model with coder tool-calling. |
+
 ### DeepSeek-Coder family
 
 | Model | Quantization | Reported VRAM | Notes |

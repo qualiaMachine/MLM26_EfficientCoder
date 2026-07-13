@@ -38,6 +38,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 - **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; improving it is the whole point.
 - **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
 - **A curated model catalog** in [`MODELS.md`](MODELS.md) — the eligible open-weight models for the leaderboard, each with a reported VRAM number used by the scoring formula. Roughly 50 entries spanning ~7 GB to ~500 GB; new models can be requested via the Kaggle Discussion tab.
+- **A provided model endpoint** (UW participants) — a shared `Qwen/Qwen3.6-27B-FP8` deployment hosted through ML+X, ready to drop into the starter's `.env` with no GPU of your own. Request the API key via the kickoff form; connection details in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
 - **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
 
 ### Terminal-Bench
@@ -62,7 +63,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Want to use a model that isn't listed? Post in the Kaggle Discussion tab — organizers add rows on request, usually within a day or two.
+**Models (binding).** Pick a model from [`MODELS.md`](MODELS.md). That table maps each `(model, quantization)` to a canonical *reported VRAM* used by the leaderboard formula — you don't measure VRAM yourself, you pick a row. The table spans from ~7 GB (Qwen-Coder-7B AWQ) to ~500 GB (Kimi-K2.7-Code), so no hardware floor or ceiling is implied. **Default provided model: `Qwen/Qwen3.6-27B-FP8` (32 GB), served on the UW-hosted shared endpoint (see [Resources](#resources)). Self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).** Want to use a model that isn't listed? Post in the Kaggle Discussion tab — organizers add rows on request, usually within a day or two.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
@@ -228,7 +229,7 @@ The fastest path from "I registered" to "my agent has a Terminal-Bench score" li
    ```bash
    harbor run -d terminal-bench-sample@2.0 -a oracle
    ```
-4. **Set up a model endpoint** — Ollama is easiest. The suggested anchor is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` under vLLM; for first-week dev `ollama pull qwen2.5-coder:14b` works on smaller GPUs.
+4. **Set up a model endpoint** — UW participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form; `.env` values in [`starter/docs/byo_model.md`](starter/docs/byo_model.md)) — no GPU needed. Otherwise Ollama is easiest: `ollama pull qwen2.5-coder:14b` works on smaller GPUs for first-week dev.
 5. **Run the baseline** on a single task to confirm everything is wired up.
 
 Full instructions:
@@ -238,7 +239,7 @@ Full instructions:
 | [`starter/README.md`](starter/README.md) | Setup in ~15 minutes, the weekly loop, where to dig in |
 | [`starter/docs/walkthrough.md`](starter/docs/walkthrough.md) | End-to-end: Docker → uv → Harbor → first model → first score |
 | [`starter/docs/docker_setup.md`](starter/docs/docker_setup.md) | Per-OS Docker install + common failures |
-| [`starter/docs/byo_model.md`](starter/docs/byo_model.md) | Ollama, vLLM, hosted endpoints, `.env` config |
+| [`starter/docs/byo_model.md`](starter/docs/byo_model.md) | Provided UW endpoint, Ollama, vLLM, hosted endpoints, `.env` config |
 | [`starter/docs/harbor.md`](starter/docs/harbor.md) | Harbor mental model, custom agents, leaderboard submission |
 | [`starter/docs/safety.md`](starter/docs/safety.md) | Sandbox guidance, what to keep away from your dev loop |
 | [`starter/docs/troubleshooting.md`](starter/docs/troubleshooting.md) | First-week issues, in order of likelihood |
@@ -266,7 +267,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 - **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM across all calls. Good for prompt iteration and small eval runs; the rate cap makes a full 89-task sweep slow but doable.
 - **Amazon Bedrock** — Pay-per-token, fully-managed access to the Qwen3 lineup (`qwen3-coder-30b-a3b`, `qwen3-coder-480b-a35b`, `qwen3-coder-next`, `qwen3-235b-a22b-instruct-2507`, `qwen3-32b`). AWS doesn't formally publish the serving quantization, so the VRAM mapping in [`MODELS.md`](MODELS.md) is an approximation based on FP8. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
 - **NRP managed-LLM endpoint** (UW participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. All already in `MODELS.md`. [nrp.ai/llms](https://nrp.ai/llms/)
-- **UW-hosted Qwen-Coder endpoint** — a shared deployment for MLM26 participants through ML+X. Request access via the kickoff form.
+- **Provided model endpoint** (UW participants) — the default for MLM26: a shared `Qwen/Qwen3.6-27B-FP8` deployment hosted through ML+X on campus RunAI (32 GB row in [`MODELS.md`](MODELS.md); reasoning + coder tool-calling, 250k context). Request the API key via the kickoff form; `.env` values and usage notes in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). Capacity is shared across teams — keep eval concurrency low and see the etiquette notes in the doc.
 
 **Self-hosted on your own GPU or a rented one:**
 
@@ -317,7 +318,7 @@ No — work with whatever subset is useful for debugging. For the leaderboard, y
 Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks both work without local hardware. UW participants can hit the NRP managed-LLM endpoint or request RunAI/UW endpoints. Whatever model you finally submit must be a row in `MODELS.md`.
+See [Resources](#resources). UW participants: the provided `Qwen3.6-27B-FP8` endpoint needs no GPU at all — that's what it's for. For dev, NVIDIA's API catalog and Kaggle Notebooks also work without local hardware, and UW participants can additionally hit the NRP managed-LLM endpoint. Whatever model you finally submit must be a row in `MODELS.md`.
 
 **I'm not at UW.**
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
