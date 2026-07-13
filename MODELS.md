@@ -36,9 +36,9 @@ python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 # weights 19.4 GB + KV @ 16k 4.3 GB + 2 GB headroom ≈ 25.7 GB  (table row: 28 GB)
 ```
 
-Landing within a few GB of the table row is expected and fine.
+Landing within a few GB of the table row is expected and fine. (Don't compare against `nvidia-smi` — most serving stacks preallocate a large memory pool at startup, so the reading reflects your GPU, not the model.)
 
-Don't sanity-check with `nvidia-smi` alone: serving stacks preallocate. vLLM grabs ~90% of visible GPU memory at startup and turns the surplus into KV-cache pool, so the reading sits near the card's ceiling regardless of the model. If you want a live number, take the "model weights take X GiB" line from vLLM's startup log and add the KV term from the script.
+To verify the whole table at once, [`starter/scripts/check_vram_table.py`](starter/scripts/check_vram_table.py) parses every row above and prints table vs. estimate side by side — anyone can run it, which is how the numbers stay honest.
 
 ## Requesting an addition
 

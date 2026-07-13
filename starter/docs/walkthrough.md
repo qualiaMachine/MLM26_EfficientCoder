@@ -183,7 +183,7 @@ ollama pull qwen2.5-coder:14b
 This downloads a 14B parameter coding model (~9 GB). It's the recommended starting point — large enough to reason through most easy/medium tasks, small enough to run on 16+ GB VRAM. The 7B works too but expect most tasks to fail due to limited reasoning capacity.
 
 > **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from [`MODELS.md`](../../MODELS.md)):
-> - **No GPU / CPU only:** `qwen2.5-coder:3b` (slow but works — dev only)
+> - **No GPU / CPU only:** `qwen2.5-coder:7b` (slow on CPU, but works)
 > - **8 GB VRAM:** `qwen2.5-coder:7b` (counts as the approved 7B AWQ row)
 > - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point; approved 14B AWQ row)
 > - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB; approved 32B AWQ row) or `qwen3-coder:30b`
