@@ -14,7 +14,19 @@ Harbor needs Python 3.12+. Recreate the venv: `uv venv --python 3.12` (uv downlo
 The agent package isn't installed in the venv Harbor runs from. From the repo root: `uv pip install -e starter/` (the editable install is what makes `--agent-import-path agent.agent:BaselineAgent` resolvable).
 
 **`Cannot connect to the Docker daemon`**
-Docker isn't running. See [docker_setup.md](docker_setup.md).
+Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux).
+
+**`permission denied ... docker.sock`** (Linux)
+You skipped `sudo usermod -aG docker $USER` — run it, then log out and back in (or `newgrp docker`).
+
+**Docker builds fail with "no space left on device"**
+Give Docker ≥30 GB of disk. Reclaim space with `docker system prune` (careful: deletes stopped containers and unused images).
+
+**Everything is slow on Windows**
+Keep your repo inside the WSL2 filesystem (`~/...`), not `/mnt/c/...`.
+
+**Corporate laptop / no admin rights**
+You can't install Docker locally. Harbor supports cloud sandboxes (Daytona) as a fallback, or run on any Linux VM you control.
 
 **Oracle run fails (`harbor run -d terminal-bench-sample@2.0 -a oracle`)**
 This is the canary — if oracle fails, the problem is your Docker/Harbor setup, not your agent. Check Docker is running, you have disk space (≥30 GB for Docker), and your network can pull images.

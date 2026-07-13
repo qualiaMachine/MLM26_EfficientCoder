@@ -13,7 +13,7 @@ Terminal-Bench runs every task inside a fresh Docker container. Your agent never
 
 ### macOS
 
-Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar.
+Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar, and it must be running whenever you use Harbor. Homebrew alternative: `brew install --cask docker`, then launch Docker from Applications once.
 
 ### Linux (Ubuntu/Debian)
 
@@ -22,7 +22,7 @@ curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 ```
 
-**Log out and back in** (or run `newgrp docker`) for the group change to take effect.
+**Log out and back in** (or run `newgrp docker`) for the group change to take effect. Other distros: see the [Docker Engine install docs](https://docs.docker.com/engine/install/).
 
 ### Windows
 
@@ -33,7 +33,7 @@ All challenge work happens inside **WSL2** (Windows Subsystem for Linux), not Po
 wsl --install
 ```
 
-Reboot. A terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it. Then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** — press the Windows key, type **Ubuntu**, and click the app (or use Windows Terminal's Ubuntu tab).
+Reboot. A terminal may open to finish Ubuntu setup (username + password) — if not, open **"Ubuntu"** from the Start menu to complete it. Then install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) with "Use WSL 2 based engine" checked. In Docker Desktop → Settings → Resources → WSL Integration, enable your Ubuntu distro. **Everything below runs in the Ubuntu terminal** — press the Windows key, type **Ubuntu**, and click the app (or use Windows Terminal's Ubuntu tab). Keep the repo inside the WSL2 filesystem (`~/...`), not `/mnt/c/...` — it's dramatically faster.
 
 ### Verify Docker works
 
@@ -66,7 +66,7 @@ To generate this message, Docker took the following steps:
 
 If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
 
-If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). See [docker_setup.md](docker_setup.md) for more troubleshooting.
+If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). More Docker failures are covered in [troubleshooting.md](troubleshooting.md).
 
 ---
 

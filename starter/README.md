@@ -6,7 +6,7 @@ Challenge brief, rules, schedule, and judging: see the [challenge README](../REA
 
 ## Setup (15 minutes, once)
 
-**0. Docker.** Required — Terminal-Bench runs every task in a Docker container. Follow [docs/docker_setup.md](docs/docker_setup.md) for your OS, then confirm `docker run hello-world` works.
+**0. Docker.** Required — Terminal-Bench runs every task in a Docker container. Follow [Step 1 of the walkthrough](docs/walkthrough.md#step-1-install-docker) for your OS, then confirm `docker run hello-world` works.
 
 **1. Install [uv](https://docs.astral.sh/uv/)** (fast Python package manager):
 
@@ -83,11 +83,10 @@ Constraints that always apply (full rules in the [challenge README](../README.md
 | Doc | What's in it |
 |---|---|
 | [docs/walkthrough.md](docs/walkthrough.md) | **Start here.** End-to-end guide: Docker → uv → Harbor → model → first score → making changes |
-| [docs/docker_setup.md](docs/docker_setup.md) | Per-OS Docker install + common failures |
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
 | [docs/byo_model.md](docs/byo_model.md) | Provided UW endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | First-week issues, in order of likelihood |
-| [docs/safety.md](docs/safety.md) | The rules that keep your laptop alive |
+| [Agent safety](../README.md#agent-safety) | The rules that keep your laptop alive |
 
 ## License
 
