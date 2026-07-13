@@ -150,11 +150,11 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 
 ## Submitting your solution
 
-**One submission per team, at the end of the competition.** There is no live leaderboard and no mid-competition submissions — focus on building and understanding, not chasing a number.
+Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed at the finale.
 
-During the competition, share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
+During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
-### Part 1: Submission card
+### Part 1: Submission card (`submission.csv`)
 
 Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
@@ -307,7 +307,7 @@ See [Resources](#resources). For dev, NVIDIA's API catalog and the hosted APIs i
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
-No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top 5 for reproducibility. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed at the finale, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
@@ -331,18 +331,3 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 ```
 
 
----
-
-## Organizer notes (delete before publishing)
-
-- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared endpoint serving an approved model — ideally the anchor `Qwen3.6-27B-FP8` — in addition to the existing managed-LLM catalog. If yes, every team — UW–Madison or not — gets a frictionless path to the anchor.
-- [ ] Stand up the submission-card validator (checks the model row is on the approved list and the token/score fields parse).
-- [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
-- [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)
-- [ ] Cold-start test the quickstart on a machine that didn't write it
-- [ ] Recruit judges (Terminal-Bench contributors, agent researchers)
-- [ ] Set up Discord
-- [ ] Coordinate with Kaggle on Community Hackathon setup
-- [ ] Final pass on safety doc with UW–Madison research-IT
-- [ ] Create Google Form for final submissions
-- [ ] PR review SLA for `MODELS.md` additions during the competition (target: same-day)
