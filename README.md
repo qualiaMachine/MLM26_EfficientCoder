@@ -74,7 +74,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
 - **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. The token penalty (0.01 per million) already charges verbose agents, so no cap is needed.
 
-**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run the top 5 submissions and review the code; task-specific hardcoding disqualifies.
+**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. After the deadline, organizers re-run the top 5 submissions and review the code; task-specific hardcoding disqualifies.
 
 ---
 
@@ -123,15 +123,15 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 
 These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
 
-### Reproducibility check (finale)
+### Verification of top submissions
 
-There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top 5 submissions to confirm the result:
+Leaderboard scores are self-reported, so before final standings are confirmed, organizers verify the top 5. For each one, we:
 
-1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
-2. **Hardcoding check** — review the agent code at the tagged commit for task-specific branching, hardcoded solutions, or prompts written for individual tasks. All 89 tasks are public, so this is a code review, not a data check.
-3. **Token + model verification** — confirm `total_tokens` matches the submission card and that the running agent is talking to the same model row claimed in the card.
+1. **Re-run the agent.** Clone the repo at the submitted commit, run it against all 89 tasks with the declared model, and check the score matches the reported one. LLM sampling is stochastic, so normal run-to-run variation is expected and fine.
+2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
+3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
 
-Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or model/quantization mismatches disqualify.
+Significant discrepancies, hardcoding, or running a different model than declared disqualify the submission. Nothing else is judged: there's no scored writeup, no style points — the leaderboard score is the ranking.
 
 ### Required elements (pass/fail)
 
@@ -150,7 +150,7 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 
 ## Submitting your solution
 
-Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed at the finale.
+Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
 
 During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
@@ -295,7 +295,7 @@ Yes, as long as every model involved is on the approved list. The submission car
 Yes, please. It's independent of this challenge — a real leaderboard and a real artifact.
 
 **Do I need to use the entire Terminal-Bench task set during the competition?**
-No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers re-run the top 5 and review their code for task-specific hardcoding.
+No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; after the deadline, organizers re-run the top 5 and review their code for task-specific hardcoding.
 
 **My team is just me. / My team is five people.**
 Both fine. Teams of 1–5. Reflect honestly on contributions in the writeup.
@@ -307,7 +307,7 @@ See [Resources](#resources). For dev, NVIDIA's API catalog and the hosted APIs i
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
-Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed at the finale, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
