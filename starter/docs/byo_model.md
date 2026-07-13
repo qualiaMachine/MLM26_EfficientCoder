@@ -8,7 +8,38 @@ LLM_MODEL=...      # model id as the endpoint knows it
 LLM_API_KEY=...    # anything non-empty for local endpoints
 ```
 
-## Ollama (easiest — start here)
+## Provided endpoint (UW participants — default)
+
+ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for MLM26 participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
+
+```bash
+# .env
+LLM_BASE_URL=https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1
+LLM_MODEL=/mnt/shared-models/qwen3.6-27B-fp8
+LLM_API_KEY=<key from the kickoff email>
+LLM_MAX_TOKENS=4096
+```
+
+Running *inside* a RunAI workspace on the same cluster? Use the cluster-internal hostname instead — it skips the public ingress:
+
+```bash
+LLM_BASE_URL=http://qwen36-27b-vllm.runai-shared-models.svc.cluster.local/v1
+```
+
+Verify your key and the served model id in one shot:
+
+```bash
+curl $LLM_BASE_URL/models -H "Authorization: Bearer $LLM_API_KEY"
+```
+
+Things to know about this endpoint:
+
+- **The model id is a checkpoint path** (`/mnt/shared-models/qwen3.6-27B-fp8`), not a HuggingFace repo id — vLLM serves it under the path it was loaded from. The `curl` above shows the exact string to put in `LLM_MODEL`. For your *submission card*, the corresponding `MODELS.md` row is `Qwen/Qwen3.6-27B-FP8` (32 GB).
+- **It's a reasoning model.** Thinking tokens count against the completion budget, so set `LLM_MAX_TOKENS` to 4096 or higher — at the starter default of 2048 the model can spend the whole budget thinking and return an empty answer. Thinking arrives in `reasoning_content`, separate from the final `content`.
+- **Long context, cheap re-prompting.** 250k-token context window with prefix caching enabled, so re-sending the growing conversation each turn (what the starter loop does) is fast. The leaderboard still counts every input token, though — long contexts are cheap in latency, not in score.
+- **Capacity is shared across all teams** (a handful of concurrent sequences). Keep `harbor run -n` at 2–4 and give a heads-up in the team channel before kicking off a full 89-task sweep.
+
+## Ollama (easiest local option)
 
 ```bash
 # Install: https://ollama.com/download
@@ -52,11 +83,7 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) so the leaderboard can compute its VRAM-weighted score. Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed Qwen3-Coder lineup IS eligible (with approximate FP8 VRAM mapping in `MODELS.md`); Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Suggested anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB reported VRAM).
-
-## RunAI (UW participants)
-
-Request access via the kickoff form. You'll get an OpenAI-compatible endpoint URL + key to drop into `.env`. Capacity is limited; shared endpoints between teams are fine if disclosed.
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) so the leaderboard can compute its VRAM-weighted score. Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed Qwen3-Coder lineup IS eligible (with approximate FP8 VRAM mapping in `MODELS.md`); Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Default provided model: `Qwen/Qwen3.6-27B-FP8` (32 GB reported VRAM) on the UW-hosted endpoint above; self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Swapping models
 
