@@ -31,7 +31,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability.
 - **Beats the leaderboard**, which rewards a single weighted score combining Terminal-Bench accuracy, model footprint, and tokens per task.
 
-Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal ReAct loop — a launchpad, not a solution.
+Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
 
 ### What we provide
 
