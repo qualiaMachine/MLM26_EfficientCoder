@@ -83,7 +83,7 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use a model listed in [`MODELS.md`](../../MODELS.md) with a reported VRAM of **48 GB or less**. Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's `qwen3-coder-30b-a3b` (35 GB) and `qwen3-32b` (38 GB) fit under the limit; the 480B does not. Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Default provided model: `Qwen/Qwen3.6-27B-FP8` (32 GB reported VRAM) on the UW-hosted endpoint above; self-hosting anchor: `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use one of the approved models in [`MODELS.md`](../../MODELS.md). Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed `qwen3-coder-30b-a3b` counts as the approved FP8 row; Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — the UW-hosted endpoint above, or self-host it from HuggingFace; the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Swapping models
 
