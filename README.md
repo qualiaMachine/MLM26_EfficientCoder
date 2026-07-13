@@ -143,6 +143,7 @@ Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or mo
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
 | Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
+| Writeup covering all sections of [`WRITEUP_TEMPLATE.md`](WRITEUP_TEMPLATE.md) | Yes/No |
 
 
 ---
@@ -180,9 +181,9 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) — informational; eligibility is simply being on the list |
 | **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
-### Part 2: Writeup
+### Part 2: Writeup (required)
 
-A single writeup (≤5,000 words) attached to your Kaggle submission. Problem framing, approach, what worked, what didn't, Terminal-Bench scores, failure analysis, limitations, what you'd do with another month. Quality > length.
+A single writeup (≤5,000 words) attached to your Kaggle submission, following [`WRITEUP_TEMPLATE.md`](WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
@@ -269,19 +270,6 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 - If you already use a secrets manager, inject at runtime instead of keeping a plaintext file: e.g. `op run --env-file .env.tpl -- ./scripts/run_baseline.sh` (1Password CLI), or the `pass`/Bitwarden equivalents. Know the limit: this removes the at-rest file, but the running agent still holds the key in memory — no tool changes the "rotate if touched" rule.
 
 **If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
-
-
----
-
-## Communication
-
-- **Kaggle Discussion tab** — async questions, public discussion
-- **Discord** — informal, real-time, drop-in office hours (link TBD)
-- **Weekly Wednesday sprints** — hybrid, recorded
-- **Office hours** — TBD, posted in Discord
-- **Terminal-Bench Discord** — separate, upstream community. Worth joining.
-
-Be kind, be specific, search before you ask.
 
 
 ---

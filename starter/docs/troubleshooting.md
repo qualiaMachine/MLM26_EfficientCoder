@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Work through these in order — they cover ~90% of first-week issues. Still stuck? Post in Discord with the exact command, the full error, and your OS.
+Work through these in order — they cover ~90% of first-week issues. Still stuck? Post in the Kaggle Discussion tab with the exact command, the full error, and your OS.
 
 ## Setup
 
