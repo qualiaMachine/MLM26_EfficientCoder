@@ -38,6 +38,8 @@ python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 
 Landing within a few GB of the table row is expected and fine. (Don't compare against `nvidia-smi` — most serving stacks preallocate a large memory pool at startup, so the reading reflects your GPU, not the model.)
 
+To verify the whole table at once, [`starter/scripts/check_vram_table.py`](starter/scripts/check_vram_table.py) parses every row above and prints table vs. estimate side by side — anyone can run it, which is how the numbers stay honest.
+
 ## Requesting an addition
 
 The list is meant to stay short, but it isn't frozen. If a model materially changes what's possible for participants (a new open-weight coder release, a hardware tier the list doesn't serve), post in the **Kaggle Discussion tab** with the HuggingFace id, the quantization, and the case for adding it. Additions should land at or under ~48 GB reported VRAM — a single serious GPU. Organizers respond within a day or two; once listed, the model is available to every team.

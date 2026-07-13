@@ -18,11 +18,9 @@ few GB of an existing MODELS.md row, the table is right. If you're
 proposing a new row, include this script's output in your Kaggle
 Discussion post.
 
-Why not just watch nvidia-smi? Serving stacks preallocate: vLLM grabs
-~90% of visible GPU memory at startup and turns the surplus into KV-cache
-pool, so nvidia-smi reads near the card's ceiling no matter what model is
-loaded. If you want a live number anyway, read the "model weights take
-X GiB" line from vLLM's startup log and add the KV term from this script.
+Don't compare against nvidia-smi — most serving stacks preallocate a
+large memory pool at startup, so the reading reflects your GPU, not the
+model.
 """
 
 import argparse
