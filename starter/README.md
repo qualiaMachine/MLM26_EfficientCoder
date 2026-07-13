@@ -35,7 +35,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 
 If this scores ~100%, Docker + Harbor work. If not: [docs/troubleshooting.md](docs/troubleshooting.md).
 
-**4. Point at a model.** UW participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form). Otherwise easiest is [Ollama](https://ollama.com/download). All options in [docs/byo_model.md](docs/byo_model.md):
+**4. Point at a model.** UW–Madison participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form). Otherwise easiest is [Ollama](https://ollama.com/download). All options in [docs/byo_model.md](docs/byo_model.md):
 
 ```bash
 cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
@@ -61,7 +61,7 @@ Then self-report on the Kaggle leaderboard thread:
 2. **Command + job name** — what you ran, and the `jobs/<job-name>` it produced
 3. **Setup** — model, quantization, hardware
 
-Keep your `jobs/` directories — organizers verify self-reported scores at the Week 8 generalization checkpoint and the Week 12 finale by re-running your agent.
+Keep your `jobs/` directories — organizers verify self-reported scores at the finale by re-running your agent.
 
 ## Making it yours
 
@@ -76,7 +76,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in [`MODELS.md`](../MODELS.md) (short list, 7–35 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score − 0.01 × (total_tokens / 1M)` — every million tokens costs one TB point, so lean loops pay. Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — UW participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in [`MODELS.md`](../MODELS.md) (short list, 7–35 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score − 0.01 × (total_tokens / 1M)` — every million tokens costs one TB point, so lean loops pay. Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB) — UW–Madison participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Docs
 
@@ -84,7 +84,7 @@ Constraints that always apply (full rules in the [challenge README](../README.md
 |---|---|
 | [docs/walkthrough.md](docs/walkthrough.md) | **Start here.** End-to-end guide: Docker → uv → Harbor → model → first score → making changes |
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
-| [docs/byo_model.md](docs/byo_model.md) | Provided UW endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
+| [docs/byo_model.md](docs/byo_model.md) | Provided UW–Madison endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | First-week issues, in order of likelihood |
 | [Agent safety](../README.md#agent-safety) | The rules that keep your laptop alive |
 

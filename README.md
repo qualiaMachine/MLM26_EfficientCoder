@@ -40,7 +40,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 - **A starter agent** in [`starter/`](starter/) — a minimal ReAct-style baseline (~200 lines) you can fork and rebuild from. It is intentionally simple; your job is to improve it.
 - **Setup documentation** in [`starter/docs/`](starter/docs/) — Docker installation, model endpoint configuration, a full end-to-end walkthrough, troubleshooting, and safety guidance.
 - **A short approved model list** in [`MODELS.md`](MODELS.md) — six `(model, quantization)` rows across four model families, spanning 7–35 GB so hardware from a gaming laptop to a single workstation card can compete. Additions can be requested via the Kaggle Discussion tab.
-- **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW participants) shared GPU access through ML+X, NRP, and CHTC.
+- **Compute pointers** in the [Resources](#resources) section — free GPU notebooks, hosted endpoints, and (for UW–Madison participants) shared GPU access through ML+X, NRP, and CHTC.
 
 ### Terminal-Bench
 
@@ -74,7 +74,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
 - **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. The token penalty (0.01 per million) already charges verbose agents, so no cap is needed.
 
-**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run top submissions on a held-out task subset; a big gap between your public-set score and your private-set score gets investigated.
+**Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. At the finale, organizers re-run the top 5 submissions and review the code; task-specific hardcoding disqualifies.
 
 ---
 
@@ -128,7 +128,7 @@ These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what
 There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top 5 submissions to confirm the result:
 
 1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
-2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the competition. Significantly lower private-set scores get investigated for task-specific hardcoding.
+2. **Hardcoding check** — review the agent code at the tagged commit for task-specific branching, hardcoded solutions, or prompts written for individual tasks. All 89 tasks are public, so this is a code review, not a data check.
 3. **Token + model verification** — confirm `total_tokens` matches the submission card and that the running agent is talking to the same model row claimed in the card.
 
 Honest run-to-run variance is fine. Significant discrepancies, hardcoding, or model/quantization mismatches disqualify.
@@ -226,7 +226,7 @@ Harbor spins up a fresh Docker container per Terminal-Bench task, so the machine
 
 - **Your own machine** — laptop, workstation, or lab machine with Docker Desktop (macOS/Windows) or Docker Engine (Linux). Cheapest option. Give Docker at least ~30 GB of disk for task images.
 - **A rented Linux VM** — Lambda Labs, RunPod, Vast.ai, Hetzner, EC2, GCE. Any VM you have root on and can install Docker on. If you're also self-hosting the model on the same box, get one with a GPU that fits your `MODELS.md` row.
-- **UW-Madison RunAI pod** — available to UW participants; comes preconfigured with Docker.
+- **UW–Madison RunAI pod** — available to UW–Madison participants; comes preconfigured with Docker.
 
 ### Where to serve the model (any OpenAI-compatible endpoint)
 
@@ -236,13 +236,13 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 - **NVIDIA API catalog** ([build.nvidia.com](https://build.nvidia.com/)) — Free, OpenAI-compatible endpoints for 100+ open-weight models including Qwen2.5-Coder-32B. Free tier: 1,000 inference credits on signup (up to 5,000 on request), shared ~40 RPM across all calls. Good for prompt iteration and small eval runs; the rate cap makes a full 89-task sweep slow but doable.
 - **Amazon Bedrock** — Pay-per-token, fully-managed `qwen3-coder-30b-a3b`, which counts as the approved `Qwen3-Coder-30B-A3B-Instruct-FP8` row (AWS doesn't formally publish serving precision; FP8 assumed). Bedrock's other models aren't on the approved list. [aws.amazon.com/bedrock](https://aws.amazon.com/bedrock/)
-- **NRP managed-LLM endpoint** (UW participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. None of these are on the approved list — useful for prototyping and comparison, not for the submitted run. [nrp.ai/llms](https://nrp.ai/llms/)
+- **NRP managed-LLM endpoint** (UW–Madison participants) — CILogon-authenticated OpenAI-compatible endpoint at `https://ellm.nrp-nautilus.io/v1` hosting Qwen3 (397B), GLM-5 (744B), Kimi-K2.7-Code (1T), Gemma-4, MiniMax-M2, GPT-OSS-120B, and more. None of these are on the approved list — useful for prototyping and comparison, not for the submitted run. [nrp.ai/llms](https://nrp.ai/llms/)
 
 **Self-hosted on your own GPU or a rented one:**
 
 - Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The anchor (`Qwen3.6-27B-FP8`, 32 GB) wants a ~40 GB+ card (RTX A6000, L40S, A100); the AWQ/Int4 rows cover everything from 12 GB cards up. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
-- **NRP GPU pods** (UW participants) — A100, L40S, A40, RTX 4090, etc. Spin up your own vLLM. [nrp.ai/get-access](https://nrp.ai/get-access/).
-- **CHTC** (UW participants) — [chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/). Free shared campus GPU pool, good for batch sweeps and fine-tuning.
+- **NRP GPU pods** (UW–Madison participants) — A100, L40S, A40, RTX 4090, etc. Spin up your own vLLM. [nrp.ai/get-access](https://nrp.ai/get-access/).
+- **CHTC** (UW–Madison participants) — [chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/). Free shared campus GPU pool, good for batch sweeps and fine-tuning.
 
 **Kaggle Notebooks and Google Colab** can host a model server behind a tunnel (ngrok, cloudflared) so a remote Harbor machine can reach them — but it's fragile (Colab drops after ~90 min idle, Kaggle caps sessions at 12 hr, free tunnel providers have request limits) and slower than any of the alternatives above. Fine for prompt iteration; not recommended for the submitted eval run.
 
@@ -295,19 +295,19 @@ Yes, as long as every model involved is on the approved list. The submission car
 Yes, please. It's independent of this challenge — a real leaderboard and a real artifact.
 
 **Do I need to use the entire Terminal-Bench task set during the competition?**
-No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top 5 on a held-out subset to catch task-specific hardcoding.
+No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers re-run the top 5 and review their code for task-specific hardcoding.
 
-**My team is just me. / My team is four people.**
-Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
+**My team is just me. / My team is five people.**
+Both fine. Teams of 1–5. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks both work without local hardware. Whatever model you finally submit must be a row in `MODELS.md`.
+See [Resources](#resources). For dev, NVIDIA's API catalog and the hosted APIs in [Resources](#resources) work without local hardware. Whatever model you finally submit must be a row in `MODELS.md`.
 
-**I'm not at UW.**
+**I'm not at UW–Madison.**
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
-No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top 5 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top 5 for reproducibility. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
@@ -335,15 +335,14 @@ https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 
 ## Organizer notes (delete before publishing)
 
-- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared endpoint serving an approved model — ideally the anchor `Qwen3.6-27B-FP8` — in addition to the existing managed-LLM catalog. If yes, every team — UW or not — gets a frictionless path to the anchor.
+- [ ] Ask NRP staff (via the Nautilus AI/ML Matrix channel at `matrix.nrp-nautilus.io`) whether they would deploy a shared endpoint serving an approved model — ideally the anchor `Qwen3.6-27B-FP8` — in addition to the existing managed-LLM catalog. If yes, every team — UW–Madison or not — gets a frictionless path to the anchor.
 - [ ] Stand up the submission-card validator (checks the model row is on the approved list and the token/score fields parse).
-- [ ] Curate the held-out task subset for the finale reproducibility check (~20 tasks, not in the public 89).
 - [ ] Confirm finale reference hardware spec (one or two GPU sizes for the spot-check pool).
 - [ ] Reach out to Terminal-Bench / Laude Institute about possible coordination (judge from their side?)
 - [ ] Cold-start test the quickstart on a machine that didn't write it
 - [ ] Recruit judges (Terminal-Bench contributors, agent researchers)
 - [ ] Set up Discord
 - [ ] Coordinate with Kaggle on Community Hackathon setup
-- [ ] Final pass on safety doc with UW research-IT
+- [ ] Final pass on safety doc with UW–Madison research-IT
 - [ ] Create Google Form for final submissions
 - [ ] PR review SLA for `MODELS.md` additions during the competition (target: same-day)

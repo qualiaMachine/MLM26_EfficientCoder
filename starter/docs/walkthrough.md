@@ -166,7 +166,7 @@ If tasks fail here, the problem is Docker, not your agent. Common issues:
 
 The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
-> **UW participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
+> **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
 
 Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only).
 
@@ -199,7 +199,7 @@ curl http://localhost:11434/v1/models
 
 You should see a JSON response listing your pulled model(s). If you get "connection refused," start the server with `ollama serve`.
 
-Using the provided UW endpoint instead? Same check, with your key:
+Using the provided UW–Madison endpoint instead? Same check, with your key:
 
 ```bash
 curl https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1/models \

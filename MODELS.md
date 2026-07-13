@@ -6,7 +6,7 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a ~40 GB+ card, or UW participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
+| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a ~40 GB+ card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct-Int4` | Int4 | 18 GB | MoE: 30B total, ~3B active — fast, runs on 24 GB cards, workable on 16 GB via GGUF expert offload. |
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` | FP8 | 35 GB | Same model, higher precision. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as this row. |
 | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | AWQ 4-bit | 28 GB | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
