@@ -125,7 +125,7 @@ These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what
 
 ### Reproducibility check (finale)
 
-There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top ~10 submissions to confirm the result:
+There is no rubric, no human-scored writeup component, no engineering-depth panel. Ranking is the formula above, on approved models. At the finale, organizers re-run the top 5 submissions to confirm the result:
 
 1. **Score reproduction** — clone at the tagged commit, run `harbor run` against all 89 tasks, confirm the reported `TB_score` reproduces within run-to-run noise.
 2. **Held-out subset** — run the same agent against a private subset of ~20 fresh Terminal-Bench tasks not in the public set during the semester. Significantly lower private-set scores get investigated for task-specific hardcoding.
@@ -295,7 +295,7 @@ Yes, as long as every model involved is on the approved list. The submission car
 Yes, please. Independent of MLM. It's a real leaderboard and a real artifact.
 
 **Do I need to use the entire Terminal-Bench task set during the semester?**
-No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top ~10 on a held-out subset to catch task-specific hardcoding.
+No — work with whatever subset is useful for debugging. For the leaderboard, your submission must report results on all 89 tasks; at the finale, organizers also run the top 5 on a held-out subset to catch task-specific hardcoding.
 
 **My team is just me. / My team is four people.**
 Both fine. Teams of 1–4. Reflect honestly on contributions in the writeup.
@@ -307,7 +307,7 @@ See [Resources](#resources). For dev, NVIDIA's API catalog and Kaggle Notebooks 
 Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the semester?**
-No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top ~10 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+No live leaderboard. Run Terminal-Bench locally, track your own progress, share findings via the Discussion tab. At the deadline, everyone submits a structured submission card — that's the ranking. Organizers spot-check the top 5 for reproducibility and generalization. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
