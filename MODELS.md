@@ -18,7 +18,7 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 ## How "reported VRAM" is computed
 
-Each row's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, served via vLLM at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and runner.
+Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, served via vLLM at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and runner.
 
 ```
 Reported VRAM (GB) ≈ published checkpoint size                               # weights
@@ -34,12 +34,12 @@ For **MoE models**, the full checkpoint loads into VRAM — active params reduce
 
 ```bash
 python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
-# weights 19.4 GB + KV @ 16k 4.3 GB + 2 GB headroom ≈ 25.7 GB  (table row: 28 GB)
+# weights 19.4 GB + KV @ 16k 4.3 GB + 2 GB headroom ≈ 25.7 GB  (table value: 28 GB)
 ```
 
-Landing within a few GB of the table row is expected and fine. (Don't compare against `nvidia-smi` — most serving stacks preallocate a large memory pool at startup, so the reading reflects your GPU, not the model.)
+Landing within a few GB of the table value is expected and fine. (Don't compare against `nvidia-smi` — most serving stacks preallocate a large memory pool at startup, so the reading reflects your GPU, not the model.)
 
-To verify the whole table at once, [`starter/scripts/check_vram_table.py`](starter/scripts/check_vram_table.py) parses every row above and prints table vs. estimate side by side — anyone can run it, which is how the numbers stay honest.
+To verify the whole table at once, [`starter/scripts/check_vram_table.py`](starter/scripts/check_vram_table.py) parses every checkpoint above and prints table vs. estimate side by side — anyone can run it, which is how the numbers stay honest.
 
 ## Requesting an addition
 

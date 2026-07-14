@@ -9,7 +9,7 @@ Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by 
 
 The last two years have transformed how software gets built. Frontier coding agents — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real (if junior) collaborators. They are remarkable, but they are also closed and expensive: every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive data has to be careful nothing leaks.
 
-Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
+Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an approved open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
@@ -48,7 +48,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
-**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code, not the benchmark's. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass` — and the same string is what your submission card declares. Full integration details are in [`starter/docs/harbor.md`](starter/docs/harbor.md) and Harbor's upstream [Running Terminal-Bench tutorial](https://www.harborframework.com/docs/tutorials/running-terminal-bench).
+**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code, not the benchmark's. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass`. Full integration details are in [`starter/docs/harbor.md`](starter/docs/harbor.md) and Harbor's upstream [Running Terminal-Bench tutorial](https://www.harborframework.com/docs/tutorials/running-terminal-bench).
 
 ### Example tasks
 
@@ -70,7 +70,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
 - **Any endpoint that won't tell you what it's serving.** If a provider doesn't disclose the exact `(model, quantization)` behind their API, you can't pin your submission to a `MODELS.md` row. Fine for prototyping, but your submitted run needs to use a listed model on an endpoint that names it.
 
-**Per-task budget:**
+**Evaluation constraints:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
 - **No hard turn cap.** Set whatever per-task turn / wall-clock limit suits your dev loop. The token penalty (0.01 per million) already charges verbose agents, so no cap is needed.
 
@@ -84,7 +84,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 One eligibility rule, one formula.
 
-**Eligibility.** Your submitted run must use one of the `(model, quantization)` rows in [`MODELS.md`](MODELS.md). Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its 4-bit row.
+**Eligibility.** Your submitted run must use one of the `(model, quantization)` checkpoints listed in [`MODELS.md`](MODELS.md). Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its AWQ / 4-bit entry.
 
 **Score.**
 
@@ -121,7 +121,7 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
 find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 ```
 
-These three numbers, plus your model row from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
+These three numbers, plus your model entry from [`MODELS.md`](MODELS.md), are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
 
 ### Verification of top submissions
 
@@ -131,7 +131,7 @@ Leaderboard scores are self-reported, so before final standings are confirmed, o
 2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
 3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
 
-Significant discrepancies, hardcoding, or running a different model than declared disqualify the submission. Nothing else is judged: there's no scored writeup, no style points — the leaderboard score is the ranking.
+Significant discrepancies, hardcoding, running a different model than declared, or a missing/incomplete writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup is checked for completeness, not graded, and the leaderboard score is the ranking.
 
 ### Required elements (pass/fail)
 
@@ -165,20 +165,20 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Team name | Terminal Velocity | free text |
 | GitHub repo URL | `github.com/team/agent` | URL |
 | Commit tag / SHA | `v1.0-submission` | git ref pointing at the exact code you ran |
-| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a row in [`MODELS.md`](MODELS.md) |
+| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a checkpoint listed in [`MODELS.md`](MODELS.md) |
 | Quantization | `AWQ 4-bit` | one of the values below |
 | Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
 | Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — feeds the token penalty |
 | GPU used | `RTX A6000 48 GB` | informational, not scored |
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
 
-**Valid quantization values** (must match the `MODELS.md` row for your chosen model): `FP8`, `Int4`, `AWQ 4-bit`. GGUF/Q4_K_M and GPTQ-Int4 checkpoints count as the model's `AWQ 4-bit` row.
+**Valid quantization values** (must match the `MODELS.md` entry for your chosen model): `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`. GPTQ-Int4 checkpoints count as `AWQ 4-bit`.
 
 **Fields computed for you:**
 
 | Field | Example | How it's derived |
 |---|---|---|
-| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` row in [`MODELS.md`](MODELS.md) — informational; eligibility is simply being on the list |
+| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` entry in [`MODELS.md`](MODELS.md) — informational; eligibility is simply being on the list |
 | **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
 ### Part 2: Writeup (required)
@@ -225,7 +225,7 @@ A submitted run has two separate compute needs: **the machine that runs Harbor +
 Harbor spins up a fresh Docker container per Terminal-Bench task, so the machine you run `harbor run` from needs host Docker. That rules out Kaggle Notebooks and Google Colab — both explicitly block the privileged access Docker requires. Viable options:
 
 - **Your own machine** — laptop, workstation, or lab machine with Docker Desktop (macOS/Windows) or Docker Engine (Linux). Cheapest option. Give Docker at least ~30 GB of disk for task images.
-- **A rented Linux VM** — Lambda Labs, RunPod, Vast.ai, Hetzner, EC2, GCE. Any VM you have root on and can install Docker on. If you're also self-hosting the model on the same box, get one with a GPU that fits your `MODELS.md` row.
+- **A rented Linux VM** — Lambda Labs, RunPod, Vast.ai, Hetzner, EC2, GCE. Any VM you have root on and can install Docker on. If you're also self-hosting the model on the same box, get one with a GPU that fits your `MODELS.md` entry.
 - **UW–Madison RunAI pod** — available to UW–Madison participants; comes preconfigured with Docker.
 
 ### Where to serve the model (any OpenAI-compatible endpoint)
@@ -240,7 +240,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 **Self-hosted on your own GPU or a rented one:**
 
-- Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The anchor (`Qwen3.6-27B-FP8`, 37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; the smaller rows cover 12–24 GB cards. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
+- Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` entry. The anchor (`Qwen3.6-27B-FP8`, 37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; the smaller rows cover 12–24 GB cards. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
 - **NRP GPU pods** (UW–Madison participants) — A100, L40S, A40, RTX 4090, etc. Spin up your own vLLM. [nrp.ai/get-access](https://nrp.ai/get-access/).
 - **CHTC** (UW–Madison participants) — [chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/). Free shared campus GPU pool, good for batch sweeps and fine-tuning.
 
@@ -289,7 +289,7 @@ The list is deliberately short — the competition is about the scaffold, not mo
 Yes, if the base is an approved model. The fine-tune counts as its base model's row. Document it in the writeup; weights must be either public or reproducible from the public base + your published LoRA/adapter.
 
 **Can I use multiple models (e.g., a small planner + a larger coder)?**
-Yes, as long as every model involved is on the approved list. The submission card carries the largest model's row; token counts sum across all models, and you should be ready to defend the setup on the reproducibility check.
+Yes, as long as every model involved is on the approved list. The submission card carries the largest model's entry; token counts sum across all models, and you should be ready to defend the setup when your submission is verified.
 
 **Can I submit my agent to the public Terminal-Bench leaderboard?**
 Yes, please. It's independent of this challenge — a real leaderboard and a real artifact.
@@ -301,10 +301,10 @@ No — work with whatever subset is useful for debugging. For the leaderboard, y
 Both fine. Teams of 1–5. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [Resources](#resources). For dev, NVIDIA's API catalog and the hosted APIs in [Resources](#resources) work without local hardware. Whatever model you finally submit must be a row in `MODELS.md`.
+See [Resources](#resources) — NVIDIA's API catalog and the other hosted endpoints listed there work for development without local hardware. Whatever model you finally submit must be on the approved list in `MODELS.md`.
 
 **I'm not at UW–Madison.**
-Welcome. The challenge is fully open. You won't have access to weekly sprints, office hours, NRP, or RunAI endpoints, but the leaderboard is the leaderboard — you compete on equal footing.
+Welcome. The challenge is fully open. You won't have access to the UW–Madison-only compute in [Resources](#resources), but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
 Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).

@@ -12,7 +12,7 @@ Why we require it: this is an educational challenge, and the writeup is how your
 
 ## 2. Architecture
 
-> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your model row from `MODELS.md` and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
+> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your model entry from `MODELS.md` and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
 
 ## 3. What we tried
 
