@@ -32,7 +32,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
-- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models in [`MODELS.md`](MODELS.md) (four model families, 7–35 GB reported VRAM) so the competition is about the scaffold, not model shopping.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models below (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
 Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
@@ -83,7 +83,7 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 #### How "reported VRAM" is computed
 
-Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, served via vLLM at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and runner.
+Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and serving stack.
 
 ```
 Reported VRAM (GB) ≈ published checkpoint size                               # weights
@@ -266,7 +266,7 @@ Full instructions:
 |---|---|
 | [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) | Setup in ~15 minutes, the weekly loop, where to dig in |
 | [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) | End-to-end: Docker → uv → Harbor → first model → first score |
-| [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md) | Ollama, vLLM, hosted endpoints, `.env` config |
+| [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md) | Model endpoint options and `.env` config |
 | [`starter/docs/harbor.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/harbor.md) | Harbor mental model, custom agents, leaderboard submission |
 | [`starter/docs/troubleshooting.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/troubleshooting.md) | First-week issues, in order of likelihood |
 
