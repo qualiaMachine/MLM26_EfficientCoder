@@ -35,7 +35,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models below (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
-Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
+Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done.
 
 ### Starter materials
 
@@ -153,7 +153,7 @@ Where:
 
 The weighting in plain English: **every million tokens costs one point** (0.01) of Terminal-Bench score. A typical run spends 1–3M tokens, so the penalty lands around 0.01–0.03 — enough to decide races between agents of similar capability, never enough to beat a real capability gap. Worked example: TB 0.42 with 1.26M tokens scores `0.42 − 0.0126 = 0.407`; the same agent rerun with a verbose loop at 2.5M tokens drops to `0.395`.
 
-The approved-model list plus the token penalty is what makes this a scaffold-engineering challenge: everyone picks from the same small pool of models, and the ranking rewards whoever gets the most out of it, most economically.
+The approved-model list plus the token penalty is what makes this a scaffold-engineering challenge: everyone picks from the same small pool of models, and the ranking rewards whoever gets the most out of it.
 
 ### Computing your submission numbers
 
@@ -249,35 +249,15 @@ Your code lives in the GitHub repo pointed at by your submission card — you do
 
 ## Getting started
 
-The fastest path from "I registered" to "my agent has a Terminal-Bench score" lives in [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/). Roughly:
+[`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) takes you from a fresh machine to a scored baseline run in about 30 minutes: Docker, Harbor, a model endpoint, first task. Start there.
 
-1. **Install** Docker, [uv](https://docs.astral.sh/uv/), Python 3.12.
-2. **Clone** this repo, create a venv, `uv pip install -e starter/`.
-3. **Verify Harbor** with the oracle agent (no model required):
-   ```bash
-   harbor run -d terminal-bench-sample@2.0 -a oracle
-   ```
-4. **Set up a model endpoint** — Ollama is easiest: `ollama pull qwen2.5-coder:14b` works on smaller GPUs for first-week dev. All options in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md).
-5. **Run the baseline** on a single task to confirm everything is wired up.
+Reference docs:
 
-Full instructions:
-
-| Doc | What's in it |
-|---|---|
-| [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) | Setup in ~15 minutes, the weekly loop, where to dig in |
-| [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) | End-to-end: Docker → uv → Harbor → first model → first score |
-| [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md) | Model endpoint options and `.env` config |
-| [`starter/docs/harbor.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/harbor.md) | Harbor mental model, custom agents, leaderboard submission |
-| [`starter/docs/troubleshooting.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/troubleshooting.md) | First-week issues, in order of likelihood |
-
-Beyond setup:
-
-| Doc | What's in it |
-|---|---|
-| [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) | Where to run the benchmark and where to serve a model, with or without your own GPU |
-| [`FAQ.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/FAQ.md) | Common questions: models, Bedrock, fine-tuning, teams, leaderboard |
-| [`RULES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RULES.md) | Team limits, submission limits, integrity, licensing |
-| [Agent safety](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/safety.md) | The rules that keep your laptop alive |
+- [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) — setup summary, where to modify the agent
+- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — compute options for running the benchmark and serving a model
+- [`FAQ.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/FAQ.md) — models, Bedrock, fine-tuning, teams, leaderboard
+- [`RULES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RULES.md) — team limits, submission limits, integrity, licensing
+- [Agent safety](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/safety.md) — keep your dev machine safe
 
 ---
 
