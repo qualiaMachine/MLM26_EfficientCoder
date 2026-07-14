@@ -214,6 +214,15 @@ During the competition, also share early and often via the Kaggle Discussion tab
 
 Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
+One data row, exactly this header:
+
+```
+id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wallclock_per_task,writeup_url
+1,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/MLM26-EfficientCoder/discussion/…
+```
+
+(`id` is literally `1`. Malformed rows are rejected with a visible error at upload.)
+
 **Fields you fill in:**
 
 | Field | Example | Format |
