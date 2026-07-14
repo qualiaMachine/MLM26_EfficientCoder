@@ -4,6 +4,7 @@ Build the best open coding agent under real efficiency constraints — no propri
 
 
 
+
 ---
 
 ## Overview
@@ -13,6 +14,7 @@ The last two years have transformed how software gets built. Frontier coding age
 Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an approved open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
+
 
 
 
@@ -39,9 +41,13 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 ### Starter materials
 
-- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
-- [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
-- [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
+[`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) takes you from a fresh machine to a scored baseline run in about 30 minutes: Docker, Harbor, a model endpoint, first task. Start there.
+
+- [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) — setup summary, where to modify the agent
+- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — compute options for running the benchmark and serving a model
+- [`FAQ.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/FAQ.md) — models, Bedrock, fine-tuning, teams, leaderboard
+- [`RULES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RULES.md) — team limits, submission limits, integrity, licensing
+- [Agent safety](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/safety.md) — keep your dev machine safe
 
 ### Terminal-Bench
 
@@ -178,39 +184,13 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 
 These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
 
-### Verification of top submissions
-
-Leaderboard scores are self-reported, so before final standings are confirmed, organizers verify the top 5. For each one, we:
-
-1. **Re-run the agent.** Clone the repo at the submitted commit, run it against all 89 tasks with the declared model, and check the score matches the reported one. LLM sampling is stochastic, so normal run-to-run variation is expected and fine.
-2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
-3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
-
-Significant discrepancies, hardcoding, running a different model than declared, or a missing/incomplete writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup is checked for completeness, not graded, and the leaderboard score is the ranking.
-
-### Required elements (pass/fail)
-
-| Requirement | Pass/Fail |
-|---|---|
-| Submission card fully filled out | Yes/No |
-| Model + quantization on the approved model list | Yes/No |
-| Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
-| Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
-| All 89 Terminal-Bench tasks evaluated | Yes/No |
-| Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
-| Writeup covering all sections of [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) | Yes/No |
-
-
-
----
-
-## Submitting your solution
+### Submitting your solution
 
 Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
 
 During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
-### Part 1: Submission card (`submission.csv`)
+#### Part 1: Submission card (`submission.csv`)
 
 Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
@@ -247,27 +227,33 @@ id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wall
 | Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` entry in the approved model table — informational; eligibility is simply being on the list |
 | **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
-### Part 2: Writeup (required)
+#### Part 2: Writeup (required)
 
 A single writeup (≤5,000 words) posted in the competition's Discussion tab and linked from your submission card, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
+### Verification of top submissions
 
+Leaderboard scores are self-reported, so before final standings are confirmed, organizers verify the top 5. For each one, we:
 
----
+1. **Re-run the agent.** Clone the repo at the submitted commit, run it against all 89 tasks with the declared model, and check the score matches the reported one. LLM sampling is stochastic, so normal run-to-run variation is expected and fine.
+2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
+3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
 
-## Getting started
+Significant discrepancies, hardcoding, running a different model than declared, or a missing/incomplete writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup is checked for completeness, not graded, and the leaderboard score is the ranking.
 
-[`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) takes you from a fresh machine to a scored baseline run in about 30 minutes: Docker, Harbor, a model endpoint, first task. Start there.
+### Required elements (pass/fail)
 
-Reference docs:
-
-- [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) — setup summary, where to modify the agent
-- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — compute options for running the benchmark and serving a model
-- [`FAQ.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/FAQ.md) — models, Bedrock, fine-tuning, teams, leaderboard
-- [`RULES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RULES.md) — team limits, submission limits, integrity, licensing
-- [Agent safety](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/safety.md) — keep your dev machine safe
+| Requirement | Pass/Fail |
+|---|---|
+| Submission card fully filled out | Yes/No |
+| Model + quantization on the approved model list | Yes/No |
+| Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
+| Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
+| All 89 Terminal-Bench tasks evaluated | Yes/No |
+| Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
+| Writeup covering all sections of [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) | Yes/No |
 
 ---
 
