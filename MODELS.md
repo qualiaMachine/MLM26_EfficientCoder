@@ -4,16 +4,17 @@ Submissions must use one of the models below. The list is deliberately short so 
 
 Development is unrestricted — prototype against any open-weight model or endpoint you like. The approved list governs the *submitted* run only.
 
-| Model | Quantization | Reported VRAM | Notes |
-|---|---|---|---|
-| `Qwen/Qwen3.6-27B-FP8` | FP8 | 37 GB | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
-| `qwen3-coder:30b` (Ollama GGUF Q4_K_M of `Qwen/Qwen3-Coder-30B-A3B-Instruct`) | GGUF Q4_K_M | 22 GB | The 4-bit tier of the MoE — no official 4-bit safetensors checkpoint exists, so this row is the Ollama tag. MoE: 30B total, ~3B active — fast, runs on 24 GB cards, workable on 16 GB via expert offload. |
-| `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` | FP8 | 35 GB | Same model, higher precision. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as this row. |
-| `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | AWQ 4-bit | 28 GB | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
-| `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` | AWQ 4-bit | 15 GB | Small-GPU tier (16 GB+ cards). |
-| `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` | AWQ 4-bit | 9 GB | Smallest approved; runs almost anywhere, expect a lower score ceiling. |
+**Pick by your GPU:** 8–12 GB → 7B AWQ · 16 GB → 14B AWQ · 24 GB → `qwen3-coder:30b` GGUF · 32–40 GB → 32B AWQ or 30B FP8 · 48 GB+ → the anchor.
 
-**Equivalent quantizations count as the same row.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ 4-bit row; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ rows.
+| Model | FP8 | AWQ / 4-bit | Notes |
+|---|---|---|---|
+| Qwen3.6-27B | `Qwen/Qwen3.6-27B-FP8` (37 GB) | — none published | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
+| Qwen3-Coder-30B-A3B | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` (35 GB) | `qwen3-coder:30b`, Ollama GGUF Q4_K_M (22 GB) — no official 4-bit safetensors exists | MoE: 30B total, ~3B active — fast. The GGUF runs on 24 GB cards, workable on 16 GB via expert offload. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as the FP8 column. |
+| Qwen2.5-Coder-32B | — | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB) | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
+| Qwen2.5-Coder-14B | — | `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` (15 GB) | Small-GPU tier (16 GB+ cards). |
+| Qwen2.5-Coder-7B | — | `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` (9 GB) | Smallest approved; runs almost anywhere, expect a lower score ceiling. |
+
+**Equivalent quantizations count as the same entry.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ / 4-bit column; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ entries.
 
 ## How "reported VRAM" is computed
 
