@@ -25,7 +25,7 @@ Your agent never touches your filesystem — it acts on the container through `e
 |---|---|---|
 | `terminal-bench-sample@2.0` | 10 | Setup verification, quick iteration |
 | `terminal-bench@2.0` | 89 | The real benchmark; the challenge public subset is drawn from it |
-| `terminal-bench-pro@1.0` | 200 | Extended public set, useful for Track B analysis |
+| `terminal-bench-pro@1.0` | 200 | Extended public set — extra practice tasks, not used for scoring |
 
 List everything with `harbor datasets list`.
 
@@ -47,7 +47,7 @@ harbor run -d terminal-bench-sample@2.0 \
 #   -x / --exclude-task-name   exclude tasks
 #   -n / --n-concurrent        parallel containers (watch your RAM)
 #   -m / --model               records model info in results
-#   --n-attempts               attempts per task (pass@k; leaderboard needs 5)
+#   --n-attempts               attempts per task (this challenge scores single-attempt; the public Terminal-Bench leaderboard requires 5)
 #   --jobs-dir                 output directory (default ./jobs)
 ```
 

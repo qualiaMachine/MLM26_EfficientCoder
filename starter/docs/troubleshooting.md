@@ -63,4 +63,4 @@ Each concurrent task is a full container plus your model server. Drop `-n` to 1�
 Console prints the aggregate at the end; per-trial details are in `./jobs/<job-name>/.../result.json`.
 
 **My score varies run to run**
-Normal — LLM sampling is stochastic. Use `--n-attempts` for pass@k stats, and report your evaluation procedure honestly in the writeup.
+Normal — LLM sampling is stochastic. The leaderboard scores a single attempt per task; use `--n-attempts` locally for pass@k stats, and report your evaluation procedure honestly in the writeup.
