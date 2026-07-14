@@ -14,8 +14,8 @@ one from public information and prints the two side by side:
 
 1. Parse every checkpoint out of the README's approved-model table (the repo id in backticks and
    its "NN GB" reported VRAM).
-2. For each row, rebuild the estimate exactly the way the README defines
-   it, using ``estimate_vram.py``:
+2. For each row, rebuild the estimate from public information, using
+   ``estimate_vram.py``:
 
        weights   — the published checkpoint's actual file sizes on the
                    HuggingFace Hub (so AWQ/GPTQ/FP8 checkpoints are
