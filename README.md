@@ -39,7 +39,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 - [`starter/`](starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
 - [`starter/docs/`](starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
-- [`MODELS.md`](MODELS.md) — the approved model list: six `(model, quantization)` rows, 7–37 GB. Additions can be requested via the Kaggle Discussion tab.
+- [`MODELS.md`](MODELS.md) — the approved model list: a handful of `(model, quantization)` checkpoints spanning roughly 7–37 GB. Additions can be requested via the Kaggle Discussion tab.
 - [Resources](#resources) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
@@ -64,7 +64,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Models (binding).** Use one of the approved models in [`MODELS.md`](MODELS.md) — a deliberately short list (four model families, 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).** Development on any open-weight model is fine; the list governs the submitted run. Want a model added? Post in the Kaggle Discussion tab with the case for it — organizers respond within a day or two.
+**Models (binding).** Use one of the approved models in [`MODELS.md`](MODELS.md) — a deliberately short list (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).** Development on any open-weight model is fine; the list governs the submitted run. Want a model added? Post in the Kaggle Discussion tab with the case for it — organizers respond within a day or two.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
