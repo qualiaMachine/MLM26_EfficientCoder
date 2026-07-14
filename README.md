@@ -32,7 +32,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
-- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models in [`MODELS.md`](MODELS.md) (four model families, 7–35 GB reported VRAM) so the competition is about the scaffold, not model shopping.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models below (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
 Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. It's a launchpad, not a solution.
