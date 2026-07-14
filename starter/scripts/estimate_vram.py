@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Estimate a model's reported VRAM the same way MODELS.md does.
+"""Estimate a model's reported VRAM the same way the approved-model table does.
 
     python scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 
@@ -14,7 +14,7 @@ config.json. Needs network access to huggingface.co; no GPU, no downloads
 beyond two small JSON requests.
 
 This is a sanity check, not a measurement. If your number lands within a
-few GB of an existing MODELS.md row, the table is right. If you're
+few GB of an existing approved-model entry, the table is right. If you're
 proposing a new row, include this script's output in your Kaggle
 Discussion post.
 
@@ -30,7 +30,7 @@ import urllib.error
 import urllib.request
 
 HUB = "https://huggingface.co"
-KV_CONTEXT = 16384          # tokens, per MODELS.md
+KV_CONTEXT = 16384          # tokens, per the approved-model table
 KV_BYTES_PER_ELEM = 2       # fp16
 OVERHEAD_GB = 2.0
 
