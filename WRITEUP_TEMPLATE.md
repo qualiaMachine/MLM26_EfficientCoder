@@ -1,6 +1,6 @@
 # Writeup template
 
-Copy this file, replace each section's prompt with your content, and attach it to your Kaggle submission. The writeup is **required** — a submission without one covering all sections below is ineligible. It is checked pass/fail for completeness, not judged on prose: two clear paragraphs per section beat ten padded ones. Hard cap: 5,000 words.
+Copy this file, replace each section's prompt with your content, post it in the competition's Discussion tab, and put the link in your submission card. The writeup is **required** — a submission without one covering all sections below is ineligible. It is checked pass/fail for completeness, not judged on prose: two clear paragraphs per section beat ten padded ones. Hard cap: 5,000 words.
 
 Why we require it: this is an educational challenge, and the writeup is how your work outlives the leaderboard. The goal is that another team can read it and reproduce your thinking, not just your score.
 
