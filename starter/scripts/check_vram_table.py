@@ -63,25 +63,26 @@ import estimate_vram as ev  # noqa: E402
 # This file lives at starter/scripts/, so MODELS.md is two levels up.
 MODELS_MD = Path(__file__).resolve().parents[2] / "MODELS.md"
 
-# Matches an approved-model table row and captures (repo id, VRAM number):
-#   | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | AWQ 4-bit | 28 GB | ... |
-# The repo id must contain a "/" (owner/name) so header and note rows
-# don't match by accident.
-ROW = re.compile(r"^\|\s*`([\w./-]+/[\w./-]+)`\s*\|[^|]*\|\s*([\d.]+)\s*GB\s*\|")
+# Matches an approved checkpoint entry and captures (repo id, VRAM number).
+# The table lists each checkpoint as a backticked HuggingFace id followed by
+# its reported VRAM in parentheses:
+#   `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB)
+# The repo id must contain a "/" (owner/name), so non-Hub entries like
+# Ollama tags (`qwen3-coder:30b`) are skipped — they can't be verified
+# against the Hub API anyway.
+ENTRY = re.compile(r"`([\w./-]+/[\w./-]+)`\s*\(([\d.]+)\s*GB\)")
 
 
 def table_rows() -> list[tuple[str, float]]:
-    """Return (repo_id, reported_vram_gb) for every model row in MODELS.md."""
-    rows = []
-    for line in MODELS_MD.read_text().splitlines():
-        m = ROW.match(line)
-        if m:
-            rows.append((m.group(1), float(m.group(2))))
+    """Return (repo_id, reported_vram_gb) for every Hub checkpoint in MODELS.md."""
+    rows = list(dict.fromkeys(
+        (repo, float(gb)) for repo, gb in ENTRY.findall(MODELS_MD.read_text())
+    ))
     if not rows:
         # Most likely the table format changed and the regex above needs
         # updating — better to fail loudly than to report "all good" on
         # an empty check.
-        raise SystemExit(f"No model rows parsed from {MODELS_MD} — did the table format change?")
+        raise SystemExit(f"No model entries parsed from {MODELS_MD} — did the table format change?")
     return rows
 
 
