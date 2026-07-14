@@ -1,8 +1,10 @@
 # Writeup template
 
-Copy this file, replace each section's prompt with your content, post it in the competition's Discussion tab, and put the link in your submission card. The writeup is **required** — a submission without one covering all sections below is ineligible. It is checked pass/fail for completeness, not judged on prose: two clear paragraphs per section beat ten padded ones. Hard cap: 2,500 words.
+A writeup is **required** with every submission — but this template is a suggested structure for those who want guidance, not a form to fill out. Organize yours however you like and fill it with whatever insights you learned. The one real expectation: explain your learning journey along the way — what you tried, what worked, what didn't, and where you ended up. Post it in the competition's Discussion tab and put the link in your submission card. Aim for 2,500 words or fewer.
 
 Why we require it: this is an educational challenge, and the writeup is how your work outlives the leaderboard. The goal is that another team can read it and reproduce your thinking, not just your score.
+
+The sections below are a starting point if a blank page is unhelpful:
 
 ---
 

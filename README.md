@@ -206,7 +206,7 @@ id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wall
 
 #### Part 2: Writeup (required)
 
-A single writeup (≤2,500 words) posted in the competition's Discussion tab and linked from your submission card, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
+A single writeup (≤2,500 words) posted in the competition's Discussion tab and linked from your submission card. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up. **Submissions without a writeup are ineligible.** It's checked pass/fail, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
@@ -218,7 +218,7 @@ Leaderboard scores are self-reported, so before final standings are confirmed, o
 2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
 3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
 
-Significant discrepancies, hardcoding, running a different model than declared, or a missing/incomplete writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup is checked for completeness, not graded, and the leaderboard score is the ranking.
+Significant discrepancies, hardcoding, running a different model than declared, or a missing writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup isn't graded, and the leaderboard score is the ranking.
 
 ### Required elements (pass/fail)
 
@@ -230,7 +230,7 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
 | Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
-| Writeup covering all sections of [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) | Yes/No |
+| Writeup posted in the Discussion tab and linked from the submission card | Yes/No |
 
 ---
 
