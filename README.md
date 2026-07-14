@@ -131,7 +131,7 @@ Leaderboard scores are self-reported, so before final standings are confirmed, o
 2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
 3. **Read the code.** Look for hardcoded solutions or prompts written for individual tasks — all 89 tasks are public, so cheating is possible and this is how it's caught.
 
-Significant discrepancies, hardcoding, or running a different model than declared disqualify the submission. Nothing else is judged: there's no scored writeup, no style points — the leaderboard score is the ranking.
+Significant discrepancies, hardcoding, running a different model than declared, or a missing/incomplete writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup is checked for completeness, not graded, and the leaderboard score is the ranking.
 
 ### Required elements (pass/fail)
 
