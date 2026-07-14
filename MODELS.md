@@ -6,12 +6,12 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 | Model | Quantization | Reported VRAM | Notes |
 |---|---|---|---|
-| `Qwen/Qwen3.6-27B-FP8` | FP8 | 32 GB | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a ~40 GB+ card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
-| `Qwen/Qwen3-Coder-30B-A3B-Instruct-Int4` | Int4 | 18 GB | MoE: 30B total, ~3B active — fast, runs on 24 GB cards, workable on 16 GB via GGUF expert offload. |
+| `Qwen/Qwen3.6-27B-FP8` | FP8 | 37 GB | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](starter/docs/byo_model.md). |
+| `qwen3-coder:30b` (Ollama GGUF Q4_K_M of `Qwen/Qwen3-Coder-30B-A3B-Instruct`) | GGUF Q4_K_M | 22 GB | The 4-bit tier of the MoE — no official 4-bit safetensors checkpoint exists, so this row is the Ollama tag. MoE: 30B total, ~3B active — fast, runs on 24 GB cards, workable on 16 GB via expert offload. |
 | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` | FP8 | 35 GB | Same model, higher precision. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as this row. |
 | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | AWQ 4-bit | 28 GB | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
-| `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` | AWQ 4-bit | 12 GB | Small-GPU tier (12 GB+ cards). |
-| `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` | AWQ 4-bit | 7 GB | Smallest approved; runs almost anywhere, expect a lower score ceiling. |
+| `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` | AWQ 4-bit | 15 GB | Small-GPU tier (16 GB+ cards). |
+| `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` | AWQ 4-bit | 9 GB | Smallest approved; runs almost anywhere, expect a lower score ceiling. |
 
 **Equivalent quantizations count as the same row.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ 4-bit row; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ rows.
 
