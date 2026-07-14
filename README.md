@@ -206,7 +206,7 @@ id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wall
 
 #### Part 2: Writeup (required)
 
-A single writeup (≤5,000 words) posted in the competition's Discussion tab and linked from your submission card, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
+A single writeup (≤2,500 words) posted in the competition's Discussion tab and linked from your submission card, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
