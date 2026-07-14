@@ -61,7 +61,7 @@ Then post your subset results in the Kaggle Discussion tab (the live leaderboard
 2. **Command + job name** — what you ran, and the `jobs/<job-name>` it produced
 3. **Setup** — model, quantization, hardware
 
-Keep your `jobs/` directories — organizers verify self-reported scores at the finale by re-running your agent.
+Keep your `jobs/` directories — organizers verify the top self-reported scores after the deadline by re-running your agent.
 
 ## Making it yours
 
