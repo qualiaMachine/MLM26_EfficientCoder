@@ -2,72 +2,22 @@
 
 This directory contains a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
-Challenge brief, rules, schedule, and judging: see the [challenge README](../README.md).
+**Setup and first run:** follow [docs/walkthrough.md](docs/walkthrough.md) — fresh machine to a scored baseline run in ~30 minutes. Challenge rules, approved models, and scoring: [challenge README](../README.md).
 
-## Setup (15 minutes, once)
+## Layout
 
-**0. Docker.** Required — Terminal-Bench runs every task in a Docker container. Follow [Step 1 of the walkthrough](docs/walkthrough.md#step-1-install-docker) for your OS, then confirm `docker run hello-world` works.
-
-**1. Install [uv](https://docs.astral.sh/uv/)** (fast Python package manager):
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-**2. Clone, create a venv, install:**
-
-```bash
-git clone https://github.com/qualiaMachine/MLM26_EfficientCoder.git
-cd MLM26_EfficientCoder
-
-uv venv --python 3.12              # Harbor needs Python 3.12+; uv fetches it if missing
-source .venv/bin/activate
-uv pip install -e starter/         # installs harbor + this agent package (editable)
-```
-
-> Best practice: one venv per project, always activated when you work. The venv lives at the repo root; the agent code lives in `starter/`. If `harbor` is "not found" later, you forgot to activate. The `-e` (editable) install means your edits to `starter/agent/` take effect immediately — no reinstall needed. It also makes your agent importable by Harbor's `--agent-import-path`.
-
-**3. Verify Harbor** (no model needed — the oracle replays each task's known solution):
-
-```bash
-harbor run -d terminal-bench-sample@2.0 -a oracle
-```
-
-If this scores ~100%, Docker + Harbor work. If not: [docs/troubleshooting.md](docs/troubleshooting.md).
-
-**4. Point at a model.** UW–Madison participants: use the provided `Qwen3.6-27B-FP8` endpoint (key via the kickoff form). Otherwise easiest is [Ollama](https://ollama.com/download). All options in [docs/byo_model.md](docs/byo_model.md):
-
-```bash
-cp .env.example .env               # set LLM_BASE_URL, LLM_MODEL, LLM_API_KEY
-```
-
-**5. Run the baseline on one task:**
-
-```bash
-./scripts/run_baseline.sh build-cython-ext
-```
-
-Watch the logs: instruction in, commands out, verdict at the end. Results land in `./jobs/`.
-
-## The weekly loop
-
-```bash
-./scripts/run_subset.sh            # run the official public subset
-```
-
-Then post your subset results in the Kaggle Discussion tab (the live leaderboard is for full 89-task runs):
-
-1. **Score** — the aggregate printed at the end of the run
-2. **Command + job name** — what you ran, and the `jobs/<job-name>` it produced
-3. **Setup** — model, quantization, hardware
-
-Keep your `jobs/` directories — organizers verify the top self-reported scores after the deadline by re-running your agent.
+| Path | What it is |
+|---|---|
+| `agent/agent.py` | The ReAct loop: instruction → ask LLM → parse one bash block → execute in container → repeat until `TASK_COMPLETE` or budget exhausted |
+| `agent/prompts.py` | System prompt + message templates |
+| `agent/tools.py` | Parses model output into actions, runs commands |
+| `agent/llm.py` | Talks to the model endpoint (`.env`-configured) |
+| `eval/public_subset.txt` | Task names for `./scripts/run_subset.sh` |
+| `scripts/` | `run_baseline.sh` (sample set), `run_subset.sh` (public subset), VRAM check tools |
 
 ## Making it yours
 
-Read `agent/agent.py` first — it's short on purpose. The loop is: instruction → ask LLM → parse one bash block → execute in container → feed output back → repeat until `TASK_COMPLETE` or budget exhausted.
-
-Where points hide, roughly in order of effort:
+Read `agent/agent.py` first — it's short on purpose. Where points hide, roughly in order of effort:
 
 - **`prompts.py`** — better instructions, task-type hints, output discipline
 - **Context management** — the conversation grows every turn; what do you keep, summarize, drop?
@@ -76,7 +26,7 @@ Where points hide, roughly in order of effort:
 - **Model choice + quantization** — see [docs/byo_model.md](docs/byo_model.md); fit and speed matter as much as smarts
 - **Architecture** — multi-stage pipelines, retrieval, ensembles, fine-tuning, or go [installed-agent](docs/harbor.md#writing-your-own-agent) and bring custom tools
 
-Constraints that always apply (full rules in the [challenge README](../README.md)): your submitted run must use one of the approved models in the [challenge README](../README.md#approved-models) (short list, 7–37 GB; request additions via the Kaggle Discussion tab), open weights only, no closed-weight or opaque-provider API calls anywhere in your system. The leaderboard score is `TB_score − 0.01 × (total_tokens / 1M)` — every million tokens costs one TB point, so lean loops pay. Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB) — UW–Madison participants get a hosted endpoint for it ([docs/byo_model.md](docs/byo_model.md)); the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+Keep your `jobs/` directories — organizers verify the top self-reported scores after the deadline by re-running your agent.
 
 ## Docs
 
