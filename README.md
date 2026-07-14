@@ -1,6 +1,6 @@
-# MLM26: EfficientCoder
+# Efficient Coding Agent
 
-Build the best open coding agent under real efficiency constraints — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
+Build the best open coding agent on a single GPU — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
 
 
@@ -41,13 +41,9 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 ### Starter materials
 
-[`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) takes you from a fresh machine to a scored baseline run in about 30 minutes: Docker, Harbor, a model endpoint, first task. Start there.
-
-- [`starter/README.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/README.md) — setup summary, where to modify the agent
-- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — compute options for running the benchmark and serving a model
-- [`FAQ.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/FAQ.md) — models, Bedrock, fine-tuning, teams, leaderboard
-- [`RULES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RULES.md) — team limits, submission limits, integrity, licensing
-- [Agent safety](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/safety.md) — keep your dev machine safe
+- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
+- [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
+- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
 
@@ -87,7 +83,17 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 **Equivalent quantizations count as the same entry.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ / 4-bit column; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ entries.
 
-Reported VRAM is **weights + KV cache at a 16k context + ~2 GB overhead**, at single-batch concurrency — approximate by design, meant to tell you what hardware a model needs. You can verify any number (or the whole table) yourself with [`starter/scripts/estimate_vram.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/scripts/estimate_vram.py) and [`check_vram_table.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/scripts/check_vram_table.py) — no GPU needed; details in the script docstrings.
+#### How "reported VRAM" is computed
+
+Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and serving stack.
+
+```
+Reported VRAM (GB) ≈ published checkpoint size                               # weights
+                   + (n_layers × n_kv_heads × head_dim × 2 × 16384 × 2) / 1e9   # KV @ 16k, fp16
+                   + ~2 GB headroom (activations, runner overhead)
+```
+
+For **MoE models**, the full checkpoint loads into VRAM — active params reduce compute, not memory.
 
 #### Requesting an addition
 
@@ -95,7 +101,7 @@ The list is meant to stay short, but it isn't frozen. If a model materially chan
 
 ### Considerations
 
-**Models (binding).** Your submitted run must use one of the approved models above. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).**
+**Models.** Your submitted run must use one of the approved models above.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
@@ -110,7 +116,7 @@ The list is meant to stay short, but it isn't frozen. If a model materially chan
 
 ### Contact
 
-Chris Endemann (endemann@wisc.edu) — ML+X, UW–Madison.
+Chris Endemann (endemann@wisc.edu), UW–Madison.
 
 Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
 
@@ -120,9 +126,7 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 
 ### Scoring
 
-One eligibility rule, one formula.
-
-**Eligibility.** Your submitted run must use one of the `(model, quantization)` checkpoints in the approved model table above. Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its AWQ / 4-bit entry.
+Your submitted run must use one of the `(model, quantization)` checkpoints in the approved model table above. Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its AWQ / 4-bit entry. The approved-model list plus the token penalty is what makes this a scaffold-engineering challenge: everyone picks from the same small pool of models, and the ranking rewards whoever gets the most out of it.
 
 **Score.**
 
@@ -134,9 +138,7 @@ Where:
 - **`TB_score`** is your mean Terminal-Bench reward across all 89 tasks (single attempt per task, `--n-attempts 1`) — a value between 0 and 1.
 - **`total_tokens`** is the sum of `n_input_tokens + n_output_tokens` across all 89 tasks, taken straight from Harbor's per-task `result.json`.
 
-The weighting in plain English: **every million tokens costs one point** (0.01) of Terminal-Bench score. A typical run spends 1–3M tokens, so the penalty lands around 0.01–0.03 — enough to decide races between agents of similar capability, never enough to beat a real capability gap. Worked example: TB 0.42 with 1.26M tokens scores `0.42 − 0.0126 = 0.407`; the same agent rerun with a verbose loop at 2.5M tokens drops to `0.395`.
-
-The approved-model list plus the token penalty is what makes this a scaffold-engineering challenge: everyone picks from the same small pool of models, and the ranking rewards whoever gets the most out of it.
+**Every million tokens costs one point** (0.01) of Terminal-Bench score. A typical run spends 1–3M tokens, so the penalty lands around 0.01–0.03 — enough to decide races between agents of similar capability, never enough to beat a real capability gap. Worked example: TB 0.42 with 1.26M tokens scores `0.42 − 0.0126 = 0.407`; the same agent rerun with a verbose loop at 2.5M tokens drops to `0.395`.
 
 ### Computing your submission numbers
 
@@ -159,7 +161,7 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
 find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 ```
 
-These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
+These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them.
 
 ### Submitting your solution
 
@@ -195,20 +197,13 @@ id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wall
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
 | Writeup URL | `kaggle.com/competitions/MLM26-EfficientCoder/discussion/…` | link to your writeup posted in the Discussion tab (see Part 2) |
 
-**Valid quantization values** (must match the approved entry for your chosen model): `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`. GPTQ-Int4 checkpoints count as `AWQ 4-bit`.
 
-**Fields computed for you:**
-
-| Field | Example | How it's derived |
-|---|---|---|
-| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` entry in the approved model table — informational; eligibility is simply being on the list |
-| **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
 #### Part 2: Writeup (required)
 
 A single writeup (≤2,500 words) posted in the competition's Discussion tab and linked from your submission card. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up. **Submissions without a writeup are ineligible.** It's checked pass/fail, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
-Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
+Your code lives in the GitHub repo pointed at by your submission card.
 
 ### Verification of top submissions
 
@@ -237,6 +232,6 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 ## Citation
 
 ```
-Chris Endemann et al. MLM26: EfficientCoder.
-https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
+Chris Endemann. Efficient Coding Agent.
+https://kaggle.com/competitions/efficient-coding-agent, Unpublished. Kaggle.
 ```
