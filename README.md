@@ -9,7 +9,7 @@ Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by 
 
 The last two years have transformed how software gets built. Frontier coding agents — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real (if junior) collaborators. They are remarkable, but they are also closed and expensive: every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive data has to be careful nothing leaks.
 
-Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–35 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
+Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an open-weight model of your choice and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
@@ -39,7 +39,7 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 - [`starter/`](starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
 - [`starter/docs/`](starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
-- [`MODELS.md`](MODELS.md) — the approved model list: six `(model, quantization)` rows, 7–35 GB. Additions can be requested via the Kaggle Discussion tab.
+- [`MODELS.md`](MODELS.md) — the approved model list: six `(model, quantization)` rows, 7–37 GB. Additions can be requested via the Kaggle Discussion tab.
 - [Resources](#resources) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
@@ -64,7 +64,7 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Considerations
 
-**Models (binding).** Use one of the approved models in [`MODELS.md`](MODELS.md) — a deliberately short list (four model families, 7–35 GB reported VRAM) so the competition is about the scaffold, not model shopping. **Anchor: `Qwen/Qwen3.6-27B-FP8` (32 GB).** Development on any open-weight model is fine; the list governs the submitted run. Want a model added? Post in the Kaggle Discussion tab with the case for it — organizers respond within a day or two.
+**Models (binding).** Use one of the approved models in [`MODELS.md`](MODELS.md) — a deliberately short list (four model families, 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).** Development on any open-weight model is fine; the list governs the submitted run. Want a model added? Post in the Kaggle Discussion tab with the case for it — organizers respond within a day or two.
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
@@ -240,7 +240,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 **Self-hosted on your own GPU or a rented one:**
 
-- Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The anchor (`Qwen3.6-27B-FP8`, 32 GB) wants a ~40 GB+ card (RTX A6000, L40S, A100); the AWQ/Int4 rows cover everything from 12 GB cards up. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
+- Any GPU large enough to fit the reported VRAM of your chosen `MODELS.md` row. The anchor (`Qwen3.6-27B-FP8`, 37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; the smaller rows cover 12–24 GB cards. Ollama or vLLM setup in [`starter/docs/byo_model.md`](starter/docs/byo_model.md).
 - **NRP GPU pods** (UW–Madison participants) — A100, L40S, A40, RTX 4090, etc. Spin up your own vLLM. [nrp.ai/get-access](https://nrp.ai/get-access/).
 - **CHTC** (UW–Madison participants) — [chtc.cs.wisc.edu](https://chtc.cs.wisc.edu/). Free shared campus GPU pool, good for batch sweeps and fine-tuning.
 
