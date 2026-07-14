@@ -1,6 +1,6 @@
 # Coding Agent Starter
 
-The fast path from "I registered" to "my agent has a Terminal-Bench score." This directory gives you a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
+This directory contains a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
 Challenge brief, rules, schedule, and judging: see the [challenge README](../README.md).
 
