@@ -86,7 +86,7 @@ Constraints that always apply (full rules in the [challenge README](../README.md
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
 | [docs/byo_model.md](docs/byo_model.md) | Provided UW–Madison endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | First-week issues, in order of likelihood |
-| [Agent safety](../README.md#agent-safety) | The rules that keep your laptop alive |
+| [docs/safety.md](docs/safety.md) | The rules that keep your laptop alive |
 
 ## License
 
