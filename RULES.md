@@ -15,7 +15,7 @@ This is a non-monetary educational challenge. There are no cash or material priz
 
 ## 4. Submission integrity
 
-- **Approved open-weight models only.** Your submitted run must use a model listed in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md). Closed-weight models (GPT, Claude, Gemini) are out of scope anywhere in your system, including "just the planner." Development and prototyping on any model is fine — the rule binds the submitted run.
+- **Approved open-weight models only.** Your submitted run must use a model on the [approved list](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/README.md#approved-models). Closed-weight models (GPT, Claude, Gemini) are out of scope anywhere in your system, including "just the planner." Development and prototyping on any model is fine — the rule binds the submitted run.
 - **No task-specific hardcoding.** One system prompt, one agent loop, no per-task branching, no hardcoded solutions or prompts written for individual tasks. Detecting task *categories* and adjusting strategy is fine. All 89 tasks are public; the top 5 submissions are code-reviewed after the deadline, and hardcoding disqualifies.
 - **Scores must be reproducible.** Leaderboard scores are self-reported from your own Harbor runs. Your submission card points at a public repo and commit; organizers re-run the top 5 with the declared model and check the reported score and token count. Significant discrepancies disqualify.
 - **Writeup required.** A submission without a writeup covering all sections of [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is ineligible. It is checked pass/fail for completeness, not graded.

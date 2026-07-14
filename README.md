@@ -41,7 +41,6 @@ Architecture, prompting strategy, retrieval, tool design, and planning logic are
 
 - [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
 - [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
-- [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md) — the approved model list: a handful of `(model, quantization)` checkpoints spanning roughly 7–37 GB. Additions can be requested via the Kaggle Discussion tab.
 - [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
@@ -64,13 +63,60 @@ Three representative tasks from Terminal-Bench, one from each end of the difficu
 
 Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
+### Approved models
+
+Submissions must use one of the models below. The list is deliberately short so the competition is about how you build the scaffold, not which model you found. Scoring is Terminal-Bench score minus a small token penalty — see the Evaluation section below.
+
+Development is unrestricted — prototype against any open-weight model or endpoint you like. The approved list governs the *submitted* run only.
+
+**Pick by your GPU:** 8–12 GB → 7B AWQ · 16 GB → 14B AWQ · 24 GB → `qwen3-coder:30b` GGUF · 32–40 GB → 32B AWQ or 30B FP8 · 48 GB+ → the anchor.
+
+| Model | FP8 | AWQ / 4-bit | Notes |
+|---|---|---|---|
+| Qwen3.6-27B | `Qwen/Qwen3.6-27B-FP8` (37 GB) | — none published | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md). |
+| Qwen3-Coder-30B-A3B | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` (35 GB) | `qwen3-coder:30b`, Ollama GGUF Q4_K_M (22 GB) — no official 4-bit safetensors exists | MoE: 30B total, ~3B active — fast. The GGUF runs on 24 GB cards, workable on 16 GB via expert offload. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as the FP8 column. |
+| Qwen2.5-Coder-32B | — | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB) | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
+| Qwen2.5-Coder-14B | — | `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` (15 GB) | Small-GPU tier (16 GB+ cards). |
+| Qwen2.5-Coder-7B | — | `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` (9 GB) | Smallest approved; runs almost anywhere, expect a lower score ceiling. |
+
+**Equivalent quantizations count as the same entry.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ / 4-bit column; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ entries.
+
+#### How "reported VRAM" is computed
+
+Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, served via vLLM at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and runner.
+
+```
+Reported VRAM (GB) ≈ published checkpoint size                               # weights
+                   + (n_layers × n_kv_heads × head_dim × 2 × 16384 × 2) / 1e9   # KV @ 16k, fp16
+                   + ~2 GB headroom (activations, runner overhead)
+```
+
+For **MoE models**, the full checkpoint loads into VRAM — active params reduce compute, not memory.
+
+#### Sanity-checking a number yourself
+
+[`starter/scripts/estimate_vram.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/scripts/estimate_vram.py) computes the formula above from a HuggingFace repo id — weights from the published checkpoint's actual file sizes (so quantized checkpoints are handled automatically), KV cache from the model's config. No GPU or model download needed:
+
+```bash
+python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
+# weights 19.4 GB + KV @ 16k 4.3 GB + 2 GB headroom ≈ 25.7 GB  (table value: 28 GB)
+```
+
+Landing within a few GB of the table value is expected and fine. (Don't compare against `nvidia-smi` — most serving stacks preallocate a large memory pool at startup, so the reading reflects your GPU, not the model.)
+
+To verify the whole table at once, [`starter/scripts/check_vram_table.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/scripts/check_vram_table.py) parses every checkpoint above and prints table vs. estimate side by side — anyone can run it, which is how the numbers stay honest.
+
+#### Requesting an addition
+
+The list is meant to stay short, but it isn't frozen. If a model materially changes what's possible for participants (a new open-weight coder release, a hardware tier the list doesn't serve), post in the **Kaggle Discussion tab** with the HuggingFace id, the quantization, and the case for adding it. Additions should land at or under ~48 GB reported VRAM — a single serious GPU. Organizers respond within a day or two; once listed, the model is available to every team.
+
 ### Considerations
 
-**Models (binding).** Use one of the approved models in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md) — a deliberately short list (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).** Development on any open-weight model is fine; the list governs the submitted run. Want a model added? Post in the Kaggle Discussion tab with the case for it — organizers respond within a day or two.
+**Models (binding).** Your submitted run must use one of the approved models above. **Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB).**
 
 **What's not eligible:**
 - **Closed-weight models** (GPT, Claude, Gemini) anywhere in your system, including "just the planner."
-- **Any endpoint that won't tell you what it's serving.** If a provider doesn't disclose the exact `(model, quantization)` behind their API, you can't pin your submission to a `MODELS.md` row. Fine for prototyping, but your submitted run needs to use a listed model on an endpoint that names it.
+- **Any endpoint that won't tell you what it's serving.** If a provider doesn't disclose the exact `(model, quantization)` behind their API, you can't pin your submission to an approved checkpoint. Fine for prototyping, but your submitted run needs to use a listed model on an endpoint that names it.
 
 **Evaluation constraints:**
 - **No human-in-the-loop at evaluation time.** Terminal-Bench scoring is fully deterministic — pytest passes or fails, no LLM judges, no subjective grading.
@@ -93,7 +139,7 @@ Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison
 
 One eligibility rule, one formula.
 
-**Eligibility.** Your submitted run must use one of the `(model, quantization)` checkpoints listed in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md). Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its AWQ / 4-bit entry.
+**Eligibility.** Your submitted run must use one of the `(model, quantization)` checkpoints in the approved model table above. Equivalent quantizations of a listed model (GGUF/Q4_K_M, GPTQ-Int4) count as its AWQ / 4-bit entry.
 
 **Score.**
 
@@ -130,7 +176,7 @@ find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
 find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
 ```
 
-These three numbers, plus your model entry from [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md), are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
+These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them — the formula above is all there is.
 
 ### Verification of top submissions
 
@@ -147,7 +193,7 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 | Requirement | Pass/Fail |
 |---|---|
 | Submission card fully filled out | Yes/No |
-| Model + quantization on the approved list in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md) | Yes/No |
+| Model + quantization on the approved model list | Yes/No |
 | Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
@@ -175,20 +221,20 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Team name | Terminal Velocity | free text |
 | GitHub repo URL | `github.com/team/agent` | URL |
 | Commit tag / SHA | `v1.0-submission` | git ref pointing at the exact code you ran |
-| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match a checkpoint listed in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md) |
+| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match an approved checkpoint |
 | Quantization | `AWQ 4-bit` | one of the values below |
 | Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
 | Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — feeds the token penalty |
 | GPU used | `RTX A6000 48 GB` | informational, not scored |
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
 
-**Valid quantization values** (must match the `MODELS.md` entry for your chosen model): `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`. GPTQ-Int4 checkpoints count as `AWQ 4-bit`.
+**Valid quantization values** (must match the approved entry for your chosen model): `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`. GPTQ-Int4 checkpoints count as `AWQ 4-bit`.
 
 **Fields computed for you:**
 
 | Field | Example | How it's derived |
 |---|---|---|
-| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` entry in [`MODELS.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/MODELS.md) — informational; eligibility is simply being on the list |
+| Reported VRAM | `28 GB` | Looked up from your `(Model, Quantization)` entry in the approved model table — informational; eligibility is simply being on the list |
 | **Leaderboard score** | **`0.407`** | `TB_score − 0.01 × (total_tokens / 1M)` — for this example, `0.42 − 0.01 × 1.2638` |
 
 ### Part 2: Writeup (required)

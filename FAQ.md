@@ -6,7 +6,7 @@ No. If part of your system calls GPT, Claude, or Gemini, it's out of scope.
 **Can I use Amazon Bedrock?**
 Narrowly, yes. The fully-managed pay-per-token `qwen3-coder-30b-a3b` counts as the approved `Qwen3-Coder-30B-A3B-Instruct-FP8` entry (AWS doesn't officially state serving precision; FP8 assumed, corrected if AWS confirms otherwise). Bedrock's other models aren't on the approved list. **Bedrock Custom Model Import** is not viable (Provisioned-Throughput-only at $21–50/hr with a 1- or 6-month commit). If you want AWS for self-hosting, rent an EC2 or SageMaker GPU instance and self-host with vLLM — that's just cloud compute, fine like any other rented GPU. **But be extremely careful with costs:** GPU instances run $1–5+/hr and bill while idle, so a forgotten instance over a weekend is a three-figure surprise. Set a billing alarm before launching anything, stop instances the moment a run finishes, and consider the flat-rate marketplaces (Lambda, RunPod, Vast.ai) first — they're cheaper for this and easier to reason about.
 
-**The model I want isn't in `MODELS.md`. What do I do?**
+**The model I want isn't on the approved list. What do I do?**
 The list is deliberately short — the competition is about the scaffold, not model shopping. If you think a model materially changes what's possible (a new open-weight coder release, a hardware tier the list doesn't serve), post the case in the Kaggle Discussion tab with the HuggingFace link and quantization. Organizers respond within a day or two.
 
 **Can I fine-tune a model for this?**
@@ -25,7 +25,7 @@ No — work with whatever subset is useful for debugging. For the leaderboard, y
 Both fine. Teams of 1–5. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — NVIDIA's API catalog and the other hosted endpoints listed there work for development without local hardware. Whatever model you finally submit must be on the approved list in `MODELS.md`.
+See [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — NVIDIA's API catalog and the other hosted endpoints listed there work for development without local hardware. Whatever model you finally submit must be on the approved list in the [challenge README](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/README.md#approved-models).
 
 **I'm not at UW–Madison.**
 Welcome. The challenge is fully open. You won't have access to the UW–Madison-only compute in [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md), but the leaderboard is the leaderboard — you compete on equal footing.
