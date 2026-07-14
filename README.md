@@ -227,6 +227,7 @@ Structured metadata used for automated ranking. Evaluation is always against all
 | Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — feeds the token penalty |
 | GPU used | `RTX A6000 48 GB` | informational, not scored |
 | Mean wall-clock per task | `3m 12s` | informational, not scored |
+| Writeup URL | `kaggle.com/competitions/MLM26-EfficientCoder/discussion/…` | link to your writeup posted in the Discussion tab (see Part 2) |
 
 **Valid quantization values** (must match the approved entry for your chosen model): `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`. GPTQ-Int4 checkpoints count as `AWQ 4-bit`.
 
@@ -239,7 +240,7 @@ Structured metadata used for automated ranking. Evaluation is always against all
 
 ### Part 2: Writeup (required)
 
-A single writeup (≤5,000 words) attached to your Kaggle submission, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
+A single writeup (≤5,000 words) posted in the competition's Discussion tab and linked from your submission card, following [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) — architecture, experiments (including failed ones), results, failure analysis, what you borrowed and what you added. **Submissions without a writeup covering all template sections are ineligible.** It's checked pass/fail for completeness, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
 
 Your code lives in the GitHub repo pointed at by your submission card — you don't attach it separately.
 
