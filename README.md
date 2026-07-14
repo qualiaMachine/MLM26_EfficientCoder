@@ -1,6 +1,6 @@
-# MLM26: Local Coding Agent Challenge
+# MLM26: EfficientCoder
 
-Build the best local coding agent — measured on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
+Build the best open coding agent under real efficiency constraints — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
 
 
 
@@ -264,6 +264,6 @@ Reference docs:
 ## Citation
 
 ```
-Chris Endemann et al. MLM26: Local Coding Agent Challenge.
+Chris Endemann et al. MLM26: EfficientCoder.
 https://kaggle.com/competitions/MLM26-EfficientCoder, 2026. Kaggle.
 ```
