@@ -178,6 +178,8 @@ The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
 Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only). If you haven't used it: Ollama is an app that downloads open-weight models and runs them on your own machine, exposing them through a local HTTP endpoint that speaks the same API as the big hosted providers. Your agent sends chat requests to `localhost` instead of a cloud service — no account, no API costs, and nothing leaves your machine.
 
+**Why an endpoint instead of loading the weights in your own code?** You *could* load the model directly in Python (e.g., with `transformers`), but then the model lives inside your agent process: every agent restart reloads gigabytes of weights, and your code gets tied to one inference library. Serving it behind an endpoint separates the two — the model loads once and stays resident, while your agent is just an HTTP client you can edit and rerun instantly. This matters for Harbor specifically: `harbor run -n 4` runs four tasks concurrently, and all four agent instances share the one model server instead of each loading its own copy. It's also what makes your submission portable — the starter's `agent/llm.py` speaks this API, so switching from Ollama on your laptop to a hosted endpoint (or the setup organizers use to re-run the top 5) is a `.env` change, not a code change.
+
 ### Install Ollama
 
 Download from [ollama.com/download](https://ollama.com/download) and install.
