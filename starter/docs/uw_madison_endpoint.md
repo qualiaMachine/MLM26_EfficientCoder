@@ -14,7 +14,7 @@ your agent (llm.py)  ──HTTP──▶  LLM_BASE_URL  (the model server)
     to prove you're allowed)      that server to run)
 ```
 
-- **`LLM_BASE_URL`** — where the server lives. The hosted server has two addresses: a public URL (works from anywhere on the campus VPN — connect GlobalProtect if you're off-campus) and a cluster-internal URL (only from workspaces on the same campus cluster, but faster since it skips the public ingress).
+- **`LLM_BASE_URL`** — where the server lives. Everything is behind the campus network: the main URL works from anywhere **on campus or connected to the VPN (GlobalProtect)**, and a cluster-internal URL works only from workspaces on the same campus cluster (faster — it skips the ingress).
 - **`LLM_MODEL`** — the model id *as that server knows it*. This must match what the server reports at `GET /models`, not a name you choose.
 - **`LLM_API_KEY`** — sent with every request; the server rejects requests without it.
 
