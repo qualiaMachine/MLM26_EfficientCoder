@@ -111,12 +111,7 @@ source .venv/bin/activate
 uv pip install -e starter/
 ```
 
-What just happened:
-- `git clone` downloaded the challenge repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
-- `cd MLM26_EfficientCoder` puts you at the repo root — the venv lives here.
-- `uv venv --python 3.12` created a `.venv/` directory with an isolated Python 3.12. If you don't have 3.12, uv downloaded it for you.
-- `source .venv/bin/activate` activated the venv. Your prompt should now show `(.venv)` at the start.
-- `uv pip install -e starter/` installed Harbor, the OpenAI client library, and the agent code in editable mode — meaning your edits to `starter/agent/` take effect immediately without reinstalling.
+Two things worth knowing: the `-e` (editable) install means your edits to `starter/agent/` take effect immediately, no reinstall; and your prompt should now show `(.venv)` — every later command assumes the venv is active.
 
 **Verify the install:**
 
