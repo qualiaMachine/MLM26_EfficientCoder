@@ -11,6 +11,8 @@ This guide walks you through every step — from a fresh machine to a working ag
 
 Terminal-Bench runs every task inside a fresh Docker container. Your agent never touches your real filesystem — it works inside the container, the container's final state gets graded, and the container is destroyed. Docker makes this possible.
 
+> **Remember what you're building: an agent that runs arbitrary shell commands.** Inside `harbor run` the container is your protection. The moment you test agent code *outside* Harbor — pointing your loop at a local shell "just to see" — it has whatever access you have, and it will eventually try something destructive. Read [safety.md](safety.md) before you do that.
+
 ### macOS
 
 Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar, and it must be running whenever you use Harbor. Homebrew alternative: `brew install --cask docker`, then launch Docker from Applications once.
