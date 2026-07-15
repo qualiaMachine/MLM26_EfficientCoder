@@ -245,6 +245,6 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 ## Citation
 
 ```
-Chris Endemann. Efficient Coder.
+Christopher Endemann. Efficient Coder.
 https://kaggle.com/competitions/efficient-coder, Unpublished. Kaggle.
 ```
