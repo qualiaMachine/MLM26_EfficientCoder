@@ -144,7 +144,7 @@ Where:
 
 ### Computing your submission numbers
 
-After running `harbor run -d terminal-bench@2.0 --agent agent.agent:BaselineAgent`, Harbor writes one `result.json` per task under `jobs/<job-id>/terminal-bench__<task>/0/result.json`. Extract the three numbers you need with:
+After running `harbor run -d terminal-bench@2.0 --agent agent.agent:BaselineAgent`, Harbor writes one `result.json` per task under `jobs/<job-id>/terminal-bench__<task>/0/result.json`. Extract the three numbers you need with the commands below (they use [`jq`](https://jqlang.org) — install it first with `sudo apt install jq` on Ubuntu/WSL2 or `brew install jq` on macOS):
 
 ```bash
 JOB=jobs/<your-job-id>
