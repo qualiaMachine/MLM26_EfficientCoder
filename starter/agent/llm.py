@@ -45,7 +45,12 @@ import os
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
-load_dotenv()
+# override=True makes .env the single source of truth: without it, a stale
+# copy of these variables exported into your shell (e.g. by the one-off
+# `set -a; source starter/.env` used to curl-test an endpoint) silently
+# shadows every later edit to the file. To experiment with settings, edit
+# .env — or pass -m to harbor run for the model.
+load_dotenv(override=True)
 
 _PROVIDER_PREFIXES = (
     "ollama/",

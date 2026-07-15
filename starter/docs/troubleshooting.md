@@ -48,6 +48,9 @@ If that fails, fix the endpoint before debugging the agent. Ollama default is `h
 **`No model configured`**
 Set `LLM_MODEL` in `.env`, or pass `-m` to `harbor run`.
 
+**Changed `.env` but the agent behaves like it didn't**
+If you ever ran `set -a; source starter/.env; set +a` (the endpoint curl check), that shell now holds exported copies of the old values. The starter loads `.env` with `override=True`, so the file wins — but if you're on an older checkout, or you exported the variables some other way, run `unset LLM_BASE_URL LLM_MODEL LLM_API_KEY LLM_MAX_TOKENS LLM_TEMPERATURE` or open a fresh terminal.
+
 **Model replies but the agent does nothing (repeated nudge messages)**
 The model isn't following the one-bash-block protocol. Common with very small models (<7B). Try a bigger/stronger coder model, lower the temperature, or tighten `prompts.py` — this is your first real agent-engineering problem, welcome.
 
