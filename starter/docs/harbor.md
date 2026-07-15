@@ -2,6 +2,8 @@
 
 [Harbor](https://www.harborframework.com/docs) is the official evaluation framework for Terminal-Bench 2.0, from the creators of Terminal-Bench. It handles everything that isn't your agent: pulling task definitions, building and destroying Docker containers, enforcing timeouts, running the verifier, and aggregating scores.
 
+The containers aren't just plumbing — they're your safety layer. You're building an agent that runs arbitrary shell commands, and inside `harbor run` every one of those commands executes in a disposable container with no access to your real filesystem: whatever the agent breaks gets destroyed with the container. That protection only exists inside Harbor, so test your agent through it rather than against a local shell — see [safety.md](safety.md).
+
 ## The mental model
 
 ```
