@@ -14,7 +14,7 @@ ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW
 
 ```bash
 # .env
-LLM_BASE_URL=https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1
+LLM_BASE_URL=<retrieved from in-person kickoff>
 LLM_MODEL=/mnt/shared-models/qwen3.6-27B-fp8
 LLM_API_KEY=<key from the kickoff email>
 LLM_MAX_TOKENS=4096
@@ -23,7 +23,7 @@ LLM_MAX_TOKENS=4096
 Running *inside* a RunAI workspace on the same cluster? Use the cluster-internal hostname instead — it skips the public ingress:
 
 ```bash
-LLM_BASE_URL=http://qwen36-27b-vllm.runai-shared-models.svc.cluster.local/v1
+LLM_BASE_URL=<internal URL retrieved from in-person kickoff>
 ```
 
 Verify your key and the served model id in one shot:

@@ -212,7 +212,7 @@ You should see a JSON response listing your pulled model(s). If you get "connect
 Using the provided UW–Madison endpoint instead? Same check, with your key:
 
 ```bash
-curl https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1/models \
+curl <base URL retrieved from in-person kickoff>/models \
   -H "Authorization: Bearer $LLM_API_KEY"
 ```
 
