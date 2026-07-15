@@ -12,7 +12,7 @@ This competition has no dataset to download in the usual sense. The 89 benchmark
 - `github_repo` — public repo containing your agent code
 - `commit_ref` — tag or commit SHA of the exact code you ran (see below)
 - `model` — approved checkpoint id (Approved models list, Overview page)
-- `quantization` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M` (must match the approved entry for your model)
+- `quantization` — `FP8`, `AWQ 4-bit`, `GGUF Q4_K_M`, or `GPTQ-Int4` — write what you actually ran; GGUF and GPTQ-Int4 count as the model's AWQ 4-bit entry
 - `tb_score` — your mean Terminal-Bench reward across all 89 tasks, single attempt each, between 0 and 1
 - `total_tokens` — input + output tokens summed across all 89 tasks, from Harbor's per-task `result.json` (extraction commands: [Computing your submission numbers](https://www.kaggle.com/competitions/efficient-coding-agent/overview/evaluation))
 - `gpu` — hardware you ran on (informational, not scored)
