@@ -2,7 +2,7 @@
 
 ## 1. Competition sponsor
 
-This challenge is organized by the [ML+X](https://mlx.wisc.edu/) community at UW–Madison with support from its sponsors.
+This challenge is organized by the [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) community at UW–Madison with support from its sponsors.
 
 ## 2. Prizes
 

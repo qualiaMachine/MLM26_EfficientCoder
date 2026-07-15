@@ -1,6 +1,6 @@
 # Efficient Coding Agent
 
-Build the best open coding agent on a single GPU — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://mlx.wisc.edu/) at UW–Madison, September–December 2026. Open to everyone.
+Build the best open coding agent on a single GPU — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at UW–Madison, September–December 2026. Open to everyone.
 
 
 
@@ -116,7 +116,7 @@ The list is meant to stay short, but it isn't frozen. If a model materially chan
 
 Chris Endemann (endemann@wisc.edu), UW–Madison.
 
-Hosted by [ML+X](https://mlx.wisc.edu/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
+Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
 
 ---
 
