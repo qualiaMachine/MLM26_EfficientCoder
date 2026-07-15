@@ -39,6 +39,8 @@ Reboot. A terminal may open to finish Ubuntu setup (username + password) — if 
 
 ### Verify Docker works
 
+On macOS and Windows, **Docker Desktop must be open and running** for this to work (look for the whale icon in your menu bar / system tray) — the daemon only runs while the app does. On Linux the service runs in the background automatically.
+
 ```bash
 docker run hello-world
 ```
