@@ -34,7 +34,7 @@ cp starter/.env.example starter/.env
 LLM_BASE_URL=<retrieved from in-person kickoff>
 LLM_MODEL=/mnt/shared-models/qwen3.6-27B-fp8
 LLM_API_KEY=<key from the kickoff email>
-LLM_MAX_TOKENS=4096
+LLM_MAX_TOKENS=8192
 
 # Cluster-internal alternative for LLM_BASE_URL (workspaces on the campus cluster only):
 #LLM_BASE_URL=<internal URL retrieved from in-person kickoff>
@@ -62,6 +62,6 @@ curl "$LLM_BASE_URL/models" -H "Authorization: Bearer $LLM_API_KEY"
 ## Things to know about this endpoint
 
 - **The model id is a checkpoint path** (`/mnt/shared-models/qwen3.6-27B-fp8`), not a HuggingFace repo id — the server serves it under the path it was loaded from. For your *submission card*, the corresponding approved checkpoint is `Qwen/Qwen3.6-27B-FP8` (37 GB).
-- **It's a reasoning model.** Thinking tokens count against the completion budget, so set `LLM_MAX_TOKENS` to 4096 or higher — at the starter default of 2048 the model can spend the whole budget thinking and return an empty answer. Thinking arrives in `reasoning_content`, separate from the final `content`.
+- **It's a reasoning model.** Thinking tokens count against the completion budget, and the model only writes its final answer (`content`) after the thinking closes — truncate it mid-thought and you get an *empty* response. Set `LLM_MAX_TOKENS=8192`; at the starter default of 2048 (and sometimes even 4096) every turn comes back empty, the agent loops on nudge messages, and the task dies with `AgentTimeoutError`. Thinking arrives in `reasoning_content`, separate from the final `content` — see the matching entry in [troubleshooting.md](troubleshooting.md).
 - **Long context, cheap re-prompting.** 250k-token context window with prefix caching enabled, so re-sending the growing conversation each turn (what the starter loop does) is fast. Every million tokens costs 0.01 leaderboard points, so lean context management still pays.
 - **Capacity is shared across all teams** (a handful of concurrent sequences). Keep `harbor run -n` at 2–4 and give other teams a heads-up in the Kaggle Discussion tab before kicking off a full 89-task sweep.

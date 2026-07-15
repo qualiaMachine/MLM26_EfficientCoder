@@ -129,7 +129,18 @@ class LLMClient:
             temperature=self.temperature,
             max_tokens=self.max_tokens,
         )
-        text = response.choices[0].message.content or ""
+        message = response.choices[0].message
+        text = message.content or ""
+        if not text:
+            # Reasoning models (e.g. served behind vLLM's reasoning parser)
+            # stream their thinking into `reasoning_content` and only fill
+            # `content` once the thinking closes. If generation hits
+            # max_tokens mid-thought, `content` comes back empty every turn
+            # and the agent loops on nudges until the task times out. Fall
+            # back to the (truncated) thinking text — it often contains a
+            # usable command, and it makes the failure visible in the
+            # transcript. The real fix is a larger LLM_MAX_TOKENS.
+            text = getattr(message, "reasoning_content", None) or ""
         usage = {}
         if response.usage is not None:
             usage = {

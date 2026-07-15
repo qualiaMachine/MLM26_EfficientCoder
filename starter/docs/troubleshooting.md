@@ -51,6 +51,16 @@ Set `LLM_MODEL` in `.env`, or pass `-m` to `harbor run`.
 **Model replies but the agent does nothing (repeated nudge messages)**
 The model isn't following the one-bash-block protocol. Common with very small models (<7B). Try a bigger/stronger coder model, lower the temperature, or tighten `prompts.py` — this is your first real agent-engineering problem, welcome.
 
+**`AgentTimeoutError` and every assistant response is empty (reasoning models)**
+The model spent its whole `LLM_MAX_TOKENS` budget thinking and never reached the final answer — vLLM's reasoning parser puts thinking in `reasoning_content`, so a mid-thought truncation leaves `content` empty, the agent nudges, and the loop repeats until the task times out. Diagnose from the trial's saved conversation:
+
+```bash
+jq -r '.agent_result.metadata.messages[] | .role + ": " + ((.content // "")[0:120])' \
+  jobs/<job-id>/*/result.json | head -20
+```
+
+Empty `assistant:` lines alternating with nudges confirm it (the output token count will be exactly `turns × LLM_MAX_TOKENS`). Fix: raise `LLM_MAX_TOKENS` in `.env` — 8192 is a good starting point for reasoning models.
+
 **Tasks time out constantly**
 Local models are slow; a 5-minute task budget is tight. Check tokens/sec on your endpoint. Quantize harder, shorten `LLM_MAX_TOKENS`, trim the conversation history, or reduce `-n` concurrency so tasks aren't starving each other.
 
