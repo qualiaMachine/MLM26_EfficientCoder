@@ -131,7 +131,7 @@ Should print `harbor 0.13.x` or newer. If you get "command not found," your venv
 
 ## Step 4: Verify Harbor + Terminal-Bench with the oracle
 
-Before involving any LLM, confirm that Harbor and Docker are wired up correctly. The **oracle agent** replays each task's known solution — it always gets 100% and needs no model endpoint.
+Before involving any LLM, confirm that Harbor and Docker are wired up correctly — using the **oracle agent**. Every Terminal-Bench task ships with a reference solution (the exact shell commands that solve it, written by the task's author). The oracle is a built-in agent that ignores any model and simply replays that reference solution. It should therefore score 100% every time: there's no intelligence involved, so a perfect score proves your Docker + Harbor + grading pipeline works, and any failure here is an environment problem, not an agent problem.
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 -a oracle
@@ -141,7 +141,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 
 This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
-2. For each task: build a Docker image, run the oracle inside it, grade the result, destroy the container
+2. For each task: build the task's Docker image, replay the reference solution inside it (that's the oracle), grade the container's final state, destroy the container
 3. Print an aggregate score
 
 **Expected output:**
