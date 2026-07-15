@@ -180,6 +180,16 @@ id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wall
 
 (`id` is literally `1`. Malformed rows are rejected with a visible error at upload.)
 
+**Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
+
+```bash
+git rev-parse HEAD                                        # prints the commit SHA — that's your commit_ref
+# or, friendlier: tag the submission and use the tag name
+git tag v1.0-submission && git push origin v1.0-submission
+```
+
+To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
+
 **Fields you fill in:**
 
 | Field | Example | Format |
