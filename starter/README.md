@@ -34,7 +34,8 @@ Keep your `jobs/` directories — organizers verify the top self-reported scores
 |---|---|
 | [docs/walkthrough.md](docs/walkthrough.md) | **Start here.** End-to-end guide: Docker → uv → Harbor → model → first score → making changes |
 | [docs/harbor.md](docs/harbor.md) | Harbor mental model, commands, custom agents, public leaderboard submission |
-| [docs/byo_model.md](docs/byo_model.md) | Provided UW–Madison endpoint / Ollama / vLLM / hosted endpoints, `.env` config |
+| [docs/byo_model.md](docs/byo_model.md) | Ollama / vLLM / hosted endpoints, `.env` config |
+| [docs/uw_madison_endpoint.md](docs/uw_madison_endpoint.md) | The provided UW–Madison hosted endpoint |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | First-week issues, in order of likelihood |
 | [docs/safety.md](docs/safety.md) | The rules that keep your laptop alive |
 

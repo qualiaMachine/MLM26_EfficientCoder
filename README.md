@@ -37,12 +37,10 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models below (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
-Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you. The starter code is a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) loop — the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done.
-
 ### Starter materials
 
-- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a minimal ReAct baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt.
-- [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score), model endpoint setup, and troubleshooting.
+- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt: the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you.
+- [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score); the surrounding [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) folder covers model endpoint setup and troubleshooting.
 - [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Terminal-Bench
@@ -75,7 +73,7 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 | Model | FP8 | AWQ / 4-bit | Notes |
 |---|---|---|---|
-| Qwen3.6-27B | `Qwen/Qwen3.6-27B-FP8` (37 GB) | — none published | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md). |
+| Qwen3.6-27B | `Qwen/Qwen3.6-27B-FP8` (37 GB) | — none published | **Anchor.** Newest and strongest of the group; reasoning model with coder tool-calling. Self-host on a 48 GB card, or UW–Madison participants can use the hosted endpoint in [`starter/docs/uw_madison_endpoint.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/uw_madison_endpoint.md). |
 | Qwen3-Coder-30B-A3B | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` (35 GB) | `qwen3-coder:30b`, Ollama GGUF Q4_K_M (22 GB) — no official 4-bit safetensors exists | MoE: 30B total, ~3B active — fast. The GGUF runs on 24 GB cards, workable on 16 GB via expert offload. Bedrock's managed `qwen.qwen3-coder-30b-a3b-v1:0` counts as the FP8 column. |
 | Qwen2.5-Coder-32B | — | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB) | A generation older but the most widely hosted (Together, Fireworks, NVIDIA API catalog) — easiest no-GPU path. |
 | Qwen2.5-Coder-14B | — | `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` (15 GB) | Small-GPU tier (16 GB+ cards). |
