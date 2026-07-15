@@ -131,7 +131,7 @@ Before involving any LLM, confirm that Harbor and Docker are wired up correctly 
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent — here the built-in oracle (`-a oracle`); later your own code (`--agent-import-path`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
+`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent (`-a`) — here the built-in oracle; later the same flag points at your own code (`-a agent.agent:BaselineAgent`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
 
 This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
@@ -237,13 +237,13 @@ LLM_API_KEY=ollama
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -i regex-log
 ```
 
 Breaking down the flags:
 - `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
-- `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
+- `--agent agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
 - `-i regex-log` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
@@ -288,7 +288,7 @@ Now run all 10 tasks:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent
+  --agent agent.agent:BaselineAgent
 ```
 
 Or use the convenience script:
@@ -303,7 +303,7 @@ This takes longer (10 tasks × ~5 min max each). At the end you'll get an aggreg
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -n 2
 ```
 
@@ -396,7 +396,7 @@ Now re-run the same task:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -i regex-log
 ```
 
@@ -417,7 +417,7 @@ This is the development loop for the competition:
 |---|---|
 | Verify Docker works | `docker run hello-world` |
 | Verify Harbor works | `harbor run -d terminal-bench-sample@2.0 -a oracle` |
-| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:BaselineAgent -i <task-name>` |
+| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent agent.agent:BaselineAgent -i <task-name>` |
 | Run your agent on all sample tasks | `./scripts/run_baseline.sh` |
 | Run the public subset | `./scripts/run_subset.sh` |
 | Run tasks in parallel | Add `-n 4` (or however many your RAM supports) |
