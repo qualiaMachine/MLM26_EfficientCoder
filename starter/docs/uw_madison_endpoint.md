@@ -1,6 +1,6 @@
 # UW–Madison hosted endpoint
 
-ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW–Madison participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
+ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus GPU infrastructure for UW–Madison participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
 
 ```bash
 # .env
@@ -10,7 +10,7 @@ LLM_API_KEY=<key from the kickoff email>
 LLM_MAX_TOKENS=4096
 ```
 
-Running *inside* a RunAI workspace on the same cluster? Use the cluster-internal hostname instead — it skips the public ingress:
+Running *inside* a workspace on the same campus cluster? Use the cluster-internal hostname instead — it skips the public ingress:
 
 ```bash
 LLM_BASE_URL=<internal URL retrieved from in-person kickoff>
