@@ -190,20 +190,20 @@ git tag v1.0-submission && git push origin v1.0-submission
 
 To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
 
-**Fields you fill in:**
+**Columns:**
 
-| Field | Example | Format |
+| Column | Example | Format |
 |---|---|---|
-| Team name | Terminal Velocity | free text |
-| GitHub repo URL | `github.com/team/agent` | URL |
-| Commit tag / SHA | `v1.0-submission` | git ref pointing at the exact code you ran |
-| Model | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | HuggingFace id — must match an approved checkpoint |
-| Quantization | `AWQ 4-bit` | one of the values below |
-| Terminal-Bench score (across 89 tasks) | `0.42` | mean reward, 0–1 |
-| Total tokens (across 89 tasks) | `1,263,800` | sum of `n_input_tokens + n_output_tokens` from Harbor's `result.json` — feeds the token penalty |
-| GPU used | `RTX A6000 48 GB` | informational, not scored |
-| Mean wall-clock per task | `3m 12s` | informational, not scored |
-| Writeup URL | `kaggle.com/competitions/MLM26-EfficientCoder/discussion/…` | link to your writeup posted in the Discussion tab (see Part 2) |
+| `id` | `1` | always `1` — Kaggle's row-matching column (your team comes from your Kaggle account) |
+| `github_repo` | `https://github.com/team/agent` | public repo with your agent code |
+| `commit_ref` | `v1.0-submission` | tag or commit SHA of the exact code you ran |
+| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | must match an approved checkpoint |
+| `quantization` | `AWQ 4-bit` | `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M` — must match the approved entry |
+| `tb_score` | `0.42` | mean reward across all 89 tasks, 0–1 |
+| `total_tokens` | `1263800` | `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` — feeds the token penalty |
+| `gpu` | `RTX A6000 48 GB` | informational, not scored |
+| `mean_wallclock_per_task` | `3m 12s` | informational, not scored |
+| `writeup_url` | `kaggle.com/competitions/efficient-coding-agent/discussion/…` | your writeup in the Discussion tab (see Part 2) |
 
 
 

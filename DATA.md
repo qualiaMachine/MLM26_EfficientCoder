@@ -8,7 +8,7 @@ This competition has no dataset to download in the usual sense. The 89 benchmark
 
 ## Columns
 
-- `id` — literally `1` (row identifier; required by the platform)
+- `id` — always `1`. Kaggle scores a submission by matching its rows to the host's solution file on this column; since your submission is a single row, it's just this constant. (It's not your team name — Kaggle knows your team from the account that submits.)
 - `github_repo` — public repo containing your agent code
 - `commit_ref` — tag or commit SHA of the exact code you ran (see below)
 - `model` — approved checkpoint id (Approved models list, Overview page)
