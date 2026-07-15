@@ -1,4 +1,4 @@
-"""MLM26: EfficientCoder — Kaggle leaderboard metric.
+"""Efficient Coding Agent — Kaggle leaderboard metric.
 
     leaderboard_score = tb_score − 0.01 × (total_tokens / 1,000,000)
 
@@ -23,10 +23,11 @@ Expected submission.csv (exactly this header, one data row):
 - id                       — literally 1 (matches the solution file)
 - github_repo              — public repo with your agent code
 - commit_ref               — tag or SHA of the exact code you ran
-- model                    — approved checkpoint id (see the approved list
-                             in the competition README)
-- quantization             — FP8 | AWQ 4-bit | GGUF Q4_K_M
-                             (GPTQ-Int4 counts as AWQ 4-bit)
+- model                    — approved checkpoint id (see Approved models
+                             on the competition Overview page)
+- quantization             — FP8 | AWQ 4-bit | GGUF Q4_K_M | GPTQ-Int4
+                             (GGUF and GPTQ-Int4 normalize to the model's
+                             AWQ 4-bit entry)
 - tb_score                 — mean Terminal-Bench reward across all 89
                              tasks, single attempt each, in [0, 1]
 - total_tokens             — n_input_tokens + n_output_tokens summed
@@ -48,7 +49,7 @@ class ParticipantVisibleError(Exception):
 TOKEN_PENALTY_PER_MILLION = 0.01
 
 # Approved (model, quantization) pairs — keep in sync with the
-# "Approved models" table in the competition README.
+# "Approved models" table on the competition Overview page (README.md in the repo).
 APPROVED = {
     ("Qwen/Qwen3.6-27B-FP8", "FP8"),
     ("Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8", "FP8"),
@@ -57,16 +58,28 @@ APPROVED = {
     ("Qwen/Qwen2.5-Coder-14B-Instruct-AWQ", "AWQ 4-bit"),
     ("Qwen/Qwen2.5-Coder-7B-Instruct-AWQ", "AWQ 4-bit"),
 }
-# Accepted spellings that normalize onto an approved pair. Keys are
-# lowercase (model, quantization); values are the canonical pair.
+# Accepted spellings that normalize onto an approved pair — equivalent
+# quantizations (GGUF Q4_K_M, GPTQ-Int4) count as the model's AWQ 4-bit
+# entry per the rules, and people should be able to write what they
+# actually ran. Keys are lowercase (model, quantization); values are the
+# canonical pair.
 ALIASES = {
-    # Ollama tag for the GGUF entry
+    # Ollama tag for the Qwen3-Coder MoE GGUF entry
     ("qwen3-coder:30b", "gguf q4_k_m"): ("Qwen/Qwen3-Coder-30B-A3B-Instruct", "GGUF Q4_K_M"),
-    # GPTQ-Int4 counts as the AWQ 4-bit entry (per the rules)
-    ("qwen/qwen2.5-coder-32b-instruct-awq", "gptq-int4"): ("Qwen/Qwen2.5-Coder-32B-Instruct-AWQ", "AWQ 4-bit"),
-    ("qwen/qwen2.5-coder-14b-instruct-awq", "gptq-int4"): ("Qwen/Qwen2.5-Coder-14B-Instruct-AWQ", "AWQ 4-bit"),
-    ("qwen/qwen2.5-coder-7b-instruct-awq", "gptq-int4"): ("Qwen/Qwen2.5-Coder-7B-Instruct-AWQ", "AWQ 4-bit"),
 }
+for _size in ("32b", "14b", "7b"):
+    _canon = (f"Qwen/Qwen2.5-Coder-{_size.upper()}-Instruct-AWQ", "AWQ 4-bit")
+    _awq_id = _canon[0].lower()
+    _gptq_id = _awq_id.replace("-awq", "-gptq-int4")
+    for _model, _quant in [
+        (_awq_id, "gptq-int4"),               # AWQ id, GPTQ spelling
+        (_gptq_id, "gptq-int4"),              # the actual GPTQ checkpoint id
+        (_awq_id, "gguf q4_k_m"),             # AWQ id, GGUF spelling
+        (f"qwen2.5-coder:{_size}", "gguf q4_k_m"),   # Ollama tag
+        (f"qwen2.5-coder:{_size}", "gptq-int4"),
+    ]:
+        ALIASES[(_model, _quant)] = _canon
+del _size, _canon, _awq_id, _gptq_id, _model, _quant
 
 REQUIRED_COLUMNS = [
     "github_repo", "commit_ref", "model", "quantization",
@@ -117,7 +130,7 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     if _normalized_pair(model, quantization) is None:
         raise ParticipantVisibleError(
             f"({model!r}, {quantization!r}) is not on the approved model list. "
-            "See the Approved models section of the competition README; "
+            "See the Approved models section of the Overview page; "
             "additions can be requested via the Discussion tab."
         )
 
@@ -179,6 +192,10 @@ if __name__ == "__main__":
     assert score(sol, sub(model="qwen3-coder:30b", quantization="GGUF Q4_K_M",
                           tb_score=0.3, total_tokens=500_000), "id") == 0.295
     assert score(sol, sub(quantization="GPTQ-Int4"), "id") > 0
+    assert score(sol, sub(model="Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4",
+                          quantization="GPTQ-Int4"), "id") > 0
+    assert score(sol, sub(model="qwen2.5-coder:14b",
+                          quantization="GGUF Q4_K_M"), "id") > 0
     # Zero score, zero tokens is a legal (if sad) submission
     assert score(sol, sub(tb_score=0.0, total_tokens=0), "id") == 0.0
     # Rejections
