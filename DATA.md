@@ -4,11 +4,11 @@ This competition has no dataset to download in the usual sense. The 89 benchmark
 
 ## Files
 
-- **sample_submission.csv** — a one-row submission in the correct format. Copy it, replace the example values with your own, and upload it via Submit Prediction. Column names, order, and spellings (e.g. `AWQ 4-bit`) must match exactly.
+- **sample_submission.csv** — a submission in the correct format: two **identical** data rows (ids `1` and `2`). Copy it, replace the example values with your own on both rows, and upload it via Submit Prediction. Column names, order, and spellings (e.g. `AWQ 4-bit`) must match exactly.
 
 ## Columns
 
-- `id` — always `1`. Kaggle scores a submission by matching its rows to the host's solution file on this column; since your submission is a single row, it's just this constant. (It's not your team name — Kaggle knows your team from the account that submits.)
+- `id` — `1` on the first row, `2` on the second. Kaggle matches submission rows to the host's solution file on this column and scores one row on the public leaderboard and one on the private/final leaderboard — that's the only reason there are two rows; keep them identical. (It's not your team name — Kaggle knows your team from the account that submits.)
 - `github_repo` — public repo containing your agent code
 - `commit_ref` — tag or commit SHA of the exact code you ran (see below)
 - `model` — approved checkpoint id (Approved models list, Overview page)

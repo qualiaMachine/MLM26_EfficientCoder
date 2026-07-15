@@ -163,7 +163,7 @@ These three numbers, plus your approved model entry, are what go on the submissi
 
 ### Submitting your solution
 
-Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
+Submissions go through Kaggle as a standardized **`submission.csv`** (two identical data rows — see Part 1) with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
 
 During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
@@ -171,14 +171,15 @@ During the competition, also share early and often via the Kaggle Discussion tab
 
 Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
-One data row, exactly this header:
+Two **identical** data rows (ids `1` and `2` — Kaggle scores one on the public leaderboard and one on the private/final leaderboard), exactly this header:
 
 ```
 id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wallclock_per_task,writeup_url
 1,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coding-agent/discussion/…
+2,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coding-agent/discussion/…
 ```
 
-(`id` is literally `1`. Malformed rows are rejected with a visible error at upload.)
+(Malformed rows are rejected with a visible error at upload.)
 
 **Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
 
@@ -194,7 +195,7 @@ To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in
 
 | Column | Example | Format |
 |---|---|---|
-| `id` | `1` | always `1` — Kaggle's row-matching column (your team comes from your Kaggle account) |
+| `id` | `1` | `1` on the first row, `2` on the second — Kaggle's row-matching column (your team comes from your Kaggle account) |
 | `github_repo` | `https://github.com/team/agent` | public repo with your agent code |
 | `commit_ref` | `v1.0-submission` | tag or commit SHA of the exact code you ran |
 | `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | must match an approved checkpoint |
