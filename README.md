@@ -216,7 +216,7 @@ Your code lives in the GitHub repo pointed at by your submission card.
 
 ### Verification of top submissions
 
-Let's be transparent about the design: leaderboard scores are **self-reported** — the platform computes your score from numbers you type into a CSV, so it is obviously possible to lie. Two things keep the leaderboard a reflection of reality: organizers **spot-check submissions periodically during the competition** (fabricated entries are removed when found), and the **top 5 are fully verified before final standings are confirmed**. Every submission carries its own evidence — a public repo, an exact commit, and a writeup. For each verified submission, we:
+Leaderboard scores are **self-reported** — the platform computes your score from numbers you type into a CSV, so it is possible to lie. Two things keep the leaderboard a reflection of reality: organizers **spot-check submissions periodically during the competition** (fabricated entries are removed when found), and the **top 5 are fully verified before final standings are confirmed**. Every submission carries its own evidence — a public repo, an exact commit, and a writeup. For each verified submission, we:
 
 1. **Re-run the agent.** Clone the repo at the submitted commit, run it against all 89 tasks with the declared model, and check the score matches the reported one. LLM sampling is stochastic, so normal run-to-run variation is expected and fine.
 2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
