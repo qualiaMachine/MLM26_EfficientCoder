@@ -2,8 +2,11 @@
 
 - APPROVED / ALIASES must stay in sync with the "Approved models" table on
   the competition Overview page (README.md in the challenge repo).
-- The solution file is a placeholder (one row, id=1); scores are computed
-  from the submission's own columns. There is no ground truth.
+- The solution file is a placeholder: id=1 Usage=Public, id=2 Usage=Private
+  (Kaggle requires Private rows for final rankings). Participants submit two
+  identical data rows; each leaderboard scores its own one-row slice, so
+  public and private scores are equal by construction. Scores come from the
+  submission's own columns — there is no ground truth.
 - Local checks: `python mlm26_metric.py` runs doctests + self-tests and
   prints "all self-tests passed" on success.
 """
@@ -82,7 +85,8 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     only for row alignment. The metric validates the submission and computes
     the score from its own columns:
 
-    - exactly one data row, with all required columns present
+    - two identical data rows, ids 1 and 2 (Kaggle scores one per
+      leaderboard), with all required columns present
     - (model, quantization) on the approved list — equivalent quantizations
       (GGUF Q4_K_M, GPTQ-Int4, Ollama tags) normalize to the model's
       approved entry
@@ -92,7 +96,8 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     Honesty is enforced outside the metric: the top 5 teams are re-run and
     code-reviewed after the deadline, per the competition rules.
 
-    Example (the worked example from the Overview page):
+    Example — the worked example from the Overview page, as Kaggle passes it
+    to the metric (the aligned one-row slice for one leaderboard):
 
     >>> import pandas as pd
     >>> sol = pd.DataFrame({"id": [1]})
