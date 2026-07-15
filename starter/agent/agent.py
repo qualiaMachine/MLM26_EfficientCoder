@@ -47,7 +47,7 @@ Run it
 ::
 
     harbor run -d terminal-bench@2.0 \\
-        --agent-import-path agent.agent:BaselineAgent \\
+        --agent agent.agent:BaselineAgent \\
         -i fix-git
 
 Environment variables
@@ -73,7 +73,7 @@ COMMAND_TIMEOUT_SEC = int(os.environ.get("AGENT_COMMAND_TIMEOUT_SEC", "60"))
 class BaselineAgent(BaseAgent):
     """A minimal ReAct agent that solves tasks by issuing bash commands.
 
-    Harbor discovers this class via the ``--agent-import-path`` CLI flag.
+    Harbor discovers this class via the ``--agent`` CLI flag.
     It calls ``setup()`` once, then ``run()`` once per task. The class must
     implement all four methods below (``name``, ``version``, ``setup``,
     ``run``) — that's the Harbor BaseAgent contract.

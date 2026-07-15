@@ -45,7 +45,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
-**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass`. See [Starter materials](#starter-materials) below to get going.
+**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent agent.agent:YourAgentClass`. See [Starter materials](#starter-materials) below to get going.
 
 ### Example tasks
 
@@ -144,23 +144,23 @@ Where:
 
 ### Computing your submission numbers
 
-After running `harbor run -d terminal-bench@2.0 --agent-import-path agent.agent:BaselineAgent`, Harbor writes one `result.json` per task under `jobs/<job-id>/terminal-bench__<task>/0/result.json`. Extract the three numbers you need with:
+After running `harbor run -d terminal-bench@2.0 --agent agent.agent:BaselineAgent`, Harbor writes one `result.json` per task trial under `jobs/<job-id>/<task>__<trial-id>/result.json` (plus a job-level summary at `jobs/<job-id>/result.json`). Extract the three numbers you need with the commands below (they use [`jq`](https://jqlang.org) — install it first with `sudo apt install jq` on Ubuntu/WSL2 or `brew install jq` on macOS):
 
 ```bash
 JOB=jobs/<your-job-id>
 
-# Terminal-Bench score (mean reward)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
-  [.[] | .reward] | add / length
+# Terminal-Bench score (mean reward across trials; -mindepth 2 skips the job-level summary)
+find "$JOB" -mindepth 2 -name result.json | xargs jq -s '
+  [.[] | .verifier_result.rewards.reward // 0] | add / length
 '
 
 # Total tokens (input + output, summed across all 89 tasks)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
-  [.[] | (.n_input_tokens + .n_output_tokens)] | add
+find "$JOB" -mindepth 2 -name result.json | xargs jq -s '
+  [.[] | (.agent_result.n_input_tokens // 0) + (.agent_result.n_output_tokens // 0)] | add
 '
 
 # Tasks evaluated (sanity check: should be 89)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
+find "$JOB" -mindepth 2 -name result.json | wc -l
 ```
 
 These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them.
@@ -234,7 +234,7 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 |---|---|
 | Submission card fully filled out | Yes/No |
 | Model + quantization on the approved model list | Yes/No |
-| Agent runs via `harbor run --agent-import-path` without modification | Yes/No |
+| Agent runs via `harbor run --agent` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated | Yes/No |
 | Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |

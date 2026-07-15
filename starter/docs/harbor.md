@@ -39,7 +39,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 
 # Run your agent on one task
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent -i regex-log
+  --agent agent.agent:BaselineAgent -i regex-log
 
 # Run the public subset (what you self-report)
 ./scripts/run_subset.sh
@@ -73,7 +73,7 @@ The alternative is an **installed agent** (`BaseInstalledAgent`): your agent get
 Run any custom agent with:
 
 ```bash
-harbor run -d <dataset@version> --agent-import-path your.module:YourAgentClass
+harbor run -d <dataset@version> --agent your.module:YourAgentClass
 ```
 
 Note: Harbor imports your agent class with a plain Python import, so your agent package must be installed in the same virtual environment as `harbor` — that's why setup uses `uv pip install -e starter/` (from the repo root) rather than a plain requirements file.
@@ -82,7 +82,7 @@ Note: Harbor imports your agent class with a plain Python import, so your agent 
 
 Optional but encouraged — it's a real leaderboard the field watches.
 
-1. Run with 5 attempts: `harbor run -d terminal-bench@2.0 --agent-import-path ... --n-attempts 5 --jobs-dir ./my-submission`
+1. Run with 5 attempts: `harbor run -d terminal-bench@2.0 --agent ... --n-attempts 5 --jobs-dir ./my-submission`
 2. Fork the [terminal-bench-2-leaderboard](https://huggingface.co/datasets/harborframework/terminal-bench-2-leaderboard) HuggingFace dataset repo
 3. Add your jobs + a `metadata.yaml` under `submissions/terminal-bench/2.0/<agent>__<model>/` per the repo README
 4. Open a PR — a validation bot checks it (≥5 trials per task, `timeout_multiplier` 1.0, valid result files), then a maintainer merges
