@@ -45,15 +45,9 @@ On macOS and Windows, **Docker Desktop must be open and running** for this to wo
 docker run hello-world
 ```
 
-On the first run, Docker downloads the image — expect output like this:
+Expected output:
 
 ```
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-4f55086f7dd0: Pull complete
-...
-Status: Downloaded newer image for hello-world:latest
-
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
@@ -65,10 +59,18 @@ To generate this message, Docker took the following steps:
     executable that produces the output you are currently reading.
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
-...
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
 ```
 
-If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
+If you see `Hello from Docker!`, Docker is working. (On the very first run you'll also see a few image-download lines above this — that's normal.)
 
 If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). More Docker failures are covered in [troubleshooting.md](troubleshooting.md).
 
