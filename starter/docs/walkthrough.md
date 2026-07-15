@@ -176,7 +176,7 @@ The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
 > **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
 
-Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only).
+Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only). If you haven't used it: Ollama is an app that downloads open-weight models and runs them on your own machine, exposing them through a local HTTP endpoint that speaks the same API as the big hosted providers. Your agent sends chat requests to `localhost` instead of a cloud service — no account, no API costs, and nothing leaves your machine.
 
 ### Install Ollama
 
