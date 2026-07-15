@@ -1,4 +1,4 @@
-"""MLM26: EfficientCoder — Kaggle leaderboard metric.
+"""Efficient Coding Agent — Kaggle leaderboard metric.
 
     leaderboard_score = tb_score − 0.01 × (total_tokens / 1,000,000)
 
@@ -23,8 +23,8 @@ Expected submission.csv (exactly this header, one data row):
 - id                       — literally 1 (matches the solution file)
 - github_repo              — public repo with your agent code
 - commit_ref               — tag or SHA of the exact code you ran
-- model                    — approved checkpoint id (see the approved list
-                             in the competition README)
+- model                    — approved checkpoint id (see Approved models
+                             on the competition Overview page)
 - quantization             — FP8 | AWQ 4-bit | GGUF Q4_K_M
                              (GPTQ-Int4 counts as AWQ 4-bit)
 - tb_score                 — mean Terminal-Bench reward across all 89
@@ -48,7 +48,7 @@ class ParticipantVisibleError(Exception):
 TOKEN_PENALTY_PER_MILLION = 0.01
 
 # Approved (model, quantization) pairs — keep in sync with the
-# "Approved models" table in the competition README.
+# "Approved models" table on the competition Overview page (README.md in the repo).
 APPROVED = {
     ("Qwen/Qwen3.6-27B-FP8", "FP8"),
     ("Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8", "FP8"),
@@ -117,7 +117,7 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     if _normalized_pair(model, quantization) is None:
         raise ParticipantVisibleError(
             f"({model!r}, {quantization!r}) is not on the approved model list. "
-            "See the Approved models section of the competition README; "
+            "See the Approved models section of the Overview page; "
             "additions can be requested via the Discussion tab."
         )
 
