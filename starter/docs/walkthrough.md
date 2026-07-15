@@ -214,14 +214,18 @@ Using the provided UW–Madison endpoint instead? See the verification check in 
 
 ### Configure the agent
 
+The agent reads its settings from a file named `.env` in the `starter/` directory — when Harbor starts your agent, `agent/llm.py` loads that file automatically. You never pass these values on the command line, and your shell never reads them; only the agent does.
+
+Create it from the template (run from the repo root):
+
 ```bash
-cp .env.example .env
+cp starter/.env.example starter/.env
 ```
 
-The defaults in `.env.example` already point at Ollama with `qwen2.5-coder:14b`. Edit `.env` if you pulled a different model:
+The defaults already point at Ollama with `qwen2.5-coder:14b`. Edit `starter/.env` if you pulled a different model:
 
 ```bash
-# .env
+# starter/.env
 LLM_BASE_URL=http://localhost:11434/v1
 LLM_MODEL=qwen2.5-coder:14b
 LLM_API_KEY=ollama

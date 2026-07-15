@@ -22,8 +22,15 @@ The URLs and the key are distributed at the in-person kickoff — they are delib
 
 ## Configure `.env`
 
+The `.env` file lives in the `starter/` directory. When Harbor starts your agent, `agent/llm.py` loads `starter/.env` automatically (via `python-dotenv`) — you never pass these values on the command line. Create the file from the template, then fill in the values from kickoff:
+
 ```bash
-# .env — primary hosted endpoint (Qwen3.6-27B-FP8; key required)
+# run from the repo root
+cp starter/.env.example starter/.env
+```
+
+```bash
+# starter/.env — primary hosted endpoint (Qwen3.6-27B-FP8; key required)
 LLM_BASE_URL=<retrieved from in-person kickoff>
 LLM_MODEL=/mnt/shared-models/qwen3.6-27B-fp8
 LLM_API_KEY=<key from the kickoff email>
@@ -41,10 +48,11 @@ LLM_MAX_TOKENS=4096
 
 ## Verify the connection
 
-This one command checks the VPN, the URL, your key, and tells you the exact `LLM_MODEL` string in one shot:
+One command checks the VPN, the URL, your key, and tells you the exact `LLM_MODEL` string. But note: `.env` is read by the *agent*, not by your terminal — so for this one-off check you first have to load the file into your shell. Run both lines from the repo root:
 
 ```bash
-curl $LLM_BASE_URL/models -H "Authorization: Bearer $LLM_API_KEY"
+set -a; source starter/.env; set +a    # load .env values into this shell session
+curl "$LLM_BASE_URL/models" -H "Authorization: Bearer $LLM_API_KEY"
 ```
 
 - **JSON listing a model** → connected; the `id` field is exactly what belongs in `LLM_MODEL`.
