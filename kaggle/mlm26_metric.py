@@ -1,42 +1,11 @@
-"""Efficient Coding Agent — Kaggle leaderboard metric.
+"""Maintainer notes (participants see score()'s docstring instead).
 
-    leaderboard_score = tb_score − 0.01 × (total_tokens / 1,000,000)
-
-Scores are self-reported: participants run Terminal-Bench 2.0 themselves
-(via Harbor) and submit the resulting numbers. This metric therefore does
-NOT compare against ground truth — the solution file is a placeholder that
-exists because Kaggle requires one. What the metric does instead:
-
-1. Validate the submission: exactly one row, all required columns, an
-   approved (model, quantization) pair, sane numeric ranges, and non-empty
-   repo / commit / writeup links.
-2. Compute the score from the submission's own columns.
-
-Honesty is enforced outside the metric: the top 5 teams are re-run and
-code-reviewed after the deadline (see the competition rules), and the
-repo + commit + writeup links on every submission are public.
-
-Expected submission.csv (exactly this header, one data row):
-
-    id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wallclock_per_task,writeup_url
-
-- id                       — literally 1 (matches the solution file)
-- github_repo              — public repo with your agent code
-- commit_ref               — tag or SHA of the exact code you ran
-- model                    — approved checkpoint id (see Approved models
-                             on the competition Overview page)
-- quantization             — FP8 | AWQ 4-bit | GGUF Q4_K_M | GPTQ-Int4
-                             (GGUF and GPTQ-Int4 normalize to the model's
-                             AWQ 4-bit entry)
-- tb_score                 — mean Terminal-Bench reward across all 89
-                             tasks, single attempt each, in [0, 1]
-- total_tokens             — n_input_tokens + n_output_tokens summed
-                             across all 89 tasks
-- gpu                      — informational, not scored
-- mean_wallclock_per_task  — informational, not scored
-- writeup_url              — your writeup posted in the Discussion tab
-
-Local self-test (no Kaggle needed):  python mlm26_metric.py
+- APPROVED / ALIASES must stay in sync with the "Approved models" table on
+  the competition Overview page (README.md in the challenge repo).
+- The solution file is a placeholder (one row, id=1); scores are computed
+  from the submission's own columns. There is no ground truth.
+- Local checks: `python mlm26_metric.py` runs doctests + self-tests and
+  prints "all self-tests passed" on success.
 """
 
 import pandas as pd
@@ -103,8 +72,45 @@ def _normalized_pair(model: str, quantization: str):
 
 
 def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: str) -> float:
-    """Kaggle entry point. The solution frame is a placeholder and is only
-    used for row alignment on the id column."""
+    """Efficient Coding Agent leaderboard score.
+
+        leaderboard_score = tb_score - 0.01 * (total_tokens / 1,000,000)
+
+    Scores are self-reported: participants run Terminal-Bench 2.0 themselves
+    (via Harbor) and submit the resulting numbers, so this metric does NOT
+    compare against ground truth — the solution file is a placeholder used
+    only for row alignment. The metric validates the submission and computes
+    the score from its own columns:
+
+    - exactly one data row, with all required columns present
+    - (model, quantization) on the approved list — equivalent quantizations
+      (GGUF Q4_K_M, GPTQ-Int4, Ollama tags) normalize to the model's
+      approved entry
+    - tb_score in [0, 1]; total_tokens a plausible non-negative integer
+    - non-empty github_repo, commit_ref, and writeup_url (verification links)
+
+    Honesty is enforced outside the metric: the top 5 teams are re-run and
+    code-reviewed after the deadline, per the competition rules.
+
+    Example (the worked example from the Overview page):
+
+    >>> import pandas as pd
+    >>> sol = pd.DataFrame({"id": [1]})
+    >>> sub = pd.DataFrame([{
+    ...     "id": 1,
+    ...     "github_repo": "https://github.com/team/agent",
+    ...     "commit_ref": "v1.0-submission",
+    ...     "model": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+    ...     "quantization": "AWQ 4-bit",
+    ...     "tb_score": 0.42,
+    ...     "total_tokens": 1263800,
+    ...     "gpu": "RTX A6000 48 GB",
+    ...     "mean_wallclock_per_task": "3m 12s",
+    ...     "writeup_url": "https://kaggle.com/competitions/efficient-coding-agent/discussion/1",
+    ... }])
+    >>> round(score(sol, sub, "id"), 6)
+    0.407362
+    """
     if len(submission) != len(solution):
         raise ParticipantVisibleError(
             f"Submission must have exactly {len(solution)} data row(s), got {len(submission)}."
@@ -155,11 +161,15 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
             "Report the token count from Harbor's result.json files."
         )
 
-    return tb_score - TOKEN_PENALTY_PER_MILLION * (total_tokens / 1_000_000)
+    return float(tb_score - TOKEN_PENALTY_PER_MILLION * (total_tokens / 1_000_000))
 
 
 if __name__ == "__main__":
-    # Self-test: run `python mlm26_metric.py` — prints nothing on success.
+    import doctest
+    failures, _ = doctest.testmod()
+    assert failures == 0, f"{failures} doctest failure(s)"
+
+    # Self-tests: `python mlm26_metric.py` prints "all self-tests passed".
     sol = pd.DataFrame({"id": [1], "placeholder": ["-"]})
 
     def sub(**overrides):
