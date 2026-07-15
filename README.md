@@ -11,9 +11,11 @@ Build the best open coding agent on a single GPU — no proprietary models, no g
 
 The last two years have transformed how software gets built. Frontier coding agents — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real (if junior) collaborators. They are remarkable, but they are also closed and expensive: every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive data has to be careful nothing leaks.
 
-Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to close the remaining gap. You will build an autonomous coding agent on top of an approved open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold: a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
+Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to help narrow the remaining gap. You will build an autonomous coding agent on top of an approved open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs on one of a handful of approved models in the 7–37 GB class, so the leverage is in the scaffold or "agent harness": a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
+
+**Soft launch.** The competition is open for submissions now; the official kickoff is September 2026. Between now and then, the approved model list and rules may be adjusted — nothing drastic is planned, and any change will be announced in the Discussion tab. Early submissions are welcome; if a change affects your entry, you can simply resubmit.
 
 
 
@@ -37,19 +39,13 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 - **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Use one of the approved models below (roughly 7–37 GB reported VRAM) so the competition is about the scaffold, not model shopping.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on an approved open-weight model (see [Evaluation](#evaluation)).
 
-### Starter materials
-
-- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt: the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you.
-- [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score); the surrounding [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) folder covers model endpoint setup and troubleshooting.
-- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
-
 ### Terminal-Bench
 
 [Terminal-Bench 2.0](https://tbench.ai) is the benchmark we score against — an open, industry-standard collection of 89 tasks spanning software engineering, security, data processing, system administration, and scientific computing. Each task ships as a Docker image with a starting environment, a natural-language instruction, and a hidden test suite that grades the container's final state. All 89 tasks are public and can be browsed at [tbench.ai](https://www.tbench.ai/).
 
 Your agent receives the instruction and is given shell access to the running container. It inspects the codebase the way a developer would — `ls`, `cat`, `grep`, `find`, `git log`, `pytest`, anything it wants to run — edits files by writing to disk, executes builds and tests, observes the output, and decides what to do next. There is no special tooling; the agent succeeds by knowing what commands to issue and how to interpret what comes back.
 
-**The decision logic** — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass`. Full integration details are in [`starter/docs/harbor.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/harbor.md) and Harbor's upstream [Running Terminal-Bench tutorial](https://www.harborframework.com/docs/tutorials/running-terminal-bench).
+**Where the agent code lives.** The decision logic — what to prompt the model with, how to parse its response into a shell command, when to stop — is your code. You write a Python class implementing the `BaseAgent` interface from [Harbor](https://www.harborframework.com/), the open-source evaluation framework for Terminal-Bench 2.0. Harbor invokes your class's `run(instruction, environment)` method when a task starts; your code prompts the model with the instruction (plus a system prompt and the running conversation), parses the response into a bash command, runs it via `environment.exec()`, observes the output, decides the next step, and returns when the task is done. The baseline in [`starter/agent/agent.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/agent/agent.py) is a ~60-line ReAct loop you can fork. Pointing Harbor at your agent is a single CLI flag — `--agent-import-path agent.agent:YourAgentClass`. Full integration details are in [`starter/docs/harbor.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/harbor.md) and Harbor's upstream [Running Terminal-Bench tutorial](https://www.harborframework.com/docs/tutorials/running-terminal-bench).
 
 ### Example tasks
 
@@ -62,6 +58,12 @@ Three representative tasks from Terminal-Bench, one from each end of the difficu
 - **configure-webserver** (hard, system-administration) — A bare Linux container that needs to be turned into a self-deploying web server: when commits land in a designated local git repo, the served site should update automatically. The agent has to choose a server (nginx, lighttpd, caddy — its call), wire up a `post-receive` hook or equivalent, ensure the service starts on boot, and prove the end-to-end loop with a test commit. Tests multi-component system design and the kind of "no single right answer" judgment that fewer benchmarks capture.
 
 Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
+
+### Starter materials
+
+- [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt: the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you.
+- [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score); the surrounding [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) folder covers model endpoint setup and troubleshooting.
+- [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
 ### Approved models
 
@@ -112,7 +114,7 @@ The list is meant to stay short, but it isn't frozen. If a model materially chan
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. After the deadline, organizers re-run the top 5 submissions and review the code; task-specific hardcoding disqualifies.
 
 
-### Contact
+### Contact & Sponsors
 
 Chris Endemann (endemann@wisc.edu), UW–Madison.
 
