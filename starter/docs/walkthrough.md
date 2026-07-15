@@ -10,6 +10,8 @@ This guide walks you through submitting a baseline agent to obtain a starting Te
 
 Terminal-Bench runs every task inside a fresh Docker container. Your agent never touches your real filesystem — it works inside the container, the container's final state gets graded, and the container is destroyed. Docker makes this possible.
 
+> **Remember what you're building: an agent that runs arbitrary shell commands.** Inside `harbor run` the container is your protection. The moment you test agent code *outside* Harbor — pointing your loop at a local shell "just to see" — it has whatever access you have, and it will eventually try something destructive. Read [safety.md](safety.md) before you do that.
+
 ### macOS
 
 Download and install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) (pick Apple Silicon or Intel to match your machine). Launch it — you should see a whale icon in your menu bar, and it must be running whenever you use Harbor. Homebrew alternative: `brew install --cask docker`, then launch Docker from Applications once.
@@ -36,19 +38,15 @@ Reboot. A terminal may open to finish Ubuntu setup (username + password) — if 
 
 ### Verify Docker works
 
+On macOS and Windows, **Docker Desktop must be open and running** for this to work (look for the whale icon in your menu bar / system tray) — the daemon only runs while the app does. On Linux the service runs in the background automatically.
+
 ```bash
 docker run hello-world
 ```
 
-On the first run, Docker downloads the image — expect output like this:
+Expected output:
 
 ```
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-4f55086f7dd0: Pull complete
-...
-Status: Downloaded newer image for hello-world:latest
-
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
@@ -60,10 +58,18 @@ To generate this message, Docker took the following steps:
     executable that produces the output you are currently reading.
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
-...
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
 ```
 
-If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
+If you see `Hello from Docker!`, Docker is working. (On the very first run you'll also see a few image-download lines above this — that's normal.)
 
 If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). More Docker failures are covered in [troubleshooting.md](troubleshooting.md).
 
@@ -124,15 +130,17 @@ Should print `harbor 0.13.x` or newer. If you get "command not found," your venv
 
 ## Step 4: Verify Harbor + Terminal-Bench with the oracle
 
-Before involving any LLM, confirm that Harbor and Docker are wired up correctly. The **oracle agent** replays each task's known solution — it always gets 100% and needs no model endpoint.
+Before involving any LLM, confirm that Harbor and Docker are wired up correctly — using the **oracle agent**. Every Terminal-Bench task ships with a reference solution (the exact shell commands that solve it, written by the task's author). The oracle is a built-in agent that ignores any model and simply replays that reference solution. It should therefore score 100% every time: there's no intelligence involved, so a perfect score proves your Docker + Harbor + grading pipeline works, and any failure here is an environment problem, not an agent problem.
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-This will:
+`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent — here the built-in oracle (`-a oracle`); later your own code (`--agent-import-path`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
+
+This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
-2. For each task: build a Docker image, run the oracle inside it, grade the result, destroy the container
+2. For each task: build the task's Docker image, replay the reference solution inside it (that's the oracle), grade the container's final state, destroy the container
 3. Print an aggregate score
 
 **Expected output:**
@@ -167,7 +175,9 @@ The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
 > **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
 
-Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only).
+Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only). If you haven't used it: Ollama is an app that downloads open-weight models and runs them on your own machine, exposing them through a local HTTP endpoint that speaks the same API as the big hosted providers. Your agent sends chat requests to `localhost` instead of a cloud service — no account, no API costs, and nothing leaves your machine.
+
+**Why an endpoint instead of loading the weights in your own code?** You *could* load the model directly in Python (e.g., with `transformers`), but then the model lives inside your agent process: every agent restart reloads gigabytes of weights, and your code gets tied to one inference library. Serving it behind an endpoint separates the two — the model loads once and stays resident, while your agent is just an HTTP client you can edit and rerun instantly. This matters for Harbor specifically: `harbor run -n 4` runs four tasks concurrently, and all four agent instances share the one model server instead of each loading its own copy. It's also what makes your submission portable — the starter's `agent/llm.py` speaks this API, so switching from Ollama on your laptop to a hosted endpoint (or the setup organizers use to re-run the top 5) is a `.env` change, not a code change.
 
 ### Install Ollama
 
@@ -201,7 +211,7 @@ You should see a JSON response listing your pulled model(s). If you get "connect
 Using the provided UW–Madison endpoint instead? Same check, with your key:
 
 ```bash
-curl https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1/models \
+curl <base URL retrieved from in-person kickoff>/models \
   -H "Authorization: Bearer $LLM_API_KEY"
 ```
 
