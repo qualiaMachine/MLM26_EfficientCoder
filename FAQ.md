@@ -31,7 +31,7 @@ See [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/ma
 Welcome. The challenge is fully open. You won't have access to the UW–Madison-only compute in [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md), but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
-Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — organizers spot-check periodically during the competition, and the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.
