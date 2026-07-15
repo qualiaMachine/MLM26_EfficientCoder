@@ -163,9 +163,11 @@ Results written to jobs/<date>__<time>/result.json
 If you see `Mean: 1.000` with 0 exceptions, everything works. A single failed task (e.g., `Mean: 0.900` with 0 exceptions) is usually a flaky task, not your setup — image pulls hiccup and some graders are timing-sensitive. Find it and re-run just that one:
 
 ```bash
-harbor view jobs                                            # see which task scored 0
+find jobs -name result.json | xargs grep -l '"reward": 0'   # the failing task's name is in the path
 harbor run -d terminal-bench-sample@2.0 -a oracle -i <task-name>
 ```
+
+(`harbor view jobs` also works — it starts a local web viewer at `http://127.0.0.1:8080` for browsing results in your browser; Ctrl+C stops it.)
 
 If instead *most* tasks fail or you see exceptions, the problem is Docker, not the benchmark. Common issues:
 - Docker not running → start it
