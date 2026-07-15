@@ -368,9 +368,9 @@ The four files you'll modify:
 
 ## Step 10: Make a change and see the effect
 
-Let's do one concrete improvement so you see the development loop.
+One concrete improvement, end to end, to show the development loop.
 
-The baseline's system prompt (`agent/prompts.py`) doesn't tell the agent to read the task instruction first. Let's fix that:
+The baseline's system prompt (`agent/prompts.py`) doesn't tell the agent to read the task instruction first. Fix that:
 
 Open `agent/prompts.py` and add to the top of `SYSTEM_PROMPT`, after the first paragraph:
 
