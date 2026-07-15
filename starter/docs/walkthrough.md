@@ -1,8 +1,7 @@
 # Walkthrough: Zero to Terminal-Bench score
 
-This guide walks you through every step — from a fresh machine to a working agent with a real Terminal-Bench score. Every command you need to run is here, in order, with what to expect at each step.
+This guide walks you through submitting a baseline agent to obtain a starting Terminal-Bench score. 
 
-**Time:** ~30 minutes end-to-end (mostly waiting for downloads).  
 **What you need:** A computer with 16+ GB RAM, an internet connection, and admin access.
 
 ---
@@ -10,6 +9,8 @@ This guide walks you through every step — from a fresh machine to a working ag
 ## Step 1: Install Docker
 
 Terminal-Bench runs every task inside a fresh Docker container. Your agent never touches your real filesystem — it works inside the container, the container's final state gets graded, and the container is destroyed. Docker makes this possible.
+
+> **Remember what you're building: an agent that runs arbitrary shell commands.** Inside `harbor run` the container is your protection. The moment you test agent code *outside* Harbor — pointing your loop at a local shell "just to see" — it has whatever access you have, and it will eventually try something destructive. Read [safety.md](safety.md) before you do that.
 
 ### macOS
 
@@ -37,19 +38,15 @@ Reboot. A terminal may open to finish Ubuntu setup (username + password) — if 
 
 ### Verify Docker works
 
+On macOS and Windows, **Docker Desktop must be open and running** for this to work (look for the whale icon in your menu bar / system tray) — the daemon only runs while the app does. On Linux the service runs in the background automatically.
+
 ```bash
 docker run hello-world
 ```
 
-On the first run, Docker downloads the image — expect output like this:
+Expected output:
 
 ```
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-4f55086f7dd0: Pull complete
-...
-Status: Downloaded newer image for hello-world:latest
-
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
@@ -61,10 +58,18 @@ To generate this message, Docker took the following steps:
     executable that produces the output you are currently reading.
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
-...
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
 ```
 
-If you see `Hello from Docker!`, Docker is working. The pull step only happens the first time.
+If you see `Hello from Docker!`, Docker is working. (On the very first run you'll also see a few image-download lines above this — that's normal.)
 
 If you get "Cannot connect to the Docker daemon" — Docker isn't running. Start Docker Desktop (macOS/Windows) or `sudo systemctl start docker` (Linux). More Docker failures are covered in [troubleshooting.md](troubleshooting.md).
 
@@ -94,8 +99,8 @@ You should see something like `uv 0.7.x` or newer. You don't need to install Pyt
 This repo contains both the challenge spec and the starter agent code. The agent lives in the `starter/` directory. The virtual environment lives at the repo root so it's shared across everything.
 
 ```bash
-git clone git@github.com:qualiaMachine/MLM26.git
-cd MLM26
+git clone https://github.com/qualiaMachine/MLM26_EfficientCoder.git
+cd MLM26_EfficientCoder
 ```
 
 Create a virtual environment with Python 3.12 and install everything:
@@ -106,12 +111,7 @@ source .venv/bin/activate
 uv pip install -e starter/
 ```
 
-What just happened:
-- `git clone` downloaded the challenge repo. The challenge rules and schedule are in `README.md` at the root; the agent code you'll work with is in `starter/`.
-- `cd MLM26` puts you at the repo root — the venv lives here.
-- `uv venv --python 3.12` created a `.venv/` directory with an isolated Python 3.12. If you don't have 3.12, uv downloaded it for you.
-- `source .venv/bin/activate` activated the venv. Your prompt should now show `(.venv)` at the start.
-- `uv pip install -e starter/` installed Harbor, the OpenAI client library, and the agent code in editable mode — meaning your edits to `starter/agent/` take effect immediately without reinstalling.
+Two things worth knowing: the `-e` (editable) install means your edits to `starter/agent/` take effect immediately, no reinstall; and your prompt should now show `(.venv)` — every later command assumes the venv is active.
 
 **Verify the install:**
 
@@ -125,15 +125,17 @@ Should print `harbor 0.13.x` or newer. If you get "command not found," your venv
 
 ## Step 4: Verify Harbor + Terminal-Bench with the oracle
 
-Before involving any LLM, confirm that Harbor and Docker are wired up correctly. The **oracle agent** replays each task's known solution — it always gets 100% and needs no model endpoint.
+Before involving any LLM, confirm that Harbor and Docker are wired up correctly — using the **oracle agent**. Every Terminal-Bench task ships with a reference solution (the exact shell commands that solve it, written by the task's author). The oracle is a built-in agent that ignores any model and simply replays that reference solution. There's no intelligence involved, so a score at (or very near) 100% proves your Docker + Harbor + grading pipeline works.
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-This will:
+`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent — here the built-in oracle (`-a oracle`); later your own code (`--agent-import-path`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
+
+This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
-2. For each task: build a Docker image, run the oracle inside it, grade the result, destroy the container
+2. For each task: build the task's Docker image, replay the reference solution inside it (that's the oracle), grade the container's final state, destroy the container
 3. Print an aggregate score
 
 **Expected output:**
@@ -153,9 +155,16 @@ Total runtime: 3m 5s
 Results written to jobs/<date>__<time>/result.json
 ```
 
-If you see `Mean: 1.000` with 0 exceptions, everything works.
+If you see `Mean: 1.000` with 0 exceptions, everything works. **Known issue at the time of writing:** the sample task `build-cython-ext` has a broken oracle solution on recent Harbor versions and deterministically scores 0, so a `Mean: 0.900` with 0 exceptions also means everything works. Any *other* single failed task is usually a flake, not your setup — image pulls hiccup and some graders are timing-sensitive. Find it and re-run just that one:
 
-If tasks fail here, the problem is Docker, not your agent. Common issues:
+```bash
+find jobs -name result.json | xargs grep -l '"reward": 0'   # the failing task's name is in the path
+harbor run -d terminal-bench-sample@2.0 -a oracle -i <task-name>
+```
+
+(`harbor view jobs` also works — it starts a local web viewer and prints its URL, e.g. `http://127.0.0.1:8080`. Open that URL in your browser, then **click a job to expand its per-task results** — the task list isn't shown until you do. Ctrl+C in the terminal stops the viewer.)
+
+If instead *most* tasks fail or you see exceptions, the problem is Docker, not the benchmark. Common issues:
 - Docker not running → start it
 - Not enough disk space → give Docker ≥30 GB (Docker Desktop → Settings → Resources)
 - Network issues pulling images → check your connection, retry
@@ -166,9 +175,11 @@ If tasks fail here, the problem is Docker, not your agent. Common issues:
 
 The baseline agent talks to any OpenAI-compatible chat completions endpoint.
 
-> **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Copy `.env.example` to `.env`, uncomment the "Provided endpoint" block, paste your key, and jump to [Verify the endpoint](#verify-the-endpoint). Full details in [byo_model.md](byo_model.md).
+> **UW–Madison participant with a kickoff-email API key?** Skip Ollama entirely — the provided `Qwen3.6-27B-FP8` endpoint needs no GPU. Set it up with [uw_madison_endpoint.md](uw_madison_endpoint.md), then continue at [Step 6](#step-6-run-the-baseline-agent-on-one-task).
 
-Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only).
+Otherwise, the easiest option to start is **Ollama** (free, local, works on most machines with a GPU or even CPU-only). If you haven't used it: Ollama is an app that downloads open-weight models and runs them on your own machine, exposing them through a local HTTP endpoint that speaks the same API as the big hosted providers. Your agent sends chat requests to `localhost` instead of a cloud service — no account, no API costs, and nothing leaves your machine.
+
+**Why an endpoint instead of loading the weights in your own code?** You *could* load the model directly in Python (e.g., with `transformers`), but then the model lives inside your agent process: every agent restart reloads gigabytes of weights, and your code gets tied to one inference library. Serving it behind an endpoint separates the two — the model loads once and stays resident, while your agent is just an HTTP client you can edit and rerun instantly. This matters for Harbor specifically: `harbor run -n 4` runs four tasks concurrently, and all four agent instances share the one model server instead of each loading its own copy. It's also what makes your submission portable — the starter's `agent/llm.py` speaks this API, so switching from Ollama on your laptop to a hosted endpoint (or the setup organizers use to re-run the top 5) is a `.env` change, not a code change.
 
 ### Install Ollama
 
@@ -182,7 +193,7 @@ ollama pull qwen2.5-coder:14b
 
 This downloads a 14B parameter coding model (~9 GB). It's the recommended starting point — large enough to reason through most easy/medium tasks, small enough to run on 16+ GB VRAM. The 7B works too but expect most tasks to fail due to limited reasoning capacity.
 
-> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from [`MODELS.md`](../../MODELS.md)):
+> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from the [challenge README](../../README.md#approved-models)):
 > - **No GPU / CPU only:** `qwen2.5-coder:7b` (slow on CPU, but works)
 > - **8 GB VRAM:** `qwen2.5-coder:7b` (counts as the approved 7B AWQ row)
 > - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point; approved 14B AWQ row)
@@ -199,14 +210,7 @@ curl http://localhost:11434/v1/models
 
 You should see a JSON response listing your pulled model(s). If you get "connection refused," start the server with `ollama serve`.
 
-Using the provided UW–Madison endpoint instead? Same check, with your key:
-
-```bash
-curl https://qwen36-27b-vllm-runai-shared-models.deepthought.doit.wisc.edu/v1/models \
-  -H "Authorization: Bearer $LLM_API_KEY"
-```
-
-The model id it returns (`/mnt/shared-models/qwen3.6-27B-fp8`) is exactly what goes in `LLM_MODEL`.
+Using the provided UW–Madison endpoint instead? See the verification check in [uw_madison_endpoint.md](uw_madison_endpoint.md).
 
 ### Configure the agent
 
@@ -230,24 +234,24 @@ LLM_API_KEY=ollama
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
-  -i build-cython-ext
+  -i regex-log
 ```
 
 Breaking down the flags:
 - `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
 - `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
-- `-i build-cython-ext` — include only this one task (without `-i`, it runs all 10)
+- `-i regex-log` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
 
 ```
 [agent] turn 1: cat /task/instruction.md
 [agent] turn 2: ls -la /task/
-[agent] turn 3: cat setup.py
-[agent] turn 4: python setup.py build_ext --inplace
+[agent] turn 3: head -50 /task/app.log
+[agent] turn 4: grep -E '<its regex attempt>' /task/app.log > /task/output.txt
 [agent] turn 5: pytest tests/ -v
 ...
-build-cython-ext    ✓  reward: 1.0    (or ✗  reward: 0.0)
+regex-log    ✓  reward: 1.0    (or ✗  reward: 0.0)
 ```
 
 The agent reads the task instruction, explores the container, attempts to solve the task with shell commands, and either passes or fails the test suite.
@@ -263,7 +267,7 @@ Results are saved to `./jobs/<job-name>/`. Each trial has a `result.json`:
 ls -t jobs/ | head -1
 
 # Check the result
-cat jobs/<job-name>/terminal-bench-sample__build-cython-ext/*/result.json | python3 -m json.tool
+cat jobs/<job-name>/terminal-bench-sample__regex-log/*/result.json | python3 -m json.tool
 ```
 
 Key fields in `result.json`:
@@ -305,7 +309,7 @@ harbor run -d terminal-bench-sample@2.0 \
 
 ## Step 8: Run the public subset (the real score)
 
-The sample set is just 10 tasks for setup verification. The public subset is what you self-report on the leaderboard. Once it's announced at kickoff (task names go in `eval/public_subset.txt`), run:
+The sample set is just 10 tasks for setup verification. The public subset is what you self-report on the leaderboard. Once it's announced in the Kaggle Discussion tab (task names go in `eval/public_subset.txt`), run:
 
 ```bash
 ./scripts/run_subset.sh
@@ -389,7 +393,7 @@ Now re-run the same task:
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
-  -i build-cython-ext
+  -i regex-log
 ```
 
 Because you used `uv pip install -e starter/` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?

@@ -1,8 +1,10 @@
 # Writeup template
 
-Copy this file, replace each section's prompt with your content, and attach it to your Kaggle submission. The writeup is **required** — a submission without one covering all sections below is ineligible. It is checked pass/fail for completeness, not judged on prose: two clear paragraphs per section beat ten padded ones. Hard cap: 5,000 words.
+A writeup is **required** with every submission — but this template is a suggested structure for those who want guidance, not a form to fill out. Organize yours however you like and fill it with whatever insights you learned. The one real expectation: explain your learning journey along the way — what you tried, what worked, what didn't, and where you ended up. Post it in the competition's Discussion tab and put the link in your submission card. Aim for 2,500 words or fewer.
 
 Why we require it: this is an educational challenge, and the writeup is how your work outlives the leaderboard. The goal is that another team can read it and reproduce your thinking, not just your score.
+
+The sections below are a starting point if a blank page is unhelpful:
 
 ---
 
@@ -12,7 +14,7 @@ Why we require it: this is an educational challenge, and the writeup is how your
 
 ## 2. Architecture
 
-> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your model row from `MODELS.md` and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
+> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your approved model checkpoint and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
 
 ## 3. What we tried
 

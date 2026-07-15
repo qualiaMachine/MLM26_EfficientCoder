@@ -3,10 +3,10 @@
 # or a single task from it:
 #
 #   ./scripts/run_baseline.sh                  # all 10 sample tasks
-#   ./scripts/run_baseline.sh build-cython-ext # just one task
+#   ./scripts/run_baseline.sh regex-log # just one task
 #
 # Extra harbor flags pass through, e.g.:
-#   ./scripts/run_baseline.sh build-cython-ext -m ollama/qwen2.5-coder:32b
+#   ./scripts/run_baseline.sh regex-log -m ollama/qwen2.5-coder:32b
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

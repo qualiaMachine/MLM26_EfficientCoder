@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sanity-check every reported VRAM number in MODELS.md against the Hub.
+"""Sanity-check every reported VRAM number in the approved-model table against the Hub.
 
 Usage (from the repo root):
 
@@ -8,14 +8,14 @@ Usage (from the repo root):
 
 What this does
 ==============
-The leaderboard's "reported VRAM" numbers live in the MODELS.md table.
+The leaderboard's "reported VRAM" numbers live in the approved-model table in the challenge README.
 Nobody should have to take those on faith, so this script re-derives each
 one from public information and prints the two side by side:
 
-1. Parse every model row out of MODELS.md (the repo id in backticks and
+1. Parse every checkpoint out of the README's approved-model table (the repo id in backticks and
    its "NN GB" reported VRAM).
-2. For each row, rebuild the estimate exactly the way MODELS.md defines
-   it, using ``estimate_vram.py``:
+2. For each row, rebuild the estimate from public information, using
+   ``estimate_vram.py``:
 
        weights   — the published checkpoint's actual file sizes on the
                    HuggingFace Hub (so AWQ/GPTQ/FP8 checkpoints are
@@ -60,28 +60,29 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import estimate_vram as ev  # noqa: E402
 
-# This file lives at starter/scripts/, so MODELS.md is two levels up.
-MODELS_MD = Path(__file__).resolve().parents[2] / "MODELS.md"
+# This file lives at starter/scripts/, so the challenge README is two levels up.
+TABLE_FILE = Path(__file__).resolve().parents[2] / "README.md"
 
-# Matches an approved-model table row and captures (repo id, VRAM number):
-#   | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | AWQ 4-bit | 28 GB | ... |
-# The repo id must contain a "/" (owner/name) so header and note rows
-# don't match by accident.
-ROW = re.compile(r"^\|\s*`([\w./-]+/[\w./-]+)`\s*\|[^|]*\|\s*([\d.]+)\s*GB\s*\|")
+# Matches an approved checkpoint entry and captures (repo id, VRAM number).
+# The table lists each checkpoint as a backticked HuggingFace id followed by
+# its reported VRAM in parentheses:
+#   `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB)
+# The repo id must contain a "/" (owner/name), so non-Hub entries like
+# Ollama tags (`qwen3-coder:30b`) are skipped — they can't be verified
+# against the Hub API anyway.
+ENTRY = re.compile(r"`([\w./-]+/[\w./-]+)`\s*\(([\d.]+)\s*GB\)")
 
 
 def table_rows() -> list[tuple[str, float]]:
-    """Return (repo_id, reported_vram_gb) for every model row in MODELS.md."""
-    rows = []
-    for line in MODELS_MD.read_text().splitlines():
-        m = ROW.match(line)
-        if m:
-            rows.append((m.group(1), float(m.group(2))))
+    """Return (repo_id, reported_vram_gb) for every Hub checkpoint in the approved-model table."""
+    rows = list(dict.fromkeys(
+        (repo, float(gb)) for repo, gb in ENTRY.findall(TABLE_FILE.read_text())
+    ))
     if not rows:
         # Most likely the table format changed and the regex above needs
         # updating — better to fail loudly than to report "all good" on
         # an empty check.
-        raise SystemExit(f"No model rows parsed from {MODELS_MD} — did the table format change?")
+        raise SystemExit(f"No model entries parsed from {TABLE_FILE} — did the table format change?")
     return rows
 
 

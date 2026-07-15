@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run your agent against the official public subset (eval/public_subset.txt).
-# This is the score you self-report on the leaderboard thread each week.
+# This is the score you post in the Kaggle Discussion tab.
 #
 #   ./scripts/run_subset.sh
 #   ./scripts/run_subset.sh -m ollama/qwen2.5-coder:32b   # extra flags pass through

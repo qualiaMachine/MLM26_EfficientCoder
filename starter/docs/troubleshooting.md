@@ -29,7 +29,7 @@ Keep your repo inside the WSL2 filesystem (`~/...`), not `/mnt/c/...`.
 You can't install Docker locally. Harbor supports cloud sandboxes (Daytona) as a fallback, or run on any Linux VM you control.
 
 **Oracle run fails (`harbor run -d terminal-bench-sample@2.0 -a oracle`)**
-This is the canary — if oracle fails, the problem is your Docker/Harbor setup, not your agent. Check Docker is running, you have disk space (≥30 GB for Docker), and your network can pull images.
+This is the canary. One failed task out of 10 is usually a flake (image-pull hiccup, timing-sensitive grader) — re-run just that task with `-i <task-name>`. If most tasks fail or you see exceptions, the problem is your Docker/Harbor setup, not your agent: check Docker is running, you have disk space (≥30 GB for Docker), and your network can pull images.
 
 ## Agent runs
 
@@ -63,4 +63,4 @@ Each concurrent task is a full container plus your model server. Drop `-n` to 1�
 Console prints the aggregate at the end; per-trial details are in `./jobs/<job-name>/.../result.json`.
 
 **My score varies run to run**
-Normal — LLM sampling is stochastic. Use `--n-attempts` for pass@k stats, and report your evaluation procedure honestly in the writeup.
+Normal — LLM sampling is stochastic. The leaderboard scores a single attempt per task; use `--n-attempts` locally for pass@k stats, and report your evaluation procedure honestly in the writeup.
