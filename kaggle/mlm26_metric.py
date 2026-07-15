@@ -75,7 +75,7 @@ def _normalized_pair(model: str, quantization: str):
 
 
 def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: str) -> float:
-    """Efficient Coding Agent leaderboard score.
+    """Efficient Coder leaderboard score.
 
         leaderboard_score = tb_score - 0.01 * (total_tokens / 1,000,000)
 
@@ -111,7 +111,7 @@ def score(solution: pd.DataFrame, submission: pd.DataFrame, row_id_column_name: 
     ...     "total_tokens": 1263800,
     ...     "gpu": "RTX A6000 48 GB",
     ...     "mean_wallclock_per_task": "3m 12s",
-    ...     "writeup_url": "https://kaggle.com/competitions/efficient-coding-agent/discussion/1",
+    ...     "writeup_url": "https://kaggle.com/competitions/efficient-coder/discussion/1",
     ... }])
     >>> round(score(sol, sub, "id"), 6)
     0.407362
@@ -188,7 +188,7 @@ if __name__ == "__main__":
             "total_tokens": "1,263,800",
             "gpu": "RTX A6000 48 GB",
             "mean_wallclock_per_task": "3m 12s",
-            "writeup_url": "https://kaggle.com/competitions/efficient-coding-agent/discussion/1",
+            "writeup_url": "https://kaggle.com/competitions/efficient-coder/discussion/1",
         }
         base.update(overrides)
         return pd.DataFrame([base])
