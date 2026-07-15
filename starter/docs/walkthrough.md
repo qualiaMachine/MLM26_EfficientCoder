@@ -167,7 +167,7 @@ find jobs -name result.json | xargs grep -l '"reward": 0'   # the failing task's
 harbor run -d terminal-bench-sample@2.0 -a oracle -i <task-name>
 ```
 
-(`harbor view jobs` also works — it starts a local web viewer at `http://127.0.0.1:8080` for browsing results in your browser; Ctrl+C stops it.)
+(`harbor view jobs` also works — it starts a local web viewer at `http://127.0.0.1:8080`. Open that URL in your browser, then **click a job to expand its per-task results** — the task list isn't shown until you do. Ctrl+C in the terminal stops the viewer.)
 
 If instead *most* tasks fail or you see exceptions, the problem is Docker, not the benchmark. Common issues:
 - Docker not running → start it
