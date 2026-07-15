@@ -163,7 +163,7 @@ These three numbers, plus your approved model entry, are what go on the submissi
 
 ### Submitting your solution
 
-Submissions go through Kaggle as a standardized one-row **`submission.csv`** with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
+Submissions go through Kaggle as a standardized **`submission.csv`** (two identical data rows — see Part 1) with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
 
 During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
