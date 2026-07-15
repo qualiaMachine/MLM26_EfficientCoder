@@ -43,7 +43,7 @@ LLM_MODEL=Qwen/Qwen2.5-Coder-32B-Instruct
 LLM_API_KEY=<your-together-key>     # use a throwaway/dev key
 ```
 
-**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use one of the approved models on the [competition page](https://www.kaggle.com/competitions/efficient-coding-agent/overview). Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed `qwen3-coder-30b-a3b` counts as the approved FP8 entry; Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB) — the [provided UW–Madison endpoint](uw_madison_endpoint.md), or self-host it from HuggingFace; the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
+**Constraint reminder:** hosted endpoints are fine for *development*, but your submitted run must use one of the approved models on the [competition page](https://www.kaggle.com/competitions/efficient-coder/overview). Closed-weight models (GPT, Claude, Gemini) are out of scope everywhere. Bedrock's fully-managed `qwen3-coder-30b-a3b` counts as the approved FP8 entry; Bedrock Custom Model Import is not viable for a hackathon team (Provisioned-Throughput-only, $21–50/hr). Anchor: `Qwen/Qwen3.6-27B-FP8` (37 GB) — the [provided UW–Madison endpoint](uw_madison_endpoint.md), or self-host it from HuggingFace; the most widely hosted alternative is `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB).
 
 ## Swapping models
 

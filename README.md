@@ -1,4 +1,4 @@
-# Efficient Coding Agent
+# Efficient Coder
 
 Build the best open coding agent on a single GPU — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at UW–Madison, September–December 2026. Open to everyone.
 
@@ -179,8 +179,8 @@ Two **identical** data rows (ids `1` and `2` — Kaggle scores one on the public
 
 ```
 id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wallclock_per_task,writeup_url
-1,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coding-agent/discussion/…
-2,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coding-agent/discussion/…
+1,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coder/discussion/…
+2,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coder/discussion/…
 ```
 
 (Malformed rows are rejected with a visible error at upload.)
@@ -208,7 +208,7 @@ To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in
 | `total_tokens` | `1263800` | `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` — feeds the token penalty |
 | `gpu` | `RTX A6000 48 GB` | informational, not scored |
 | `mean_wallclock_per_task` | `3m 12s` | informational, not scored |
-| `writeup_url` | `kaggle.com/competitions/efficient-coding-agent/discussion/…` | your writeup in the Discussion tab (see Part 2) |
+| `writeup_url` | `kaggle.com/competitions/efficient-coder/discussion/…` | your writeup in the Discussion tab (see Part 2) |
 
 
 
@@ -245,6 +245,6 @@ Significant discrepancies, hardcoding, running a different model than declared, 
 ## Citation
 
 ```
-Chris Endemann. Efficient Coding Agent.
-https://kaggle.com/competitions/efficient-coding-agent, Unpublished. Kaggle.
+Chris Endemann. Efficient Coder.
+https://kaggle.com/competitions/efficient-coder, Unpublished. Kaggle.
 ```
