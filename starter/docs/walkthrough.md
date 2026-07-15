@@ -137,7 +137,9 @@ Before involving any LLM, confirm that Harbor and Docker are wired up correctly.
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-This will:
+`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent — here the built-in oracle (`-a oracle`); later your own code (`--agent-import-path`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
+
+This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
 2. For each task: build a Docker image, run the oracle inside it, grade the result, destroy the container
 3. Print an aggregate score
