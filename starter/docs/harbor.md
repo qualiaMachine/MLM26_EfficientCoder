@@ -37,7 +37,7 @@ harbor run -d terminal-bench-sample@2.0 -a oracle
 
 # Run your agent on one task
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent -i build-cython-ext
+  --agent-import-path agent.agent:BaselineAgent -i regex-log
 
 # Run the public subset (what you self-report)
 ./scripts/run_subset.sh

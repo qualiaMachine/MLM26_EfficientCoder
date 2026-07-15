@@ -155,7 +155,7 @@ Total runtime: 3m 5s
 Results written to jobs/<date>__<time>/result.json
 ```
 
-If you see `Mean: 1.000` with 0 exceptions, everything works. A single failed task (e.g., `Mean: 0.900` with 0 exceptions) is usually a flaky task, not your setup — image pulls hiccup and some graders are timing-sensitive. Find it and re-run just that one:
+If you see `Mean: 1.000` with 0 exceptions, everything works. **Known issue at the time of writing:** the sample task `build-cython-ext` has a broken oracle solution on recent Harbor versions and deterministically scores 0, so a `Mean: 0.900` with 0 exceptions also means everything works. Any *other* single failed task is usually a flake, not your setup — image pulls hiccup and some graders are timing-sensitive. Find it and re-run just that one:
 
 ```bash
 find jobs -name result.json | xargs grep -l '"reward": 0'   # the failing task's name is in the path
@@ -234,24 +234,24 @@ LLM_API_KEY=ollama
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
-  -i build-cython-ext
+  -i regex-log
 ```
 
 Breaking down the flags:
 - `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
 - `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
-- `-i build-cython-ext` — include only this one task (without `-i`, it runs all 10)
+- `-i regex-log` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
 
 ```
 [agent] turn 1: cat /task/instruction.md
 [agent] turn 2: ls -la /task/
-[agent] turn 3: cat setup.py
-[agent] turn 4: python setup.py build_ext --inplace
+[agent] turn 3: head -50 /task/app.log
+[agent] turn 4: grep -E '<its regex attempt>' /task/app.log > /task/output.txt
 [agent] turn 5: pytest tests/ -v
 ...
-build-cython-ext    ✓  reward: 1.0    (or ✗  reward: 0.0)
+regex-log    ✓  reward: 1.0    (or ✗  reward: 0.0)
 ```
 
 The agent reads the task instruction, explores the container, attempts to solve the task with shell commands, and either passes or fails the test suite.
@@ -267,7 +267,7 @@ Results are saved to `./jobs/<job-name>/`. Each trial has a `result.json`:
 ls -t jobs/ | head -1
 
 # Check the result
-cat jobs/<job-name>/terminal-bench-sample__build-cython-ext/*/result.json | python3 -m json.tool
+cat jobs/<job-name>/terminal-bench-sample__regex-log/*/result.json | python3 -m json.tool
 ```
 
 Key fields in `result.json`:
@@ -393,7 +393,7 @@ Now re-run the same task:
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
   --agent-import-path agent.agent:BaselineAgent \
-  -i build-cython-ext
+  -i regex-log
 ```
 
 Because you used `uv pip install -e starter/` (editable install), your change is live immediately — no reinstall. Compare the agent's behavior in the logs: does it explore more methodically? Does it run tests before finishing?
