@@ -61,6 +61,8 @@ Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
 ### Starter materials
 
+The [challenge repo](https://github.com/qualiaMachine/MLM26_EfficientCoder) has everything you need to get a first scored run working:
+
 - [`starter/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/) — a deliberately minimal [ReAct](https://arxiv.org/abs/2210.03629) baseline agent (~200 lines) wired into Harbor, meant to be forked and rebuilt: the model *reasons* about the next step, *acts* by emitting a shell command, observes the output, and repeats until it decides the task is done. Architecture, prompting strategy, retrieval, tool design, and planning logic are all up to you.
 - [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score); the surrounding [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) folder covers model endpoint setup and troubleshooting.
 - [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
