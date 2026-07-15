@@ -14,20 +14,7 @@ A hosted `Qwen/Qwen3.6-27B-FP8` endpoint is provided — setup, verification, an
 
 ## Ollama (easiest local option)
 
-```bash
-# Install: https://ollama.com/download
-ollama pull qwen2.5-coder:32b      # pick a size that fits your GPU/RAM
-ollama serve                        # usually already running as a service
-```
-
-```bash
-# .env
-LLM_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5-coder:32b
-LLM_API_KEY=ollama
-```
-
-Tip: `ollama list` shows the exact model names to use.
+Covered end-to-end in [walkthrough.md Step 5](walkthrough.md#step-5-set-up-a-model-endpoint) — install, pull a model sized for your GPU, verify, configure `.env`. Tip: `ollama list` shows the exact model names to use in `LLM_MODEL`.
 
 ## vLLM (serious local serving)
 
