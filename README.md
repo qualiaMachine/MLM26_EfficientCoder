@@ -144,23 +144,23 @@ Where:
 
 ### Computing your submission numbers
 
-After running `harbor run -d terminal-bench@2.0 --agent agent.agent:BaselineAgent`, Harbor writes one `result.json` per task under `jobs/<job-id>/terminal-bench__<task>/0/result.json`. Extract the three numbers you need with the commands below (they use [`jq`](https://jqlang.org) — install it first with `sudo apt install jq` on Ubuntu/WSL2 or `brew install jq` on macOS):
+After running `harbor run -d terminal-bench@2.0 --agent agent.agent:BaselineAgent`, Harbor writes one `result.json` per task trial under `jobs/<job-id>/<task>__<trial-id>/result.json` (plus a job-level summary at `jobs/<job-id>/result.json`). Extract the three numbers you need with the commands below (they use [`jq`](https://jqlang.org) — install it first with `sudo apt install jq` on Ubuntu/WSL2 or `brew install jq` on macOS):
 
 ```bash
 JOB=jobs/<your-job-id>
 
-# Terminal-Bench score (mean reward)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
-  [.[] | .reward] | add / length
+# Terminal-Bench score (mean reward across trials; -mindepth 2 skips the job-level summary)
+find "$JOB" -mindepth 2 -name result.json | xargs jq -s '
+  [.[] | .verifier_result.rewards.reward // 0] | add / length
 '
 
 # Total tokens (input + output, summed across all 89 tasks)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | xargs jq -s '
-  [.[] | (.n_input_tokens + .n_output_tokens)] | add
+find "$JOB" -mindepth 2 -name result.json | xargs jq -s '
+  [.[] | (.agent_result.n_input_tokens // 0) + (.agent_result.n_output_tokens // 0)] | add
 '
 
 # Tasks evaluated (sanity check: should be 89)
-find "$JOB" -name 'result.json' -path '*/0/result.json' | wc -l
+find "$JOB" -mindepth 2 -name result.json | wc -l
 ```
 
 These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them.

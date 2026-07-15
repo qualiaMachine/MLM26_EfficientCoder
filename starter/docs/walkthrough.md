@@ -264,21 +264,22 @@ The agent reads the task instruction, explores the container, attempts to solve 
 
 ### Where results go
 
-Results are saved to `./jobs/<job-name>/`. Each trial has a `result.json`:
+Results are saved to `./jobs/<job-name>/`. Each trial gets its own directory named `<task>__<trial-id>` with a `result.json`:
 
 ```bash
 # Find the latest job
 ls -t jobs/ | head -1
 
 # Check the result
-cat jobs/<job-name>/terminal-bench-sample__regex-log/*/result.json | python3 -m json.tool
+cat jobs/<job-name>/regex-log__*/result.json | python3 -m json.tool
 ```
 
 Key fields in `result.json`:
-- `reward` — the score (1.0 = pass, 0.0 = fail)
+- `verifier_result.rewards.reward` — the score (1.0 = pass, 0.0 = fail)
+- `agent_result.n_input_tokens` / `n_output_tokens` — token usage (this is where your submission's `total_tokens` comes from)
 - `agent_info` — your agent name and version
 - `started_at` / `finished_at` — timing for each phase
-- `exception` — what went wrong, if anything
+- `exception_info` — what went wrong, if anything
 
 ---
 
