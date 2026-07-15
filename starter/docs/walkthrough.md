@@ -1,8 +1,7 @@
 # Walkthrough: Zero to Terminal-Bench score
 
-This guide walks you through every step — from a fresh machine to a working agent with a real Terminal-Bench score. Every command you need to run is here, in order, with what to expect at each step.
+This guide walks you through submitting a baseline agent to obtain a starting Terminal-Bench score. 
 
-**Time:** ~30 minutes end-to-end (mostly waiting for downloads).  
 **What you need:** A computer with 16+ GB RAM, an internet connection, and admin access.
 
 ---

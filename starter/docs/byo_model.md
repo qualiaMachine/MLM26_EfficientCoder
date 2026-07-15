@@ -10,13 +10,13 @@ LLM_API_KEY=...    # anything non-empty for local endpoints
 
 ## Provided endpoint (UW–Madison participants — default)
 
-ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW–Madison participants — no GPU of your own needed. Request the API key via the kickoff form (it arrives in the kickoff email; never commit it).
+ML+X hosts a shared **`Qwen/Qwen3.6-27B-FP8`** deployment on campus RunAI for UW–Madison participants — no GPU of your own needed. *Request the API key by emailing endemann@wisc.edu with the following (1) your wisc email address, (2) your registered team name on Kaggle.*
 
 ```bash
 # .env
 LLM_BASE_URL=<retrieved from in-person kickoff>
 LLM_MODEL=/mnt/shared-models/qwen3.6-27B-fp8
-LLM_API_KEY=<key from the kickoff email>
+LLM_API_KEY=<see key request instructions above>
 LLM_MAX_TOKENS=4096
 ```
 
