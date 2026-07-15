@@ -22,7 +22,7 @@ This is a non-monetary educational challenge. There are no cash or material priz
 
 ## 5. Submission limits
 
-- Up to 5 submissions per day.
+- Up to 1 submission per day.
 - Your most recent submission at the deadline is your final result.
 
 ## 6. Benchmark data
