@@ -130,7 +130,7 @@ Should print `harbor 0.13.x` or newer. If you get "command not found," your venv
 
 ## Step 4: Verify Harbor + Terminal-Bench with the oracle
 
-Before involving any LLM, confirm that Harbor and Docker are wired up correctly — using the **oracle agent**. Every Terminal-Bench task ships with a reference solution (the exact shell commands that solve it, written by the task's author). The oracle is a built-in agent that ignores any model and simply replays that reference solution. It should therefore score 100% every time: there's no intelligence involved, so a perfect score proves your Docker + Harbor + grading pipeline works, and any failure here is an environment problem, not an agent problem.
+Before involving any LLM, confirm that Harbor and Docker are wired up correctly — using the **oracle agent**. Every Terminal-Bench task ships with a reference solution (the exact shell commands that solve it, written by the task's author). The oracle is a built-in agent that ignores any model and simply replays that reference solution. There's no intelligence involved, so a score at (or very near) 100% proves your Docker + Harbor + grading pipeline works.
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 -a oracle
@@ -160,9 +160,14 @@ Total runtime: 3m 5s
 Results written to jobs/<date>__<time>/result.json
 ```
 
-If you see `Mean: 1.000` with 0 exceptions, everything works.
+If you see `Mean: 1.000` with 0 exceptions, everything works. A single failed task (e.g., `Mean: 0.900` with 0 exceptions) is usually a flaky task, not your setup — image pulls hiccup and some graders are timing-sensitive. Find it and re-run just that one:
 
-If tasks fail here, the problem is Docker, not your agent. Common issues:
+```bash
+harbor view jobs                                            # see which task scored 0
+harbor run -d terminal-bench-sample@2.0 -a oracle -i <task-name>
+```
+
+If instead *most* tasks fail or you see exceptions, the problem is Docker, not the benchmark. Common issues:
 - Docker not running → start it
 - Not enough disk space → give Docker ≥30 GB (Docker Desktop → Settings → Resources)
 - Network issues pulling images → check your connection, retry
