@@ -12,8 +12,7 @@ The one part that is **not optional** is the submission card — the table below
 
 | Field | Your entry (example) |
 |---|---|
-| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
-| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
+| `code_url` | `https://github.com/team/agent/tree/v1.0-submission` — your public repo at the exact tag or commit SHA you ran |
 | `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
 | `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
 | `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |

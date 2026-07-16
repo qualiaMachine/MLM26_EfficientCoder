@@ -136,8 +136,7 @@ Open the report with your **submission card** — copy this table and fill in yo
 
 | Field | Your entry (example) |
 |---|---|
-| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
-| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
+| `code_url` | `https://github.com/team/agent/tree/v1.0-submission` — your public repo at the exact tag or commit SHA you ran |
 | `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
 | `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
 | `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
@@ -146,15 +145,15 @@ Open the report with your **submission card** — copy this table and fill in yo
 | `gpu` | `RTX A6000 48 GB` — informational, not scored |
 | `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
 
-**Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
+**Getting your `code_url`.** It pins the exact version of your code you ran, so organizers can reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
 
 ```bash
-git rev-parse HEAD                                        # prints the commit SHA — that's your commit_ref
+git rev-parse HEAD                                        # prints the commit SHA
 # or, friendlier: tag the submission and use the tag name
 git tag v1.0-submission && git push origin v1.0-submission
 ```
 
-To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
+Your `code_url` is `https://github.com/<you>/<repo>/tree/<tag-or-SHA>`. Before submitting, open it in a private/incognito browser window — if the page loads, anyone can fetch exactly the code you ran (that's the point of the `/tree/` form: the link doubles as its own check). If it 404s, your repo is private or the commit isn't pushed.
 
 ---
 
