@@ -1,7 +1,8 @@
-<!-- Maintainer note: Kaggle's writeup-template field has a size limit
-(saving a template this long fails with an internal error). The template
-configured on Kaggle is a compact version of this file — submission card
-plus a one-line-per-section outline — that links here for full guidance.
+<!-- Maintainer note: Kaggle's writeup-template field is limited to 300
+words (saving anything longer fails with an internal error). The template
+configured on Kaggle is a ~160-word compact version of this file —
+submission card plus a one-line-per-section outline — that links here for
+full guidance.
 Keep the submission card block below in sync with the Kaggle version and
 the Submission Requirements section of the README. -->
 
