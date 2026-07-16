@@ -22,7 +22,7 @@ The one part that is **not optional** is the submission card — the table below
 | `gpu` | `RTX A6000 48 GB` — informational, not scored |
 | `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
 
-Also attach to the Writeup: a **cover image** (Kaggle requires one — a screenshot of your `harbor view jobs` results works) and your **GitHub repo as the project link** (`https://github.com/<you>/<repo>/tree/<commit_ref>`). Full details in the Submission Requirements section of the competition page.
+Also add a **cover image** — Kaggle requires one to submit a Writeup; a screenshot of your `harbor view jobs` results works. Full details in the Submission Requirements section of the competition page.
 
 The sections below are a starting point if a blank page is unhelpful:
 
