@@ -261,5 +261,5 @@ Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the Unive
 
 ```
 Christopher Endemann. Efficient Coder.
-https://kaggle.com/competitions/efficient-coder, Unpublished. Kaggle.
+https://kaggle.com/competitions/efficient-coding-agent, Unpublished. Kaggle.
 ```
