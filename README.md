@@ -158,18 +158,6 @@ git tag v1.0-submission && git push origin v1.0-submission
 
 To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
 
-### 2. Media Gallery — cover image
-
-Kaggle requires a cover image to submit a Writeup — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work. More images are welcome; no video is required.
-
-### 3. Project link — your GitHub repo (required)
-
-Attach `https://github.com/<you>/<repo>/tree/<commit_ref>`: public, licensed MIT or Apache 2.0, at the exact commit you evaluated, with setup instructions so organizers can re-run your agent via `harbor run --agent <module>:<Class>`.
-
-### 4. Public notebook (optional)
-
-Kaggle notebooks can't run Docker, so Terminal-Bench itself can't run on Kaggle — your code lives in the GitHub repo, not a notebook. If you want to make verification easier, attach a notebook that recomputes your `tb_score` and `total_tokens` from your Harbor job's `result.json` files (uploaded as a Kaggle dataset).
-
 ---
 
 ## Tracks and Awards
