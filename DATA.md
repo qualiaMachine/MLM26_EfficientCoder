@@ -32,7 +32,7 @@ Run your pipeline over the evaluation images and write a CSV with one row per pa
 | `page_id` | must match `metadata.csv` exactly, every page present |
 | `text` | your predicted transcription for the page |
 
-Line breaks inside `text` may be encoded either as real newlines (in a properly quoted CSV field) or as the two-character escape `\n` — the metric collapses all whitespace runs to single spaces before scoring, so both are equivalent. See [`evaluation/sample_submission.csv`](evaluation/sample_submission.csv) for a valid file. Then score it:
+Line breaks inside `text` may be encoded either as real newlines (in a properly quoted CSV field) or as the two-character escape `\n` — the metric collapses all whitespace runs to single spaces before scoring, so both are equivalent. See [`evaluation/example_predictions.csv`](evaluation/example_predictions.csv) for a valid file. Then score it:
 
 ```bash
 python evaluation/score_local.py --solution eval/solution.csv --submission my_predictions.csv
