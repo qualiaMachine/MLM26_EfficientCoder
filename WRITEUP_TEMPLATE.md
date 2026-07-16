@@ -1,3 +1,10 @@
+<!-- Maintainer note: Kaggle's writeup-template field has a size limit
+(saving a template this long fails with an internal error). The template
+configured on Kaggle is a compact version of this file — submission card
+plus a one-line-per-section outline — that links here for full guidance.
+Keep the submission card block below in sync with the Kaggle version and
+the Submission Requirements section of the README. -->
+
 # Writeup template
 
 The **Kaggle Writeup is your submission** — create it with the "New Writeup" button on the competition page and submit it before the deadline. This template is a suggested structure for those who want guidance, not a form to fill out. Organize yours however you like and fill it with whatever insights you learned. The one real expectation: explain your learning journey along the way — what you tried, what worked, what didn't, and where you ended up. Aim for 2,500 words or fewer.
