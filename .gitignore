@@ -1,6 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
-jobs/
-starter/jobs/
+.ipynb_checkpoints/
 .env
+submission.csv
+data/sample/images/
+*.tif
+*.tiff
