@@ -132,18 +132,25 @@ During the competition, also share early and often via the Kaggle Discussion tab
 
 Title, subtitle, cover image, and your report, **≤2,500 words**. (Kaggle requires the cover image to submit — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work.) [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
 
-Open the report with your **submission card** — copy this table and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
+Open the report with your **submission card** — copy this block and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
-| Field | Your entry (example) |
-|---|---|
-| `code_url` | `https://github.com/team/agent/tree/v1.0-submission` — your public repo at the exact tag or commit SHA you ran |
-| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
-| `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
-| `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
-| `total_tokens` | `1263800` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` |
-| `leaderboard_score` | `0.407` — `tb_score − 0.01 × (total_tokens / 1,000,000)` |
-| `gpu` | `RTX A6000 48 GB` — informational, not scored |
-| `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
+```
+code_url: https://github.com/team/agent/tree/v1.0-submission
+model: Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
+quantization: AWQ 4-bit
+tb_score: 0.42
+total_tokens: 1263800
+leaderboard_score: 0.407
+gpu: RTX A6000 48 GB
+mean_wallclock_per_task: 3m 12s
+```
+
+- `code_url` — your public repo at the exact tag or commit SHA you ran (see below)
+- `model` and `quantization` — must match an approved entry; quantization is `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`
+- `tb_score` — mean reward across all 89 tasks, 0–1
+- `total_tokens` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json`
+- `leaderboard_score` — `tb_score − 0.01 × (total_tokens / 1,000,000)`
+- `gpu` and `mean_wallclock_per_task` — informational, not scored
 
 **Getting your `code_url`.** It pins the exact version of your code you ran, so organizers can reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
 
