@@ -59,7 +59,9 @@ Three representative tasks from Terminal-Bench, varying in difficulty:
 
 Browse all 89 tasks with filters at [tbench.ai](https://www.tbench.ai/).
 
-### Starter materials
+---
+
+## Starter materials
 
 The [challenge repo](https://github.com/qualiaMachine/MLM26_EfficientCoder) has everything you need to get a first scored run working:
 
@@ -67,7 +69,9 @@ The [challenge repo](https://github.com/qualiaMachine/MLM26_EfficientCoder) has 
 - [`starter/docs/walkthrough.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/walkthrough.md) — an end-to-end walkthrough (fresh machine → first Terminal-Bench score); the surrounding [`starter/docs/`](https://github.com/qualiaMachine/MLM26_EfficientCoder/tree/main/starter/docs/) folder covers model endpoint setup and troubleshooting.
 - [`RESOURCES.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — where to run the benchmark and where to serve a model, with or without your own GPU.
 
-### Approved models
+---
+
+## Approved models
 
 Submissions must use one of the models below. The list is deliberately short so the competition is about how you build the scaffold, not which model you found. Scoring is Terminal-Bench score minus a small token penalty — see the Evaluation section below.
 
@@ -85,7 +89,7 @@ Development is unrestricted — prototype against any open-weight model or endpo
 
 **Equivalent quantizations count as the same entry.** GGUF/Q4_K_M (Ollama) and GPTQ-Int4 checkpoints of a listed model map to its AWQ / 4-bit column; they're within ~10% of each other. Ollama's `qwen2.5-coder:7b/14b/32b` tags are the corresponding AWQ entries.
 
-#### How "reported VRAM" is computed
+### How "reported VRAM" is computed
 
 Each checkpoint's reported VRAM is **weights + KV cache for a 16k context window + small overhead**, at single-batch concurrency. It's there to tell you what hardware a model needs — approximate by design, since peak VRAM varies with batch size, context length, and serving stack.
 
@@ -97,7 +101,7 @@ Reported VRAM (GB) ≈ published checkpoint size                               #
 
 For **MoE models**, the full checkpoint loads into VRAM — active params reduce compute, not memory.
 
-#### Requesting an addition
+### Requesting an addition
 
 The list is meant to stay short, but it isn't frozen. If a model materially changes what's possible for participants (a new open-weight coder release, a hardware tier the list doesn't serve), post in the **Kaggle Discussion tab** with the HuggingFace id, the quantization, and the case for adding it. Additions should land at or under ~48 GB reported VRAM — a single serious GPU. Organizers respond within a day or two; once listed, the model is available to every team.
 
@@ -116,11 +120,63 @@ The list is meant to stay short, but it isn't frozen. If a model materially chan
 **Generalizability.** One system prompt, one agent loop, no per-task `if task == "fix-git"` branching. Detecting task *categories* (e.g., "this looks like a debugging task") and adjusting strategy is fine — that's good engineering. Hardcoding solutions or prompts for individual tasks is not. After the deadline, organizers re-run the top 5 submissions and review the code; task-specific hardcoding disqualifies.
 
 
-### Contact & Sponsors
+---
 
-Chris Endemann (endemann@wisc.edu), UW–Madison.
+## Submission Requirements
 
-Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
+Submissions are **Kaggle Writeups** — there is no file upload. Create one with the "New Writeup" button on the competition page; after you save, a "Submit" button appears in the top right corner. **Your final Writeup must be submitted before the deadline — draft or un-submitted Writeups are not considered.** You can edit and resubmit as your agent improves; the submitted version at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
+
+During the competition, also share early and often via the Kaggle Discussion tab: post progress, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
+
+A valid submission contains:
+
+### 1. The Writeup (project report)
+
+Title, subtitle, and your report, **≤2,500 words**. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
+
+Open the report with your **submission card** — copy this table and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
+
+| Field | Your entry (example) |
+|---|---|
+| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
+| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
+| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
+| `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
+| `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
+| `total_tokens` | `1263800` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` |
+| `leaderboard_score` | `0.407` — `tb_score − 0.01 × (total_tokens / 1,000,000)` |
+| `gpu` | `RTX A6000 48 GB` — informational, not scored |
+| `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
+
+**Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
+
+```bash
+git rev-parse HEAD                                        # prints the commit SHA — that's your commit_ref
+# or, friendlier: tag the submission and use the tag name
+git tag v1.0-submission && git push origin v1.0-submission
+```
+
+To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
+
+### 2. Media Gallery — cover image
+
+Kaggle requires a cover image to submit a Writeup — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work. More images are welcome; no video is required.
+
+### 3. Project link — your GitHub repo (required)
+
+Attach `https://github.com/<you>/<repo>/tree/<commit_ref>`: public, licensed MIT or Apache 2.0, at the exact commit you evaluated, with setup instructions so organizers can re-run your agent via `harbor run --agent <module>:<Class>`.
+
+### 4. Public notebook (optional)
+
+Kaggle notebooks can't run Docker, so Terminal-Bench itself can't run on Kaggle — your code lives in the GitHub repo, not a notebook. If you want to make verification easier, attach a notebook that recomputes your `tb_score` and `total_tokens` from your Harbor job's `result.json` files (uploaded as a Kaggle dataset).
+
+---
+
+## Tracks and Awards
+
+**Open track** — the only track; select it when submitting your Writeup. All submissions compete together, ranked by leaderboard score (see [Evaluation](#evaluation)).
+
+There are no cash or material awards — this is a non-monetary educational challenge (Kaggle Kudos only). Top teams may be invited to present at the ML+X showcase or contribute to open-source outputs.
 
 ---
 
@@ -163,55 +219,7 @@ find "$JOB" -mindepth 2 -name result.json | xargs jq -s '
 find "$JOB" -mindepth 2 -name result.json | wc -l
 ```
 
-These three numbers, plus your approved model entry, are what go on the submission card. The leaderboard computes your score from them.
-
-### Submitting your solution
-
-Submissions are **Kaggle Writeups** — there is no file upload. Create one with the "New Writeup" button on the competition page; after you save, a "Submit" button appears in the top right corner. **Your final Writeup must be submitted before the deadline — draft or un-submitted Writeups are not considered.** You can edit and resubmit as your agent improves; the submitted version at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
-
-During the competition, also share early and often via the Kaggle Discussion tab: post progress, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
-
-A valid submission contains:
-
-#### 1. The Writeup (project report)
-
-Title, subtitle, and your report, **≤2,500 words**. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
-
-Open the report with your **submission card** — copy this table and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
-
-| Field | Your entry (example) |
-|---|---|
-| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
-| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
-| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
-| `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
-| `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
-| `total_tokens` | `1263800` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` |
-| `leaderboard_score` | `0.407` — `tb_score − 0.01 × (total_tokens / 1,000,000)` |
-| `gpu` | `RTX A6000 48 GB` — informational, not scored |
-| `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
-
-**Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
-
-```bash
-git rev-parse HEAD                                        # prints the commit SHA — that's your commit_ref
-# or, friendlier: tag the submission and use the tag name
-git tag v1.0-submission && git push origin v1.0-submission
-```
-
-To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
-
-#### 2. Media Gallery — cover image
-
-Kaggle requires a cover image to submit a Writeup — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work. More images are welcome; no video is required.
-
-#### 3. Project link — your GitHub repo (required)
-
-Attach `https://github.com/<you>/<repo>/tree/<commit_ref>`: public, licensed MIT or Apache 2.0, at the exact commit you evaluated, with setup instructions so organizers can re-run your agent via `harbor run --agent <module>:<Class>`.
-
-#### 4. Public notebook (optional)
-
-Kaggle notebooks can't run Docker, so Terminal-Bench itself can't run on Kaggle — your code lives in the GitHub repo, not a notebook. If you want to make verification easier, attach a notebook that recomputes your `tb_score` and `total_tokens` from your Harbor job's `result.json` files (uploaded as a Kaggle dataset).
+These three numbers, plus your approved model entry, are what go on the submission card in your Writeup (see [Submission Requirements](#submission-requirements) above).
 
 ### Verification of top submissions
 
@@ -246,6 +254,14 @@ Ranking is by **leaderboard score**, computed from the submission card in your W
 | Writeup ≤2,500 words explaining your approach and learning journey | Yes/No |
 
 Ties go to the earlier submission (Kaggle standard).
+
+---
+
+## Judges
+
+Chris Endemann (endemann@wisc.edu), UW–Madison — organizer and judge. Judging is verification against the [Evaluation rubric](#evaluation-rubric), not subjective scoring.
+
+Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
 
 ---
 
