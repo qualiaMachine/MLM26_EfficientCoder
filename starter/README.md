@@ -2,7 +2,7 @@
 
 This directory contains a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
 
-**Setup and first run:** follow [docs/walkthrough.md](docs/walkthrough.md) — fresh machine to a scored baseline run in ~30 minutes. Challenge rules, approved models, and scoring: [competition page](https://www.kaggle.com/competitions/efficient-coding-agent/overview).
+**Setup and first run:** follow [docs/walkthrough.md](docs/walkthrough.md) — fresh machine to a scored baseline run in ~30 minutes. Challenge rules, approved models, and scoring: [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview).
 
 ## Layout
 
