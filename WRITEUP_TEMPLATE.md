@@ -1,8 +1,28 @@
 # Writeup template
 
-A writeup is **required** with every submission — but this template is a suggested structure for those who want guidance, not a form to fill out. Organize yours however you like and fill it with whatever insights you learned. The one real expectation: explain your learning journey along the way — what you tried, what worked, what didn't, and where you ended up. Post it in the competition's Discussion tab and put the link in your submission card. Aim for 2,500 words or fewer.
+The **Kaggle Writeup is your submission** — create it with the "New Writeup" button on the competition page and submit it before the deadline. This template is a suggested structure for those who want guidance, not a form to fill out. Organize yours however you like and fill it with whatever insights you learned. The one real expectation: explain your learning journey along the way — what you tried, what worked, what didn't, and where you ended up. Aim for 2,500 words or fewer.
 
 Why we require it: this is an educational challenge, and the writeup is how your work outlives the leaderboard. The goal is that another team can read it and reproduce your thinking, not just your score.
+
+The one part that is **not optional** is the submission card — the table below, filled in with your values, at the top of your Writeup. It's what your score is computed from and how your result is verified. Everything after it is yours to shape.
+
+---
+
+## Submission card (required, at the top)
+
+| Field | Your entry (example) |
+|---|---|
+| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
+| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
+| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
+| `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
+| `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
+| `total_tokens` | `1263800` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` |
+| `leaderboard_score` | `0.407` — `tb_score − 0.01 × (total_tokens / 1,000,000)` |
+| `gpu` | `RTX A6000 48 GB` — informational, not scored |
+| `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
+
+Also attach to the Writeup: a **cover image** (Kaggle requires one — a screenshot of your `harbor view jobs` results works) and your **GitHub repo as the project link** (`https://github.com/<you>/<repo>/tree/<commit_ref>`). Full details in the Submission Requirements section of the competition page.
 
 The sections below are a starting point if a blank page is unhelpful:
 
