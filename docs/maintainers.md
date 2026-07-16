@@ -12,6 +12,7 @@ Decisions settled in the planning doc + email thread (June–July 2026):
 - **Metric:** CER primary, verbatim (no normalization), whitespace collapsed; macro-average across categories; WER as diagnostic only. Cap per-page CER at 1.0.
 - **Rules:** open-weight <70B per model, honor-system up front, top-10 code review before winners announced; code link (public GitHub, pinned commit) required with every submission; no prize, collaborative framing.
 - **Starter notebooks (Kevin):** (1) traditional pipeline from scratch (layout detection → language routing → recognition), (2) open-source tools (Kraken segmentation + PyLaia recognition), (3) small open-weight VLM. Optional fine-tuning angle: ~100 curated drawn-table pages from the survey notebooks.
+- **Name: BadgerScribe (July 2026, Chris).** Full title "BadgerScribe: Archival Document Transcription Challenge" — Wisconsin identity + the task, subtitle keeps it discoverable. Runner-up considered: OpenAgent OCR (series branding with OpenAgent Coding, but "agent" overpromised autonomy and "OCR" undersold handwriting).
 - **Kaggle Hackathon format, not a scored competition (July 2026, Chris).** The Writeup is the submission — same format Efficient Coder landed on. Rationale: the writeup/documented-process is the whole point for the Libraries; no prize means no need for adversarial-grade scoring infrastructure. Consequence: the UW GT sample is **released** (images + solution.csv) as the public evaluation set teams tune toward with auxiliary data; scores are self-reported from `score_local.py` on submission cards, spot-checked, top 10 re-run/code-reviewed. No hidden test set, no auto-scored leaderboard, no submission CSV upload; standings kept as a Discussion-tab post. New rule carrying the weight: evaluation pages are for measuring, not training.
 
 ## Open questions
@@ -19,7 +20,7 @@ Decisions settled in the planning doc + email thread (June–July 2026):
 - [ ] Reading-order convention for marginalia (survey notebooks) — Chris, with Scott
 - [ ] Whether `#` illegibility markers count toward reference length in scoring — Chris
 - [ ] Final collection list: do all four categories get enough GT pages this year, or does a category drop? — Scott
-- [ ] Kaggle slug + launch dates (kickoff Fall 2026) — Chris
+- [ ] Confirm Kaggle slug (`badgerscribe` assumed in the citation — sweep links if Kaggle assigns something else) + launch dates (kickoff Fall 2026) — Chris
 - [ ] License file for this repo (code MIT? UW image derivatives need their own rights statement) — Chris + Scott
 - [ ] Whether hosted endpoints serving named open-weight checkpoints count for the *submitted* run or prototyping only (FAQ currently says prototyping; on-prem spirit suggests submitted runs should at least be reproducible on-prem) — Chris
 

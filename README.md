@@ -1,4 +1,4 @@
-# Archival Document Transcription Challenge
+# BadgerScribe: Archival Document Transcription Challenge
 
 Faithfully transcribe handwritten and scanned archival documents into machine-readable text — scored on real collections from the UW–Madison Libraries. Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at UW–Madison with the [UW Digital Collections Center](https://www.library.wisc.edu/dcc/). Kickoff Fall 2026 (dates TBD). Open to everyone.
 
@@ -172,6 +172,6 @@ Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the Unive
 ## Citation
 
 ```
-Christopher Endemann, Scott Prater, Kevin Chovanec. Archival Document Transcription Challenge.
-https://kaggle.com/competitions/<slug-tbd>. Kaggle.
+Christopher Endemann, Scott Prater, Kevin Chovanec. BadgerScribe: Archival Document Transcription Challenge.
+https://kaggle.com/competitions/badgerscribe. Kaggle.
 ```

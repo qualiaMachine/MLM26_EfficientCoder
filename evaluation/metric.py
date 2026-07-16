@@ -1,4 +1,4 @@
-"""Scoring metric for the Archival Document Transcription Challenge.
+"""Scoring metric for BadgerScribe: Archival Document Transcription Challenge.
 
 Official score = Character Error Rate (CER), macro-averaged across
 document categories. Lower is better. Scores are self-reported on the
