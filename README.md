@@ -60,7 +60,7 @@ Strong solutions demonstrate robustness across document types rather than optimi
 
 ### The evaluation data
 
-The scored test set is built **entirely from UW Digital Collections materials** with verified ground-truth transcriptions — a deliberately small, curated, rights-cleared sample chosen for diversity across what actually varies in the archives: different hands, tabular vs. prose layouts, microfilm vs. direct scans, English and German. The source collections:
+The evaluation set is built **entirely from UW Digital Collections materials** with verified ground-truth transcriptions — a deliberately small, curated, rights-cleared sample chosen for diversity across what actually varies in the archives: different hands, tabular vs. prose layouts, microfilm vs. direct scans, English and German. **Images and ground truth are both released** — you score yourself with the repo's metric and report the numbers in your writeup (see [Evaluation](#evaluation)). The source collections:
 
 | Collection | What it is | Why it's hard |
 |---|---|---|
@@ -69,9 +69,9 @@ The scored test set is built **entirely from UW Digital Collections materials** 
 | [Dominy Craftsmen account books](https://digital.library.wisc.edu/1711.dl/Dominy) | Woodworkers' and clockmakers' account books | Tabular ledger layouts, names, currency, dense entries |
 | [Native American treaty documents](https://digital.library.wisc.edu/1711.dl/TreatiesMicro) | 19th-c. handwritten documents relating to Wisconsin treaties | Microfilm scans — low contrast, artifacts |
 
-Public OCR/HTR benchmarks are well represented in VLM training data; a held-out test set of real institutional documents is what tells you whether a system actually generalizes. See [DATA.md](DATA.md) for the exact data format and [`docs/collections.md`](docs/collections.md) for collection details.
+Public OCR/HTR benchmarks are well represented in VLM training data; a set of real institutional documents that has never circulated with transcriptions is what tells you whether a system actually generalizes. See [DATA.md](DATA.md) for the exact data format and [`docs/collections.md`](docs/collections.md) for collection details.
 
-**No training set is provided — assembling one is part of the challenge.** In the era of pretrained vision-language models, training is increasingly optional; what every team does need is calibration data that resembles the test material. [RESOURCES.md](RESOURCES.md) lists public datasets (Bentham, BLN600, NARA record groups, IAM, the Alfred Escher German correspondence, and more) matched to the UW collections, plus the public UWDC image browsers if you want to curate your own samples. Depending on your approach — VLM or traditional pipeline, off-the-shelf or fine-tuned — you'll want very different data, so finding and gathering it is left to you.
+**No training set is provided — assembling one is part of the challenge.** The evaluation pages are for measuring, not training: tune *toward* them, don't train *on* them (see [RULES.md](RULES.md)). In the era of pretrained vision-language models, training is increasingly optional; what every team does need is auxiliary data that resembles the evaluation material. [RESOURCES.md](RESOURCES.md) lists public datasets (Bentham, BLN600, NARA record groups, IAM, the Alfred Escher German correspondence, and more) matched to the UW collections, plus the public UWDC image browsers if you want to curate your own samples. Depending on your approach — VLM or traditional pipeline, off-the-shelf or fine-tuned — you'll want very different data, so finding and gathering it is left to you.
 
 ---
 
@@ -83,13 +83,13 @@ Three starter notebooks in [`notebooks/`](notebooks/) demonstrate the main solut
 - [`02_open_source_tools.ipynb`](notebooks/02_open_source_tools.ipynb) — the same pipeline assembled from open-source components: [Kraken](https://kraken.re/) for segmentation, [PyLaia](https://gitlab.teklia.com/atr/pylaia) for recognition.
 - [`03_vlm_transcription.ipynb`](notebooks/03_vlm_transcription.ipynb) — a small open-weight vision-language model prompted for page-level transcription.
 
-If you're ambitious, fine-tune: even ~100 curated pages of the land-survey drawn tables could yield significant gains on that category. [`evaluation/`](evaluation/) has the exact scoring code used for the leaderboard, so you can score any prediction file locally before submitting.
+If you're ambitious, fine-tune: even ~100 curated pages of the land-survey drawn tables could yield significant gains on that category. [`evaluation/`](evaluation/) has the official scoring code — the numbers it prints are the numbers that go on your submission card.
 
 ---
 
 ## Data
 
-Test images and the submission format are described in [DATA.md](DATA.md). Ground-truth transcription conventions — what "faithful" means character-by-character, and how line breaks and whitespace are handled — are pinned down in [`docs/transcription_conventions.md`](docs/transcription_conventions.md).
+The evaluation set (images + released ground truth) and the predictions-file format are described in [DATA.md](DATA.md). Ground-truth transcription conventions — what "faithful" means character-by-character, and how line breaks and whitespace are handled — are pinned down in [`docs/transcription_conventions.md`](docs/transcription_conventions.md).
 
 ---
 
@@ -102,42 +102,58 @@ The primary metric is **Character Error Rate (CER)**, macro-averaged across docu
 ```
 page CER      = levenshtein(prediction, ground_truth) / len(ground_truth)   (capped at 1.0)
 category CER  = mean of page CERs within the category
-leaderboard   = mean of category CERs
+your score    = mean of category CERs
 ```
 
-Macro-averaging across categories means a system has to perform across the board — acing clean English prose while failing the German letters or the microfilm scans will not produce a good score. Word Error Rate (WER) and per-category CER are reported as diagnostics in the starter tooling but do not affect ranking.
+Macro-averaging across categories means a system has to perform across the board — acing clean English prose while failing the German letters or the microfilm scans will not produce a good score. Word Error Rate (WER) and per-category CER are reported as diagnostics but do not affect ranking.
 
 **Scoring is against the verbatim ground-truth transcription.** The whole point is faithful extraction, so casing, punctuation, and original historical spelling all count — no lowercasing, no punctuation stripping, no cleanup. The one normalization applied to both prediction and reference before comparison: runs of whitespace (spaces, line breaks) collapse to a single space. That makes scoring insensitive to how you encode line breaks, while everything else stays verbatim. Full details and the exact implementation: [`evaluation/metric.py`](evaluation/metric.py).
 
+### Computing your score
+
+Ground truth for the evaluation set is public, so you score yourself — run your pipeline over the evaluation images, write a predictions CSV, and score it with the released tooling:
+
+```bash
+python evaluation/score_local.py --solution data/eval/solution.csv --submission my_predictions.csv
+```
+
+The macro CER it prints, plus the per-category breakdown, go on the submission card in your writeup. **One rule makes the numbers meaningful: the evaluation pages are for measuring, not training.** Don't fine-tune on them or hand-tune prompts against individual pages' ground truth; build on auxiliary data ([RESOURCES.md](RESOURCES.md)) and measure honestly. This is honor-system during the challenge and checked in code review at the end.
+
 ### Verification of top submissions
 
-Leaderboard position comes from your submitted predictions, but **sharing the pipeline is part of participating, not an afterthought**: every submission must link a public GitHub repo containing the code that produced it. Before winners are announced, organizers code-review the **top 10** leaderboard entries — confirming the model-size limit is respected, that no human hand-transcribed the test images, and that results are reproducible from the posted code. That review gate is the real backstop; the rules up front are deliberately lightweight and honor-system. Irreproducible results, over-limit or closed-weight models, or manual transcription disqualify the entry.
+Scores are **self-reported** — your standing comes from numbers you report in your writeup's submission card, so it is possible to lie. Two things keep the standings a reflection of reality: organizers **spot-check submissions periodically during the challenge** (fabricated entries are removed when found), and the **top 10 are verified before winners are announced** — cloning the repo at the submitted commit, re-running the pipeline over the evaluation set with the declared models, and checking the reproduced CER against the reported one (sampling is stochastic; normal run-to-run variation is fine). The review also confirms the model-size limit, that no human hand-transcribed or trained on the evaluation pages, and that every model is open-weight. That review gate is the real backstop; the rules up front are deliberately lightweight.
 
 ---
 
 ## Submission Requirements
 
-Submit a CSV of predicted transcriptions for the test images via the Kaggle "Submit Predictions" flow — format in [DATA.md](DATA.md), example in [`evaluation/sample_submission.csv`](evaluation/sample_submission.csv).
+Submissions are **Kaggle Writeups** — there is no file upload and no auto-scored leaderboard. Create one with the "New Writeup" button on the competition page; after you save, a "Submit" button appears in the top right corner. **Your final Writeup must be submitted before the deadline — draft or un-submitted Writeups are not considered.** You can edit and resubmit as your pipeline improves; the submitted version at the deadline is what counts.
 
-Alongside your predictions, post a **writeup** in the Discussion tab (suggested structure: [WRITEUP_TEMPLATE.md](WRITEUP_TEMPLATE.md)) containing your **submission card** — the code link and pipeline declaration that make your entry verifiable:
+### The Writeup (project report)
+
+Title, subtitle, cover image, and your report, **≤2,500 words**. (Kaggle requires the cover image to submit — one of your evaluation pages next to your transcription, or a pipeline diagram, both work.) [WRITEUP_TEMPLATE.md](WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up. For this challenge the writeup isn't paperwork on top of the real submission; it *is* the submission — a documented, reproducible transcription process is exactly the artifact the Libraries need.
+
+Open the report with your **submission card** — copy this block and fill in your values:
 
 ```
 code_url: https://github.com/team/pipeline/tree/v1.0-submission
 models: Qwen/Qwen2.5-VL-7B-Instruct
 largest_model_params: 7B
+cer_overall: 0.183
+cer_by_category: survey_notes 0.21 | kade_letters 0.24 | dominy_accounts 0.14 | treaties_microfilm 0.14
 external_data: Bentham line pairs (calibration); 120 self-transcribed survey-notebook lines (fine-tuning)
 hardware: RTX 4090 24 GB
 ```
 
-`code_url` must be a public repo pinned to the exact tag or commit you ran (`git tag v1.0-submission && git push origin v1.0-submission`). Open the link in a private browser window before submitting — if it 404s, your repo is private or the commit isn't pushed.
+`code_url` must be a public repo pinned to the exact tag or commit you ran (`git tag v1.0-submission && git push origin v1.0-submission`). Open the link in a private browser window before submitting — if it 404s, your repo is private or the commit isn't pushed. `cer_overall` and `cer_by_category` come straight from `evaluation/score_local.py`.
 
-During the challenge, share early and often via the Discussion tab: post progress, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
+During the challenge, share early and often via the Discussion tab: post progress, share your repo, describe what's working and what isn't. Organizers keep a standings post in the Discussion tab updated from the submitted cards. Think of Discussion as an open lab notebook for the cohort.
 
 ---
 
 ## Tracks and Awards
 
-**Open track** — the only track. All submissions compete together, ranked by leaderboard CER.
+**Open track** — the only track; select it when submitting your Writeup. All submissions compete together, ranked by reported macro CER (verified for the top 10).
 
 There are no cash or material awards — this is a non-monetary educational challenge (Kaggle Kudos only). Top teams may be invited to present at the ML+X showcase, and strong pipelines may be adopted by the UW Digital Collections Center for production transcription work — which is a better trophy anyway.
 

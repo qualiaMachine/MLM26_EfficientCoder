@@ -2,7 +2,7 @@
 
 > **Status: draft.** These conventions are what the metric implements today. They get finalized alongside the ground-truth transcriptions themselves; anything that changes will be announced in the Discussion tab. Owner: Chris.
 
-Faithful transcription only works as a scored task if "faithful" is pinned down character-by-character. These conventions govern how the hidden reference transcriptions are written — and therefore what your pipeline is scored against. The design principle throughout: **the reference records what is on the page, verbatim; scoring is insensitive only to whitespace layout.**
+Faithful transcription only works as a scored task if "faithful" is pinned down character-by-character. These conventions govern how the released reference transcriptions (eval/solution.csv) are written — and therefore what your pipeline is scored against. The design principle throughout: **the reference records what is on the page, verbatim; scoring is insensitive only to whitespace layout.**
 
 ## Verbatim, no normalization
 
@@ -32,7 +32,7 @@ Faithful transcription only works as a scored task if "faithful" is pinned down 
 
 ## Illegible content
 
-- Characters the human transcriber could not read are recorded as `#`, one per illegible character where countable, in the reference. Test pages are selected to keep illegible content minimal, so this should rarely matter.
+- Characters the human transcriber could not read are recorded as `#`, one per illegible character where countable, in the reference. Evaluation pages are selected to keep illegible content minimal, so this should rarely matter.
 
 ## Open questions being finalized
 

@@ -1,6 +1,6 @@
-# The UW collections behind the test set
+# The UW collections behind the evaluation set
 
-The test pages are drawn from four collections held by the UW–Madison Libraries / UW Digital Collections Center (UWDC). Source material is almost entirely high-resolution TIFF scans; the challenge distributes web-friendly derivatives. This page is background for participants — knowing what these documents *are* helps you transcribe them.
+The evaluation pages are drawn from four collections held by the UW–Madison Libraries / UW Digital Collections Center (UWDC). Source material is almost entirely high-resolution TIFF scans; the challenge distributes web-friendly derivatives. This page is background for participants — knowing what these documents *are* helps you transcribe them.
 
 ## Wisconsin Land Survey Field Notes (`survey_notes`)
 
@@ -26,7 +26,7 @@ Account books of the Dominy family of East Hampton woodworkers and clockmakers, 
 
 https://digital.library.wisc.edu/1711.dl/TreatiesMicro
 
-19th-century handwritten documents relating to Native American treaties in Wisconsin, digitized **from microfilm** — meaning low contrast, blown highlights, and film artifacts on top of formal 19th-century clerical hands. This category is in the test set specifically to measure robustness to degraded reproduction media, which is a large fraction of what real archives hold.
+19th-century handwritten documents relating to Native American treaties in Wisconsin, digitized **from microfilm** — meaning low contrast, blown highlights, and film artifacts on top of formal 19th-century clerical hands. This category is in the evaluation set specifically to measure robustness to degraded reproduction media, which is a large fraction of what real archives hold.
 
 ## Why these four
 

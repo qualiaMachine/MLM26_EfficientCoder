@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Score a submission locally, exactly as the leaderboard will.
+"""Compute your official score: run against the released evaluation set.
 
 Usage:
-    python evaluation/score_local.py --solution solution.csv --submission my_predictions.csv
+    python evaluation/score_local.py --solution eval/solution.csv --submission my_predictions.csv
 
 solution.csv   columns: page_id, text, category
 submission.csv columns: page_id, text
 
-Prints overall macro CER (the leaderboard number) plus per-category CER and
-diagnostic WER. Use it against your own calibration set — the hidden test
-solution is, well, hidden.
+Prints overall macro CER plus per-category CER and diagnostic WER. The
+overall and per-category CERs are exactly what goes on the submission card
+in your writeup — self-reported, spot-checked, and re-run by organizers for
+the top 10.
 """
 
 import argparse
@@ -51,7 +52,7 @@ def main() -> int:
     for cat in sorted(by_cat.index):
         print(f"{cat:<24}{counts[cat]:>6}{by_cat[cat]:>9.4f}{wer_by_cat[cat]:>9.4f}")
     print("-" * 48)
-    print(f"{'macro CER (leaderboard)':<30}{overall:>9.4f}")
+    print(f"{'macro CER (official score)':<30}{overall:>9.4f}")
     return 0
 
 

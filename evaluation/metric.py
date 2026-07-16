@@ -1,7 +1,9 @@
 """Scoring metric for the Archival Document Transcription Challenge.
 
-Leaderboard score = Character Error Rate (CER), macro-averaged across
-document categories. Lower is better.
+Official score = Character Error Rate (CER), macro-averaged across
+document categories. Lower is better. Scores are self-reported on the
+released evaluation set (via score_local.py) and verified by organizers
+for the top submissions.
 
     page CER     = levenshtein(prediction, reference) / len(reference), capped at 1.0
     category CER = mean of page CERs within the category
@@ -14,7 +16,7 @@ count. The only normalization applied to BOTH sides before comparison:
   * all whitespace runs collapse to a single space; leading/trailing stripped.
 See docs/transcription_conventions.md for the ground-truth conventions.
 
-Kaggle usage: `score(solution, submission, "page_id")`, where
+Programmatic usage: `score(solution, submission, "page_id")`, where
   solution   columns: page_id, text, category  (+ optional Usage)
   submission columns: page_id, text
 

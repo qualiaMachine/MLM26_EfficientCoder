@@ -1,6 +1,6 @@
 # Starter notebooks
 
-Three notebooks, one per solution family, each running the full path from page image to scored CER. They are deliberately minimal — fork the one closest to your approach and rebuild it. All of them score with [`../evaluation/metric.py`](../evaluation/metric.py), the exact leaderboard code.
+Three notebooks, one per solution family, each running the full path from page image to scored CER. They are deliberately minimal — fork the one closest to your approach and rebuild it. All of them score with [`../evaluation/metric.py`](../evaluation/metric.py), the official scoring code.
 
 | Notebook | Approach | Where it shines / struggles |
 |---|---|---|
@@ -14,4 +14,4 @@ The families compose: chaining models is allowed as long as every model is open-
 
 ## Fine-tuning
 
-All three families benefit from fine-tuning on curated in-domain samples — even ~100 transcribed pages of the survey notebooks' drawn tables might yield significant gains on that category. The UW collections are publicly browsable for building your own training pairs (test pages excluded); see [RESOURCES.md](../RESOURCES.md).
+All three families benefit from fine-tuning on curated in-domain samples — even ~100 transcribed pages of the survey notebooks' drawn tables might yield significant gains on that category. The UW collections are publicly browsable for building your own training pairs (the evaluation pages are for measuring, not training); see [RESOURCES.md](../RESOURCES.md).
