@@ -18,12 +18,12 @@ This is a non-monetary educational challenge. There are no cash or material priz
 - **Approved open-weight models only.** Your submitted run must use a model on the [approved list](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/README.md#approved-models). Closed-weight models (GPT, Claude, Gemini) are out of scope anywhere in your system, including "just the planner." Development and prototyping on any model is fine — the rule binds the submitted run.
 - **No task-specific hardcoding.** One system prompt, one agent loop, no per-task branching, no hardcoded solutions or prompts written for individual tasks. Detecting task *categories* and adjusting strategy is fine. All 89 tasks are public; the top 5 submissions are code-reviewed after the deadline, and hardcoding disqualifies.
 - **Scores must be reproducible.** Leaderboard scores are self-reported from your own Harbor runs. Your submission card points at a public repo and commit; organizers spot-check submissions periodically during the competition and re-run the top 5 with the declared model after the deadline, checking the reported score and token count. Significant discrepancies disqualify, and fabricated entries are removed whenever found.
-- **Writeup required.** A submission without a writeup — posted in the Discussion tab and linked from the submission card — is ineligible. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure, not a requirement; the expectation is that the writeup explains your approach and learning journey. Checked pass/fail, not graded.
+- **The Writeup is the submission.** A Kaggle Writeup without a filled-in submission card and an attached public repo is ineligible. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure, not a requirement; the expectation is that the writeup explains your approach and learning journey. Checked pass/fail, not graded on prose.
 
 ## 5. Submission limits
 
-- Up to 5 submissions per day.
-- Your most recent submission at the deadline is your final result.
+- One Writeup per team; edit and resubmit it as often as you like before the deadline.
+- The submitted version at the deadline is your final result — draft or un-submitted Writeups are not considered.
 
 ## 6. Benchmark data
 

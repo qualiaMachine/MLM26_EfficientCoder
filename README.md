@@ -15,7 +15,7 @@ Open-weight models have closed enough of the raw-quality gap that a credible cod
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
-**Soft launch.** The competition is open for submissions now; the official kickoff is September 2026. Between now and then, the approved model list and rules may be adjusted — nothing drastic is planned, and any change will be announced in the Discussion tab. Early submissions are welcome; if a change affects your entry, you can simply resubmit.
+**Soft launch.** The competition is open for submissions now; the official kickoff for UW–Madison participants is September 2026. Between now and then, the approved model list and rules may be adjusted — nothing drastic is planned, and any change will be announced in the Discussion tab. Early submissions are welcome; if a change affects your entry, you can simply resubmit.
 
 
 
@@ -49,7 +49,7 @@ Your agent receives the instruction and is given shell access to the running con
 
 ### Example tasks
 
-Three representative tasks from Terminal-Bench, one from each end of the difficulty spectrum and one in between:
+Three representative tasks from Terminal-Bench, varying in difficulty:
 
 - **fix-git** (easy, software-engineering) — The container holds a small git repo in which a recent `git reset --hard` orphaned several commits of feature work. The branch *looks* clean, but the work is gone from `main`. The agent has to recognize that something was lost, use `git reflog` to locate the orphaned commits, recover them, merge them back into `main` cleanly, and resolve any conflicts that appear. Tests whether the agent can read git's terminal output, recognize a non-obvious failure state, and recall less-common git subcommands.
 
@@ -167,23 +167,29 @@ These three numbers, plus your approved model entry, are what go on the submissi
 
 ### Submitting your solution
 
-Submissions go through Kaggle as a standardized **`submission.csv`** (two identical data rows — see Part 1) with the fields below. The leaderboard is live: it recomputes your score on upload, and you can resubmit as your agent improves. Your standing at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
+Submissions are **Kaggle Writeups** — there is no file upload. Create one with the "New Writeup" button on the competition page; after you save, a "Submit" button appears in the top right corner. **Your final Writeup must be submitted before the deadline — draft or un-submitted Writeups are not considered.** You can edit and resubmit as your agent improves; the submitted version at the deadline is what counts, and the top 5 get re-run and code-reviewed after the deadline.
 
-During the competition, also share early and often via the Kaggle Discussion tab: post draft writeups, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
+During the competition, also share early and often via the Kaggle Discussion tab: post progress, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
-#### Part 1: Submission card (`submission.csv`)
+A valid submission contains:
 
-Structured metadata used for automated ranking. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
+#### 1. The Writeup (project report)
 
-Two **identical** data rows (ids `1` and `2` — Kaggle scores one on the public leaderboard and one on the private/final leaderboard), exactly this header:
+Title, subtitle, and your report, **≤2,500 words**. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
 
-```
-id,github_repo,commit_ref,model,quantization,tb_score,total_tokens,gpu,mean_wallclock_per_task,writeup_url
-1,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coder/discussion/…
-2,https://github.com/team/agent,v1.0-submission,Qwen/Qwen2.5-Coder-32B-Instruct-AWQ,AWQ 4-bit,0.42,1263800,RTX A6000 48 GB,3m 12s,https://kaggle.com/competitions/efficient-coder/discussion/…
-```
+Open the report with your **submission card** — copy this table and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
-(Malformed rows are rejected with a visible error at upload.)
+| Field | Your entry (example) |
+|---|---|
+| `github_repo` | `https://github.com/team/agent` — public repo with your agent code |
+| `commit_ref` | `v1.0-submission` — tag or commit SHA of the exact code you ran |
+| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` — must match an approved checkpoint |
+| `quantization` | `AWQ 4-bit` — `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`, matching the approved entry |
+| `tb_score` | `0.42` — mean reward across all 89 tasks, 0–1 |
+| `total_tokens` | `1263800` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` |
+| `leaderboard_score` | `0.407` — `tb_score − 0.01 × (total_tokens / 1,000,000)` |
+| `gpu` | `RTX A6000 48 GB` — informational, not scored |
+| `mean_wallclock_per_task` | `3m 12s` — informational, not scored |
 
 **Getting your `commit_ref`.** It's the exact version of your code you ran — together with `github_repo`, it lets organizers reconstruct it with `git clone` + `git checkout`. Commit and push everything, then either:
 
@@ -195,32 +201,21 @@ git tag v1.0-submission && git push origin v1.0-submission
 
 To confirm it works, open `https://github.com/<you>/<repo>/tree/<commit_ref>` in a private/incognito browser window — if that page loads, anyone can fetch exactly the code you ran. If it 404s, your repo is private or the commit isn't pushed.
 
-**Columns:**
+#### 2. Media Gallery — cover image
 
-| Column | Example | Format |
-|---|---|---|
-| `id` | `1` | `1` on the first row, `2` on the second — Kaggle's row-matching column (your team comes from your Kaggle account) |
-| `github_repo` | `https://github.com/team/agent` | public repo with your agent code |
-| `commit_ref` | `v1.0-submission` | tag or commit SHA of the exact code you ran |
-| `model` | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` | must match an approved checkpoint |
-| `quantization` | `AWQ 4-bit` | `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M` — must match the approved entry |
-| `tb_score` | `0.42` | mean reward across all 89 tasks, 0–1 |
-| `total_tokens` | `1263800` | `n_input_tokens + n_output_tokens` summed from Harbor's `result.json` — feeds the token penalty |
-| `gpu` | `RTX A6000 48 GB` | informational, not scored |
-| `mean_wallclock_per_task` | `3m 12s` | informational, not scored |
-| `writeup_url` | `kaggle.com/competitions/efficient-coder/discussion/…` | your writeup in the Discussion tab (see Part 2) |
+Kaggle requires a cover image to submit a Writeup — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work. More images are welcome; no video is required.
 
+#### 3. Project link — your GitHub repo (required)
 
+Attach `https://github.com/<you>/<repo>/tree/<commit_ref>`: public, licensed MIT or Apache 2.0, at the exact commit you evaluated, with setup instructions so organizers can re-run your agent via `harbor run --agent <module>:<Class>`.
 
-#### Part 2: Writeup (required)
+#### 4. Public notebook (optional)
 
-A single writeup (≤2,500 words) posted in the competition's Discussion tab and linked from your submission card. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up. **Submissions without a writeup are ineligible.** It's checked pass/fail, not judged on prose — it doesn't affect your rank, but it's how your work outlives the leaderboard.
-
-Your code lives in the GitHub repo pointed at by your submission card.
+Kaggle notebooks can't run Docker, so Terminal-Bench itself can't run on Kaggle — your code lives in the GitHub repo, not a notebook. If you want to make verification easier, attach a notebook that recomputes your `tb_score` and `total_tokens` from your Harbor job's `result.json` files (uploaded as a Kaggle dataset).
 
 ### Verification of top submissions
 
-Leaderboard scores are **self-reported** — the platform computes your score from numbers you type into a CSV, so it is possible to lie. Two things keep the leaderboard a reflection of reality: organizers **spot-check submissions periodically during the competition** (fabricated entries are removed when found), and the **top 5 are fully verified before final standings are confirmed**. Every submission carries its own evidence — a public repo, an exact commit, and a writeup. For each verified submission, we:
+Leaderboard scores are **self-reported** — your score comes from numbers you report in your Writeup's submission card, so it is possible to lie. Two things keep the leaderboard a reflection of reality: organizers **spot-check submissions periodically during the competition** (fabricated entries are removed when found), and the **top 5 are fully verified before final standings are confirmed**. Every submission carries its own evidence — a public repo, an exact commit, and a writeup. For each verified submission, we:
 
 1. **Re-run the agent.** Clone the repo at the submitted commit, run it against all 89 tasks with the declared model, and check the score matches the reported one. LLM sampling is stochastic, so normal run-to-run variation is expected and fine.
 2. **Check the numbers.** Confirm the reported token count matches, and that the agent is actually calling the model claimed in the submission.
@@ -228,17 +223,29 @@ Leaderboard scores are **self-reported** — the platform computes your score fr
 
 Significant discrepancies, hardcoding, running a different model than declared, or a missing writeup disqualify the submission. Beyond those pass/fail checks, nothing is judged — the writeup isn't graded, and the leaderboard score is the ranking.
 
-### Required elements (pass/fail)
+### Evaluation rubric
+
+Ranking is by **leaderboard score**, computed from the submission card in your Writeup. There is no subjective scoring — the rubric points are your measured score, verified as described above.
+
+**Agent performance (100 points)**
+
+| Criteria | Points possible |
+|---|---|
+| Leaderboard score × 100, where `leaderboard_score = tb_score − 0.01 × (total_tokens / 1,000,000)` | 0–100 |
+
+**Required elements (all must pass; any "No" makes the submission ineligible)**
 
 | Requirement | Pass/Fail |
 |---|---|
-| Submission card fully filled out | Yes/No |
+| Submission card at the top of the Writeup, fully filled out | Yes/No |
 | Model + quantization on the approved model list | Yes/No |
 | Agent runs via `harbor run --agent` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
-| All 89 Terminal-Bench tasks evaluated | Yes/No |
-| Public GitHub repo with tagged commit, licensed MIT or Apache 2.0 | Yes/No |
-| Writeup posted in the Discussion tab and linked from the submission card | Yes/No |
+| All 89 Terminal-Bench tasks evaluated, single attempt each | Yes/No |
+| Public GitHub repo at a tagged commit, licensed MIT or Apache 2.0, attached as the project link | Yes/No |
+| Writeup ≤2,500 words explaining your approach and learning journey | Yes/No |
+
+Ties go to the earlier submission (Kaggle standard).
 
 ---
 
