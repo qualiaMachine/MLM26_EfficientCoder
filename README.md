@@ -15,7 +15,7 @@ Open-weight models have closed enough of the raw-quality gap that a credible cod
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
-**Soft launch.** The competition is open for submissions now; the official kickoff is September 2026. Between now and then, the approved model list and rules may be adjusted — nothing drastic is planned, and any change will be announced in the Discussion tab. Early submissions are welcome; if a change affects your entry, you can simply resubmit.
+**Soft launch.** The competition is open for submissions now; the official kickoff for UW–Madison participants is September 2026. Between now and then, the approved model list and rules may be adjusted — nothing drastic is planned, and any change will be announced in the Discussion tab. Early submissions are welcome; if a change affects your entry, you can simply resubmit.
 
 
 
@@ -49,7 +49,7 @@ Your agent receives the instruction and is given shell access to the running con
 
 ### Example tasks
 
-Three representative tasks from Terminal-Bench, one from each end of the difficulty spectrum and one in between:
+Three representative tasks from Terminal-Bench, varying in difficulty:
 
 - **fix-git** (easy, software-engineering) — The container holds a small git repo in which a recent `git reset --hard` orphaned several commits of feature work. The branch *looks* clean, but the work is gone from `main`. The agent has to recognize that something was lost, use `git reflog` to locate the orphaned commits, recover them, merge them back into `main` cleanly, and resolve any conflicts that appear. Tests whether the agent can read git's terminal output, recognize a non-obvious failure state, and recall less-common git subcommands.
 
