@@ -128,11 +128,9 @@ Submissions are **Kaggle Writeups** — there is no file upload. Create one with
 
 During the competition, also share early and often via the Kaggle Discussion tab: post progress, share your repo, describe what's working and what isn't. Think of Discussion as an open lab notebook for the cohort.
 
-A valid submission contains:
+### The Writeup (project report)
 
-### 1. The Writeup (project report)
-
-Title, subtitle, and your report, **≤2,500 words**. [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
+Title, subtitle, cover image, and your report, **≤2,500 words**. (Kaggle requires the cover image to submit — a screenshot of your `harbor view jobs` results table or a diagram of your scaffold both work.) [`WRITEUP_TEMPLATE.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/WRITEUP_TEMPLATE.md) is a suggested structure if you want guidance — otherwise organize it however you like and fill it with whatever insights you learned. The one expectation: explain your learning journey — what you tried, what worked, what didn't, and where you ended up.
 
 Open the report with your **submission card** — copy this table and fill in your values. Evaluation is always against all 89 Terminal-Bench tasks (single attempt each) — you don't declare that separately.
 
@@ -238,7 +236,7 @@ Ranking is by **leaderboard score**, computed from the submission card in your W
 | Agent runs via `harbor run --agent` without modification | Yes/No |
 | Open weights only (no closed-weight or opaque-provider API calls) | Yes/No |
 | All 89 Terminal-Bench tasks evaluated, single attempt each | Yes/No |
-| Public GitHub repo at a tagged commit, licensed MIT or Apache 2.0, attached as the project link | Yes/No |
+| Public GitHub repo at a tagged commit, licensed MIT or Apache 2.0, listed in the submission card | Yes/No |
 | Writeup ≤2,500 words explaining your approach and learning journey | Yes/No |
 
 Ties go to the earlier submission (Kaggle standard).
