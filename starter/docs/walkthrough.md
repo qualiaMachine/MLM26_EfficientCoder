@@ -131,7 +131,7 @@ Before involving any LLM, confirm that Harbor and Docker are wired up correctly 
 harbor run -d terminal-bench-sample@2.0 -a oracle
 ```
 
-`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent — here the built-in oracle (`-a oracle`); later your own code (`--agent-import-path`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
+`harbor run` is the command you'll use for every evaluation: it takes a dataset of tasks (`-d`) and an agent (`-a`) — here the built-in oracle; later the same flag points at your own code (`-a agent.agent:BaselineAgent`) — then runs the agent against each task in its own container, grades the final state, and writes results to `./jobs/`.
 
 This particular run will:
 1. Download the 10-task Terminal-Bench sample dataset (first run only, cached after)
@@ -193,7 +193,7 @@ ollama pull qwen2.5-coder:14b
 
 This downloads a 14B parameter coding model (~9 GB). It's the recommended starting point — large enough to reason through most easy/medium tasks, small enough to run on 16+ GB VRAM. The 7B works too but expect most tasks to fail due to limited reasoning capacity.
 
-> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from the [challenge README](../../README.md#approved-models)):
+> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from the [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview)):
 > - **No GPU / CPU only:** `qwen2.5-coder:7b` (slow on CPU, but works)
 > - **8 GB VRAM:** `qwen2.5-coder:7b` (counts as the approved 7B AWQ row)
 > - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point; approved 14B AWQ row)
@@ -214,14 +214,18 @@ Using the provided UW–Madison endpoint instead? See the verification check in 
 
 ### Configure the agent
 
+The agent reads its settings from a file named `.env` in the `starter/` directory — when Harbor starts your agent, `agent/llm.py` loads that file automatically. You never pass these values on the command line, and your shell never reads them; only the agent does.
+
+Create it from the template (run from the repo root):
+
 ```bash
-cp .env.example .env
+cp starter/.env.example starter/.env
 ```
 
-The defaults in `.env.example` already point at Ollama with `qwen2.5-coder:14b`. Edit `.env` if you pulled a different model:
+The defaults already point at Ollama with `qwen2.5-coder:14b`. Edit `starter/.env` if you pulled a different model:
 
 ```bash
-# .env
+# starter/.env
 LLM_BASE_URL=http://localhost:11434/v1
 LLM_MODEL=qwen2.5-coder:14b
 LLM_API_KEY=ollama
@@ -233,13 +237,13 @@ LLM_API_KEY=ollama
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -i regex-log
 ```
 
 Breaking down the flags:
 - `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
-- `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
+- `--agent agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
 - `-i regex-log` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
@@ -260,21 +264,22 @@ The agent reads the task instruction, explores the container, attempts to solve 
 
 ### Where results go
 
-Results are saved to `./jobs/<job-name>/`. Each trial has a `result.json`:
+Results are saved to `./jobs/<job-name>/`. Each trial gets its own directory named `<task>__<trial-id>` with a `result.json`:
 
 ```bash
 # Find the latest job
 ls -t jobs/ | head -1
 
 # Check the result
-cat jobs/<job-name>/terminal-bench-sample__regex-log/*/result.json | python3 -m json.tool
+cat jobs/<job-name>/regex-log__*/result.json | python3 -m json.tool
 ```
 
 Key fields in `result.json`:
-- `reward` — the score (1.0 = pass, 0.0 = fail)
+- `verifier_result.rewards.reward` — the score (1.0 = pass, 0.0 = fail)
+- `agent_result.n_input_tokens` / `n_output_tokens` — token usage (this is where your submission's `total_tokens` comes from)
 - `agent_info` — your agent name and version
 - `started_at` / `finished_at` — timing for each phase
-- `exception` — what went wrong, if anything
+- `exception_info` — what went wrong, if anything
 
 ---
 
@@ -284,7 +289,7 @@ Now run all 10 tasks:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent
+  --agent agent.agent:BaselineAgent
 ```
 
 Or use the convenience script:
@@ -299,7 +304,7 @@ This takes longer (10 tasks × ~5 min max each). At the end you'll get an aggreg
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -n 2
 ```
 
@@ -364,9 +369,9 @@ The four files you'll modify:
 
 ## Step 10: Make a change and see the effect
 
-Let's do one concrete improvement so you see the development loop.
+One concrete improvement, end to end, to show the development loop.
 
-The baseline's system prompt (`agent/prompts.py`) doesn't tell the agent to read the task instruction first. Let's fix that:
+The baseline's system prompt (`agent/prompts.py`) doesn't tell the agent to read the task instruction first. Fix that:
 
 Open `agent/prompts.py` and add to the top of `SYSTEM_PROMPT`, after the first paragraph:
 
@@ -392,7 +397,7 @@ Now re-run the same task:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent-import-path agent.agent:BaselineAgent \
+  --agent agent.agent:BaselineAgent \
   -i regex-log
 ```
 
@@ -413,7 +418,7 @@ This is the development loop for the competition:
 |---|---|
 | Verify Docker works | `docker run hello-world` |
 | Verify Harbor works | `harbor run -d terminal-bench-sample@2.0 -a oracle` |
-| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:BaselineAgent -i <task-name>` |
+| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent agent.agent:BaselineAgent -i <task-name>` |
 | Run your agent on all sample tasks | `./scripts/run_baseline.sh` |
 | Run the public subset | `./scripts/run_subset.sh` |
 | Run tasks in parallel | Add `-n 4` (or however many your RAM supports) |
@@ -431,4 +436,4 @@ This is the development loop for the competition:
 - **Week 2:** Run the full public subset. Record your baseline score.
 - **Week 3:** Classify *where* and *why* your agent fails. That failure taxonomy is your roadmap for the rest of the competition.
 
-Full challenge schedule, rules, and judging criteria: [challenge README](../../README.md).
+Full challenge schedule, rules, and judging criteria: [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview).

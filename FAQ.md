@@ -25,13 +25,13 @@ No — work with whatever subset is useful for debugging. For the leaderboard, y
 Both fine. Teams of 1–5. Reflect honestly on contributions in the writeup.
 
 **I don't have a GPU.**
-See [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — NVIDIA's API catalog and the other hosted endpoints listed there work for development without local hardware. Whatever model you finally submit must be on the approved list in the [challenge README](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/README.md#approved-models).
+See [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md) — NVIDIA's API catalog and the other hosted endpoints listed there work for development without local hardware. Whatever model you finally submit must be on the [approved list](https://www.kaggle.com/competitions/OpenAgent-Coding/overview).
 
 **I'm not at UW–Madison.**
 Welcome. The challenge is fully open. You won't have access to the UW–Madison-only compute in [RESOURCES.md](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/RESOURCES.md), but the leaderboard is the leaderboard — you compete on equal footing.
 
 **Will there be a live leaderboard during the competition?**
-Yes. Submissions are a standardized `submission.csv` uploaded to Kaggle; the leaderboard recomputes scores as they land, and you can resubmit throughout the competition. Scores are self-reported from your own Harbor runs — the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
+Standings are visible throughout: submissions are Kaggle Writeups with a submission card, public from the moment they're submitted, and organizers keep a standings post in the Discussion tab updated from the submitted cards. Scores are self-reported from your own Harbor runs — organizers spot-check periodically during the competition, and the top 5 get re-run and code-reviewed after the deadline, so submit numbers you can reproduce. You can also submit independently to the [public Terminal-Bench leaderboard](https://tbench.ai/leaderboard).
 
 **What's the relationship to the upstream Terminal-Bench project?**
 We're users and fans — but this challenge is a separate event. We don't speak for the Terminal-Bench maintainers.

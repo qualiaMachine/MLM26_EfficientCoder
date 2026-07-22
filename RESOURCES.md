@@ -8,7 +8,7 @@ Harbor spins up a fresh Docker container per Terminal-Bench task, so the machine
 
 - **Your own machine** — laptop, workstation, or lab machine with Docker Desktop (macOS/Windows) or Docker Engine (Linux). Cheapest option. Give Docker at least ~30 GB of disk for task images.
 - **A rented Linux VM** — Lambda Labs, RunPod, Vast.ai, Hetzner, EC2, GCE. Any VM you have root on and can install Docker on. If you're also self-hosting the model on the same box, get one with a GPU that fits your approved model's reported VRAM.
-- **UW–Madison hosted LLMs** — available to UW–Madison participants only. Details will be provided at the in-person kickoff.
+- **UW–Madison hosted LLMs** — available to UW–Madison participants only. Details will be provided at the [in-person kickoff](https://ml-marathon.wisc.edu/).
 
 ## Where to serve the model (any OpenAI-compatible endpoint)
 
