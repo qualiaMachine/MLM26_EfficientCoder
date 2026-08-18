@@ -40,7 +40,9 @@ The sections below are a starting point if a blank page is unhelpful:
 
 ### 2. Architecture
 
-> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your model checkpoint(s) and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
+> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. A diagram is welcome but not required.
+>
+> Cover your **model choice** here too: which checkpoint(s) you served, how you spent the 96 GB, and why — what else you tried inside the budget and what made you drop it. Model selection is a lever in this challenge, not a footnote, and what you rejected is as useful to the cohort as what you kept.
 
 ### 3. What we tried
 

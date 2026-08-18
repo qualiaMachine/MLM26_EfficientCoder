@@ -12,6 +12,9 @@ Any open-weight checkpoint whose total reported VRAM fits the 96 GB budget, quan
 **Can I fine-tune a model for this?**
 Yes, as long as the result is open-weight and fits the budget. Document it in the writeup; weights must be either public or reproducible from the public base + your published LoRA/adapter. Fine-tuning on Terminal-Bench task solutions is task-specific hardcoding by another name and disqualifies.
 
+**Should I just use the biggest model that fits in 96 GB?**
+Not necessarily, and finding out is part of the challenge. Bigger checkpoints are slower per turn and usually more verbose, and every million tokens costs 0.01 of leaderboard score — so a model that solves one more task but takes three times the tokens can come out behind. Spending some of the budget on headroom instead (longer context, a second model, more turns per task) is a legitimate strategy. Report what you compared in the writeup.
+
 **Can I use multiple models (e.g., a small planner + a larger coder)?**
 Yes. The 96 GB budget is a system budget: sum the reported VRAM of every model you serve and the total must fit. List all of them on the submission card, with the combined `reported_vram`; token counts sum across models too.
 

@@ -11,7 +11,7 @@ Build the best open coding agent on a single GPU — no proprietary models, no g
 
 The last two years have transformed how software gets built. Frontier coding agents — Claude Code, Cursor, Codex, Devin — can now read a codebase, plan changes across many files, run tests, and recover from errors well enough to feel like real (if junior) collaborators. They are remarkable, but they are also closed and expensive: every keystroke flows to a third party, costs accumulate per task, and anyone working with sensitive data has to be careful nothing leaks.
 
-Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to help narrow the remaining gap. You will build an autonomous coding agent on top of an open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs within the same **96 GB memory budget** — one serious GPU, any open-weight model you like — so the leverage is in the scaffold or "agent harness": a 14B model wrapped in a thoughtful agent loop can credibly beat a 32B with a naive one. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
+Open-weight models have closed enough of the raw-quality gap that a credible coding agent can now plausibly run locally. *Plausibly*, but not yet *well*. The challenge is intended as a collaborative effort to help narrow the remaining gap. You will build an autonomous coding agent on top of an open-weight model and measure it on [Terminal-Bench 2.0](https://tbench.ai), an industry-standard 89-task benchmark used to evaluate Claude Code, Cursor, and friends. Every submission runs within the same **96 GB memory budget** — one serious GPU — and inside that ceiling both levers are yours: **which open-weight model you pick, and the scaffold or "agent harness" you wrap around it**. Neither wins alone. A 14B model in a thoughtful agent loop can credibly beat a 32B in a naive one, and finding the checkpoint that gets the most out of your budget is its own piece of engineering. The goal is not to build the largest agent, but the most *useful* one under realistic constraints.
 
 This is an **educational, collaborative challenge**. There are no cash prizes, no rankings-based awards, and no reason to hoard ideas. Share repos early, post findings to the Discussion tab, fork and build on each other's approaches. Credit what you borrowed in your writeup and explain what you added. Every improvement one team publishes raises the floor for everyone else — and every step forward here pushes the open-source community closer to genuine independence from closed frontier tools when it comes to agentic coding.
 
@@ -36,7 +36,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
-- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Everything you serve fits in [96 GB of VRAM](#model-rules), so the competition stays about the scaffold rather than who rented the biggest cluster.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Everything you serve fits in [96 GB of VRAM](#model-rules). Inside that ceiling, choosing the right model is part of the challenge; the ceiling is what stops it from becoming a contest over who rented the biggest cluster.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on open weights within the budget (see [Evaluation](#evaluation)).
 
 ### Terminal-Bench
@@ -79,7 +79,9 @@ There is no approved-model list. Pick **any open-weight model you like** — inc
 
 **2. A 96 GB memory budget.** The total *reported VRAM* of every model your submitted run serves is **≤ 96 GB**, and the GPU(s) you run on total ≤ 96 GB. This is a **system budget, not a per-model one** — a small planner alongside a large coder spends the sum of both.
 
-96 GB is still one serious GPU (an RTX PRO 6000 Blackwell, a pair of 48 GB cards, or the equivalent rented by the hour), so the spirit of the challenge is unchanged: a coding agent that a lab or a small team could actually run, scored on how well you build the scaffold around it. The budget replaces a fixed model list precisely because the list would be stale in a month — new open-weight coders ship constantly, and you should be able to use the one that just came out without waiting on us.
+96 GB is still one serious GPU (an RTX PRO 6000 Blackwell, a pair of 48 GB cards, or the equivalent rented by the hour), so the spirit of the challenge is unchanged: a coding agent that a lab or a small team could actually run.
+
+What the budget *does* change is that **model selection is now part of the work.** The old list decided it for you; a ceiling hands it back. Which checkpoint gets the most out of 96 GB — one large dense model, a bigger MoE with few active params, a small fast model with the headroom spent on longer context or a second model — is a real engineering decision, and it sits alongside the scaffold rather than upstream of it. Expect the writeup to explain both. The budget also replaces the list because a list would be stale in a month: new open-weight coders ship constantly, and you should be able to use the one that just came out without waiting on us.
 
 Development is unrestricted — prototype against any model or endpoint you like, closed ones included. The rules above govern the *submitted* run only.
 
@@ -200,7 +202,7 @@ There are no cash or material awards — this is a non-monetary educational chal
 
 ### Scoring
 
-Your submitted run must use open weights within the [96 GB budget](#model-rules) — any checkpoint, any vendor, 4-bit or higher. The shared budget plus the token penalty is what makes this a scaffold-engineering challenge: everyone works under the same memory ceiling, and the ranking rewards whoever gets the most out of it.
+Your submitted run must use open weights within the [96 GB budget](#model-rules) — any checkpoint, any vendor, 4-bit or higher. The shared budget plus the token penalty is what keeps the comparison honest: everyone works under the same memory ceiling, and the ranking rewards whoever gets the most out of it — through model choice, through the scaffold, and through not wasting tokens.
 
 **Score.**
 
