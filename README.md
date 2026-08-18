@@ -123,9 +123,9 @@ Reasonable first models by hardware tier. The budget goes well past the largest 
 | 8–12 GB | `Qwen/Qwen2.5-Coder-7B-Instruct-AWQ` (9 GB) — runs almost anywhere, low score ceiling |
 | 16 GB | `Qwen/Qwen2.5-Coder-14B-Instruct-AWQ` (15 GB) |
 | 24 GB | `qwen3-coder:30b` (Ollama GGUF Q4_K_M, 22 GB) — MoE, ~3B active, fast |
-| 32–40 GB | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB) — the most widely hosted, easiest no-GPU path · `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` (35 GB) |
-| 48 GB | `Qwen/Qwen3.6-27B-FP8` (37 GB) — reasoning model with coder tool-calling; UW–Madison participants have a hosted endpoint in [`starter/docs/uw_madison_endpoint.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/uw_madison_endpoint.md) |
-| 96 GB | The frontier open-weight coders — large MoEs at FP8, or 70B+ dense at 4-bit. Run the estimator on whatever shipped this month. |
+| 32–40 GB | `Qwen/Qwen3.8-27B-FP8` (~30 GB) — newest dense 27B, Apache 2.0 · `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB), the most widely hosted and the easiest no-GPU path |
+| 48 GB | `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` (35 GB) · `Qwen/Qwen3.6-27B-FP8` (37 GB) — reasoning model with coder tool-calling; UW–Madison participants have a hosted endpoint in [`starter/docs/uw_madison_endpoint.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/uw_madison_endpoint.md) |
+| 96 GB | `Qwen/Qwen3-Coder-Next-FP8` (~84 GB) — 80B total, ~3B active, built for coding agents. Or whatever shipped this month: run the estimator on it. |
 
 Post what works in the **Kaggle Discussion tab** with the estimator output — it saves the rest of the cohort the search.
 

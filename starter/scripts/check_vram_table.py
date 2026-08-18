@@ -68,10 +68,12 @@ TABLE_FILE = Path(__file__).resolve().parents[2] / "README.md"
 # The README lists each checkpoint as a backticked HuggingFace id followed by
 # its reported VRAM in parentheses:
 #   `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB)
+# A leading "~" marks a number that hasn't been checked against the Hub yet;
+# it is matched too, so the check covers those rows rather than skipping them.
 # The repo id must contain a "/" (owner/name), so non-Hub entries like
 # Ollama tags (`qwen3-coder:30b`) are skipped — they can't be verified
 # against the Hub API anyway.
-ENTRY = re.compile(r"`([\w./-]+/[\w./-]+)`\s*\(([\d.]+)\s*GB\)")
+ENTRY = re.compile(r"`([\w./-]+/[\w./-]+)`\s*\(~?([\d.]+)\s*GB\)")
 
 
 def table_rows() -> list[tuple[str, float]]:
