@@ -22,7 +22,7 @@ if [ ${#include_flags[@]} -eq 0 ]; then
 fi
 
 harbor run \
-  -d terminal-bench@2.0 \
+  -d terminal-bench/terminal-bench-2-1 \
   --agent-import-path agent.agent:BaselineAgent \
   "${include_flags[@]}" \
   -n "${N_CONCURRENT:-2}" \

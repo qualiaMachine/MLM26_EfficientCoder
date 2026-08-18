@@ -27,7 +27,7 @@ This is a non-monetary educational challenge. There are no cash or material priz
 
 ## 6. Benchmark data
 
-Terminal-Bench 2.0 tasks come from the upstream [Terminal-Bench project](https://tbench.ai) under its own license. This challenge is a separate event; we don't speak for the Terminal-Bench maintainers.
+Terminal-Bench 2.1 tasks come from the upstream [Terminal-Bench project](https://tbench.ai) under its own license. This challenge is a separate event; we don't speak for the Terminal-Bench maintainers.
 
 ## 7. License
 

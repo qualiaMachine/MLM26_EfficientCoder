@@ -1,6 +1,6 @@
 # Coding Agent Starter
 
-This directory contains a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.0 evaluation framework. Your job is to make it better.
+This directory contains a minimal working agent (~200 lines) wired into [Harbor](https://www.harborframework.com/), the official Terminal-Bench 2.1 evaluation framework. Your job is to make it better.
 
 **Setup and first run:** follow [docs/walkthrough.md](docs/walkthrough.md) — fresh machine to a scored baseline run in ~30 minutes. Challenge rules, the 96 GB model budget, and scoring: [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview).
 
