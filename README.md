@@ -36,7 +36,7 @@ Build an autonomous coding agent, running entirely on open-weight models, that:
 
 - **Solves real software engineering tasks end-to-end** without human intervention — reading the problem, exploring the codebase, planning, executing, and verifying the result.
 - **Generalizes** across Terminal-Bench's diverse task categories rather than memorizing solutions to individual tasks.
-- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Everything you serve fits in [96 GB of VRAM](#model-rules). Inside that ceiling, choosing the right model is part of the challenge; the ceiling is what stops it from becoming a contest over who rented the biggest cluster.
+- **Runs efficiently** — modest memory footprint, lean token consumption — without sacrificing capability. Everything you serve fits in [96 GB of VRAM](#compute-budget). Inside that ceiling, choosing the right model is part of the challenge; the ceiling is what stops it from becoming a contest over who rented the biggest cluster.
 - **Beats the leaderboard** — scored by Terminal-Bench performance minus a small token penalty, on open weights within the budget (see [Evaluation](#evaluation)).
 
 ### Terminal-Bench
@@ -73,17 +73,15 @@ The [challenge repo](https://github.com/qualiaMachine/MLM26_EfficientCoder) has 
 
 ---
 
-## Model rules
+## Compute budget
 
-There is no approved-model list. Pick **any open-weight model you like** — including ones released after you read this — as long as your submitted run meets both conditions below.
+Two rules govern your submitted run: **open weights**, and **everything you serve fits in 96 GB**.
 
 **1. Open weights.** Every model in your system is a publicly downloadable checkpoint (HuggingFace or equivalent) under a license that permits use here, served on an endpoint that names the exact `(model, quantization)` it runs. Closed-weight models (GPT, Claude, Gemini) are out of scope anywhere in the system, including "just the planner."
 
 **2. A 96 GB memory budget.** The total *reported VRAM* of every model your submitted run serves is **≤ 96 GB**, and the GPU(s) you run on total ≤ 96 GB. This is a **system budget, not a per-model one** — a small planner alongside a large coder spends the sum of both.
 
-96 GB is still one serious GPU (an RTX PRO 6000 Blackwell, a pair of 48 GB cards, or the equivalent rented by the hour), so the spirit of the challenge is unchanged: a coding agent that a lab or a small team could actually run.
-
-What the budget *does* change is that **model selection is now part of the work.** The old list decided it for you; a ceiling hands it back. Which checkpoint gets the most out of 96 GB — one large dense model, a bigger MoE with few active params, a small fast model with the headroom spent on longer context or a second model — is a real engineering decision, and it sits alongside the scaffold rather than upstream of it. Expect the writeup to explain both. The budget also replaces the list because a list would be stale in a month: new open-weight coders ship constantly, and you should be able to use the one that just came out without waiting on us.
+96 GB is one serious GPU: an RTX PRO 6000 Blackwell, a pair of 48 GB cards, or the equivalent rented by the hour. Inside that ceiling both levers are yours — which checkpoint gets the most out of 96 GB, and the scaffold you wrap around it. One large dense model, a bigger MoE with few active params, or a small fast model with the headroom spent on longer context or a second model are all live strategies. The writeup should explain both choices.
 
 Development is unrestricted — prototype against any model or endpoint you like, closed ones included. The rules above govern the *submitted* run only.
 
@@ -118,7 +116,7 @@ Use a published checkpoint where one exists. If you quantize a model yourself, p
 
 ### Where to start
 
-Not a list — orientation. Any of these is a reasonable first model; the budget lets you go well past the largest of them.
+Reasonable first models by hardware tier. The budget goes well past the largest of them.
 
 | Your hardware | A reasonable starting point |
 |---|---|
@@ -129,7 +127,7 @@ Not a list — orientation. Any of these is a reasonable first model; the budget
 | 48 GB | `Qwen/Qwen3.6-27B-FP8` (37 GB) — reasoning model with coder tool-calling; UW–Madison participants have a hosted endpoint in [`starter/docs/uw_madison_endpoint.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/uw_madison_endpoint.md) |
 | 96 GB | The frontier open-weight coders — large MoEs at FP8, or 70B+ dense at 4-bit. Run the estimator on whatever shipped this month. |
 
-Found something good? Post it in the **Kaggle Discussion tab** with the estimator output. Nothing needs approving anymore, but the cohort benefits from knowing what works.
+Post what works in the **Kaggle Discussion tab** with the estimator output — it saves the rest of the cohort the search.
 
 ### Considerations
 
@@ -204,7 +202,7 @@ There are no cash or material awards — this is a non-monetary educational chal
 
 ### Scoring
 
-Your submitted run must use open weights within the [96 GB budget](#model-rules) — any checkpoint, any vendor, 4-bit or higher. The shared budget plus the token penalty is what keeps the comparison honest: everyone works under the same memory ceiling, and the ranking rewards whoever gets the most out of it — through model choice, through the scaffold, and through not wasting tokens.
+Your submitted run must use open weights within the [96 GB budget](#compute-budget) — any checkpoint, any vendor, 4-bit or higher. The shared budget plus the token penalty is what keeps the comparison honest: everyone works under the same memory ceiling, and the ranking rewards whoever gets the most out of it — through model choice, through the scaffold, and through not wasting tokens.
 
 **Score.**
 
