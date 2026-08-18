@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sanity-check every reported VRAM number in the approved-model table against the Hub.
+"""Sanity-check every reported VRAM number in the README's model table against the Hub.
 
 Usage (from the repo root):
 
@@ -8,11 +8,11 @@ Usage (from the repo root):
 
 What this does
 ==============
-The leaderboard's "reported VRAM" numbers live in the approved-model table in the challenge README.
-Nobody should have to take those on faith, so this script re-derives each
-one from public information and prints the two side by side:
+The challenge README's "Where to start" table quotes a reported VRAM number for
+each suggested checkpoint. Nobody should have to take those on faith, so this
+script re-derives each one from public information and prints the two side by side:
 
-1. Parse every checkpoint out of the README's approved-model table (the repo id in backticks and
+1. Parse every checkpoint out of the README (the repo id in backticks and
    its "NN GB" reported VRAM).
 2. For each row, rebuild the estimate from public information, using
    ``estimate_vram.py``:
@@ -41,9 +41,10 @@ Notes
 =====
 - Needs network access to huggingface.co. No GPU, no model downloads —
   only two small JSON requests per model.
-- The table value stays canonical for scoring either way. This script is
-  for transparency: anyone can verify the numbers, and anyone proposing a
-  new model can produce one the same way.
+- The table is orientation, not a rulebook: eligibility is decided by the
+  96 GB budget, and any model you pick is checked the same way with
+  ``estimate_vram.py``. This script just keeps the README's suggested
+  numbers honest as checkpoints get re-uploaded.
 - Don't compare against nvidia-smi — most serving stacks preallocate a
   large memory pool at startup, so the reading reflects your GPU, not
   the model.
@@ -63,8 +64,8 @@ import estimate_vram as ev  # noqa: E402
 # This file lives at starter/scripts/, so the challenge README is two levels up.
 TABLE_FILE = Path(__file__).resolve().parents[2] / "README.md"
 
-# Matches an approved checkpoint entry and captures (repo id, VRAM number).
-# The table lists each checkpoint as a backticked HuggingFace id followed by
+# Matches a checkpoint entry and captures (repo id, VRAM number).
+# The README lists each checkpoint as a backticked HuggingFace id followed by
 # its reported VRAM in parentheses:
 #   `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (28 GB)
 # The repo id must contain a "/" (owner/name), so non-Hub entries like
@@ -74,7 +75,7 @@ ENTRY = re.compile(r"`([\w./-]+/[\w./-]+)`\s*\(([\d.]+)\s*GB\)")
 
 
 def table_rows() -> list[tuple[str, float]]:
-    """Return (repo_id, reported_vram_gb) for every Hub checkpoint in the approved-model table."""
+    """Return (repo_id, reported_vram_gb) for every Hub checkpoint listed in the README."""
     rows = list(dict.fromkeys(
         (repo, float(gb)) for repo, gb in ENTRY.findall(TABLE_FILE.read_text())
     ))

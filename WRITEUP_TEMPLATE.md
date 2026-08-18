@@ -12,6 +12,7 @@ The one part that is **not optional** is the submission card — the block below
 code_url: https://github.com/team/agent/tree/v1.0-submission
 model: Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 quantization: AWQ 4-bit
+reported_vram: 28 GB
 tb_score: 0.42
 total_tokens: 1263800
 leaderboard_score: 0.407
@@ -20,7 +21,8 @@ mean_wallclock_per_task: 3m 12s
 ```
 
 - `code_url` — your public repo at the exact tag or commit SHA you ran (see below)
-- `model` and `quantization` — must match an approved entry; quantization is `FP8`, `AWQ 4-bit`, or `GGUF Q4_K_M`
+- `model` and `quantization` — the exact open-weight checkpoint(s) your run served, 4-bit or higher; list every model if you use more than one
+- `reported_vram` — total across all models served, from `starter/scripts/estimate_vram.py`; must be ≤ 96 GB
 - `tb_score` — mean reward across all 89 tasks, 0–1
 - `total_tokens` — `n_input_tokens + n_output_tokens` summed from Harbor's `result.json`
 - `leaderboard_score` — `tb_score − 0.01 × (total_tokens / 1,000,000)`
@@ -38,7 +40,7 @@ The sections below are a starting point if a blank page is unhelpful:
 
 ### 2. Architecture
 
-> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your approved model checkpoint and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
+> How your scaffold works. Walk through one task's lifecycle: what the model sees in its first prompt, how responses are parsed into commands, how the conversation/context is managed as turns accumulate, how errors are handled, and how the agent decides it's done. Name your model checkpoint(s) and any serving details that matter (quantization, context length, sampling). A diagram is welcome but not required.
 
 ### 3. What we tried
 

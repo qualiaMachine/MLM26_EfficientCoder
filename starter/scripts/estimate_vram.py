@@ -1,28 +1,31 @@
 #!/usr/bin/env python3
-"""Estimate a model's reported VRAM the same way the approved-model table does.
+"""Check a model — or a whole multi-model system — against the 96 GB budget.
 
     python scripts/estimate_vram.py Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
+    python scripts/estimate_vram.py Qwen/Qwen2.5-Coder-7B-Instruct-AWQ Qwen/Qwen3.6-27B-FP8
 
 Reported VRAM = published checkpoint size (weights, as released)
               + KV cache for a 16k context at fp16, single batch
               + 2 GB headroom (activations, runner overhead)
 
-Weights are taken from the actual file sizes on the HuggingFace Hub, so
-quantized checkpoints (AWQ, GPTQ, FP8, ...) are handled automatically —
-no parameter counting or bits math. KV cache comes from the model's
-config.json. Needs network access to huggingface.co; no GPU, no downloads
-beyond two small JSON requests.
+Pass every model your submitted run serves. The budget is a *system*
+budget: a planner and a coder running side by side spend the sum of
+their reported VRAM, and the total must land at or under 96 GB.
 
-This is a sanity check, not a measurement. If your number lands within a
-few GB of an existing approved-model entry, the table is right. If you're
-proposing a new row, include this script's output in your Kaggle
-Discussion post.
+Weights are taken from the actual file sizes on the HuggingFace Hub, so
+quantized checkpoints (AWQ, GPTQ, FP8, MXFP4, ...) are handled
+automatically — no parameter counting or bits math. KV cache comes from
+the model's config.json. Needs network access to huggingface.co; no GPU,
+no downloads beyond two small JSON requests per model.
+
+This is a sanity check, not a measurement. Put the printed total on your
+submission card as `reported_vram`. Exits nonzero if the system is over
+budget, so it can also run in CI.
 
 Don't compare against nvidia-smi — most serving stacks preallocate a
 large memory pool at startup, so the reading reflects your GPU, not the
 model.
 """
-
 import argparse
 import json
 import sys
@@ -30,9 +33,10 @@ import urllib.error
 import urllib.request
 
 HUB = "https://huggingface.co"
-KV_CONTEXT = 16384          # tokens, per the approved-model table
+KV_CONTEXT = 16384          # tokens, the accounting basis for reported VRAM
 KV_BYTES_PER_ELEM = 2       # fp16
 OVERHEAD_GB = 2.0
+BUDGET_GB = 96.0            # the competition's system-wide memory budget
 
 
 def fetch_json(url: str) -> dict:
@@ -68,16 +72,15 @@ def kv_cache_bytes(repo: str) -> tuple[int, dict]:
     return per_token * KV_CONTEXT, detail
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("repo", help="HuggingFace repo id, e.g. Qwen/Qwen2.5-Coder-32B-Instruct-AWQ")
-    repo = parser.parse_args().repo
-
+def report(repo: str) -> float:
+    """Print one model's breakdown and return its reported VRAM in GB."""
     try:
         w = weights_bytes(repo)
         kv, detail = kv_cache_bytes(repo)
     except urllib.error.HTTPError as e:
         raise SystemExit(f"HTTP {e.code} fetching {e.url} — private/gated repo or typo?")
+    except (KeyError, urllib.error.URLError) as e:
+        raise SystemExit(f"Could not read {repo}: {e}")
 
     w_gb, kv_gb = w / 1e9, kv / 1e9
     total = w_gb + kv_gb + OVERHEAD_GB
@@ -87,7 +90,31 @@ def main() -> None:
           f"  ({detail['layers']} layers x {detail['kv_heads']} KV heads x {detail['head_dim']} head_dim)")
     print(f"  headroom:                       {OVERHEAD_GB:6.1f} GB")
     print(f"  reported VRAM estimate:         {total:6.1f} GB")
-    print(f"  48 GB limit:                    {'OK' if total <= 48 else 'OVER'}")
+    return total
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument(
+        "repos", nargs="+",
+        help="HuggingFace repo id(s) — pass every model your run serves concurrently",
+    )
+    parser.add_argument(
+        "--budget", type=float, default=BUDGET_GB,
+        help=f"memory budget in GB (default: {BUDGET_GB:.0f}, the competition budget)",
+    )
+    args = parser.parse_args()
+
+    totals = [report(repo) for repo in args.repos]
+    system_total = sum(totals)
+
+    if len(totals) > 1:
+        print(f"\nsystem total across {len(totals)} models: {system_total:.1f} GB")
+    over = system_total > args.budget
+    print(f"{args.budget:.0f} GB budget: "
+          f"{'OVER by %.1f GB' % (system_total - args.budget) if over else 'OK'}")
+    if over:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
