@@ -1,4 +1,4 @@
-# Efficient Coder
+# Badger Code
 
 Build the best open coding agent on a single GPU — no proprietary models, no giant clusters, scored on Terminal-Bench 2.0. Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at UW–Madison, September–December 2026. Open to everyone.
 
@@ -275,7 +275,7 @@ Ties go to the earlier submission (Kaggle standard).
 
 ## Judges
 
-Chris Endemann (endemann@wisc.edu), UW–Madison — organizer and judge. Judging is verification against the [Evaluation rubric](#evaluation-rubric), not subjective scoring.
+Chris Endemann (endemann@wisc.edu) and Kevin Chovanec, UW–Madison. Judging is verification against the [Evaluation rubric](#evaluation-rubric), not subjective scoring.
 
 Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the University of Wisconsin–Madison. Sponsor info: https://hub.datascience.wisc.edu/communities/mlx/sponsorship/
 
@@ -284,6 +284,6 @@ Hosted by [ML+X](https://hub.datascience.wisc.edu/communities/mlx/) at the Unive
 ## Citation
 
 ```
-Christopher Endemann. Efficient Coder.
-https://kaggle.com/competitions/OpenAgent-Coding. Kaggle.
+Christopher Endemann. Badger Code.
+https://kaggle.com/competitions/OpenAgent-Coding, 2026. Kaggle.
 ```
