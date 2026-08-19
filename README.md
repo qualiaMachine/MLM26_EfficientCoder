@@ -90,7 +90,7 @@ Development is unrestricted — prototype against any model or endpoint you like
 [`starter/scripts/estimate_vram.py`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/scripts/estimate_vram.py) computes reported VRAM from public information — no GPU and no downloads, just two small JSON requests per model. Pass every model your system serves; it sums them and checks the budget:
 
 ```bash
-python starter/scripts/estimate_vram.py Qwen/Qwen3.6-27B-FP8
+python starter/scripts/estimate_vram.py Qwen/Qwen3.8-27B-FP8
 python starter/scripts/estimate_vram.py Qwen/Qwen2.5-Coder-7B-Instruct-AWQ Qwen/Qwen2.5-Coder-32B-Instruct-AWQ   # planner + coder
 ```
 
@@ -160,9 +160,9 @@ Open the report with your **submission card** — copy this block and fill in yo
 ```
 code_url: https://github.com/team/agent/tree/v1.0-submission
 scaffold: ReAct loop + plan-then-act, test-driven retry, context compaction
-model: Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
-quantization: AWQ 4-bit
-reported_vram: 28 GB
+model: Qwen/Qwen3.8-27B-FP8
+quantization: FP8
+reported_vram: 30 GB
 tb_score: 0.42
 total_tokens: 1263800
 leaderboard_score: 0.407

@@ -21,7 +21,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 **Self-hosted on your own GPU or a rented one:**
 
-- Any GPU large enough to fit your chosen model's reported VRAM, up to the 96 GB ceiling. `Qwen3.6-27B-FP8` (37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; smaller checkpoints cover 12–24 GB cards; the full budget takes an RTX PRO 6000 Blackwell or a pair of 48 GB cards. Check any candidate with `python starter/scripts/estimate_vram.py <repo-id>`. Ollama or vLLM setup in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md).
+- Any GPU large enough to fit your chosen model's reported VRAM, up to the 96 GB ceiling. `Qwen/Qwen3.8-27B-FP8` (~30 GB) or `Qwen3.6-27B-FP8` (37 GB) want a 48 GB card (RTX A6000, L40S) or an A100; smaller checkpoints cover 12–24 GB cards; spending the full budget on something like `Qwen/Qwen3-Coder-Next-FP8` (~84 GB) takes an RTX PRO 6000 Blackwell or a pair of 48 GB cards. Check any candidate with `python starter/scripts/estimate_vram.py <repo-id>`. Ollama or vLLM setup in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md).
 
 
 

@@ -198,8 +198,9 @@ This downloads a 14B parameter coding model (~9 GB). It's the recommended starti
 > - **8 GB VRAM:** `qwen2.5-coder:7b`
 > - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point)
 > - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB) or `qwen3-coder:30b`
-> - **48+ GB VRAM:** `Qwen3.6-27B-FP8` under vLLM
-> - **96 GB VRAM:** whatever the best open-weight coder is this month — check it with `python scripts/estimate_vram.py <repo-id>`
+> - **32–40 GB VRAM:** `Qwen/Qwen3.8-27B-FP8` under vLLM — newest dense 27B
+> - **48+ GB VRAM:** `Qwen/Qwen3.6-27B-FP8` or `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` under vLLM
+> - **96 GB VRAM:** `Qwen/Qwen3-Coder-Next-FP8` (80B total, ~3B active), or whatever shipped this month — check it with `python scripts/estimate_vram.py <repo-id>`
 
 ### Verify the endpoint
 

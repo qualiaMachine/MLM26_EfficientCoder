@@ -11,9 +11,9 @@ The one part that is **not optional** is the submission card — the block below
 ```
 code_url: https://github.com/team/agent/tree/v1.0-submission
 scaffold: ReAct loop + plan-then-act, test-driven retry, context compaction
-model: Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
-quantization: AWQ 4-bit
-reported_vram: 28 GB
+model: Qwen/Qwen3.8-27B-FP8
+quantization: FP8
+reported_vram: 30 GB
 tb_score: 0.42
 total_tokens: 1263800
 leaderboard_score: 0.407
