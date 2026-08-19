@@ -10,6 +10,7 @@ The one part that is **not optional** is the submission card — the block below
 
 ```
 code_url: https://github.com/team/agent/tree/v1.0-submission
+scaffold: ReAct loop + plan-then-act, test-driven retry, context compaction
 model: Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 quantization: AWQ 4-bit
 reported_vram: 28 GB
@@ -21,6 +22,7 @@ mean_wallclock_per_task: 3m 12s
 ```
 
 - `code_url` — your public repo at the exact tag or commit SHA you ran (see below)
+- `scaffold` — one line naming the architecture you built: the loop shape and the two or three techniques that mattered (planning, retrieval, self-critique, compaction, verification). It's how the cohort sees which designs are working; the writeup is where you explain it.
 - `model` and `quantization` — the exact open-weight checkpoint(s) your run served, 4-bit or higher; list every model if you use more than one
 - `reported_vram` — total across all models served, from `starter/scripts/estimate_vram.py`; must be ≤ 96 GB
 - `tb_score` — mean reward across all 89 tasks, 0–1
