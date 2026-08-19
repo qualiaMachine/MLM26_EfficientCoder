@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run the baseline agent against the 10-task Terminal-Bench 2.0 sample set,
+# Run the baseline agent against the 10-task Terminal-Bench sample set (still
+# published at 2.0; scoring runs against terminal-bench/terminal-bench-2-1),
 # or a single task from it:
 #
 #   ./scripts/run_baseline.sh                  # all 10 sample tasks

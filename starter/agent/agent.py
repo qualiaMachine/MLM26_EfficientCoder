@@ -46,8 +46,8 @@ Run it
 ======
 ::
 
-    harbor run -d terminal-bench@2.0 \\
-        --agent agent.agent:BaselineAgent \\
+    harbor run -d terminal-bench/terminal-bench-2-1 \\
+        --agent-import-path agent.agent:BaselineAgent \\
         -i fix-git
 
 Environment variables

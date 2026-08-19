@@ -40,7 +40,7 @@ LLM_MAX_TOKENS=8192
 #LLM_BASE_URL=<internal URL retrieved from in-person kickoff>
 
 # Older test endpoint (no API key; campus VPN required) — handy for a quick
-# connectivity check, but it's a vision model, not approved for submissions:
+# connectivity check, but it's a vision model — fine for dev, not what you'd submit:
 #LLM_BASE_URL=<older endpoint URL — from kickoff>
 #LLM_MODEL=QuantTrio/Qwen3-VL-32B-Instruct-AWQ
 #LLM_API_KEY=none
@@ -61,7 +61,7 @@ curl "$LLM_BASE_URL/models" -H "Authorization: Bearer $LLM_API_KEY"
 
 ## Things to know about this endpoint
 
-- **The model id is a checkpoint path** (`/mnt/shared-models/qwen3.6-27B-fp8`), not a HuggingFace repo id — the server serves it under the path it was loaded from. For your *submission card*, the corresponding approved checkpoint is `Qwen/Qwen3.6-27B-FP8` (37 GB).
+- **The model id is a checkpoint path** (`/mnt/shared-models/qwen3.6-27B-fp8`), not a HuggingFace repo id — the server serves it under the path it was loaded from. For your *submission card*, the corresponding public checkpoint is `Qwen/Qwen3.6-27B-FP8` (37 GB, comfortably inside the 96 GB budget).
 - **It's a reasoning model.** Thinking tokens count against the completion budget, and the model only writes its final answer (`content`) after the thinking closes — truncate it mid-thought and you get an *empty* response. Set `LLM_MAX_TOKENS=8192`; at the starter default of 2048 (and sometimes even 4096) every turn comes back empty, the agent loops on nudge messages, and the task dies with `AgentTimeoutError`. Thinking arrives in `reasoning_content`, separate from the final `content` — see the matching entry in [troubleshooting.md](troubleshooting.md).
 - **Long context, cheap re-prompting.** 250k-token context window with prefix caching enabled, so re-sending the growing conversation each turn (what the starter loop does) is fast. Every million tokens costs 0.01 leaderboard points, so lean context management still pays.
 - **Capacity is shared across all teams** (a handful of concurrent sequences). Keep `harbor run -n` at 2–4 and give other teams a heads-up in the Kaggle Discussion tab before kicking off a full 89-task sweep.

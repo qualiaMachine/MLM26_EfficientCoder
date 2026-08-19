@@ -193,12 +193,14 @@ ollama pull qwen2.5-coder:14b
 
 This downloads a 14B parameter coding model (~9 GB). It's the recommended starting point — large enough to reason through most easy/medium tasks, small enough to run on 16+ GB VRAM. The 7B works too but expect most tasks to fail due to limited reasoning capacity.
 
-> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use an approved model from the [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview)):
+> **Model sizes that fit common GPUs** (dev is unrestricted; the submitted run must use open weights totalling ≤ 96 GB reported VRAM — see the [competition page](https://www.kaggle.com/competitions/OpenAgent-Coding/overview)):
 > - **No GPU / CPU only:** `qwen2.5-coder:7b` (slow on CPU, but works)
-> - **8 GB VRAM:** `qwen2.5-coder:7b` (counts as the approved 7B AWQ row)
-> - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point; approved 14B AWQ row)
-> - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB; approved 32B AWQ row) or `qwen3-coder:30b`
-> - **48+ GB VRAM:** the anchor `Qwen3.6-27B-FP8` under vLLM
+> - **8 GB VRAM:** `qwen2.5-coder:7b`
+> - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point)
+> - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB) or `qwen3-coder:30b`
+> - **32–40 GB VRAM:** `Qwen/Qwen3.8-27B-FP8` under vLLM — newest dense 27B
+> - **48+ GB VRAM:** `Qwen/Qwen3.6-27B-FP8` or `Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8` under vLLM
+> - **96 GB VRAM:** `Qwen/Qwen3-Coder-Next-FP8` (80B total, ~3B active), or whatever shipped this month — check it with `python scripts/estimate_vram.py <repo-id>`
 
 ### Verify the endpoint
 
@@ -237,13 +239,13 @@ LLM_API_KEY=ollama
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent agent.agent:BaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -i regex-log
 ```
 
 Breaking down the flags:
-- `-d terminal-bench-sample@2.0` — use the 10-task sample dataset
-- `--agent agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
+- `-d terminal-bench-sample@2.0` — use the 10-task sample dataset (the sample set is still published at 2.0; scored runs use `terminal-bench/terminal-bench-2-1`)
+- `--agent-import-path agent.agent:BaselineAgent` — run your agent (from `agent/agent.py`, the `BaselineAgent` class)
 - `-i regex-log` — include only this one task (without `-i`, it runs all 10)
 
 **What you'll see** (the interesting part):
@@ -289,7 +291,7 @@ Now run all 10 tasks:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent agent.agent:BaselineAgent
+  --agent-import-path agent.agent:BaselineAgent
 ```
 
 Or use the convenience script:
@@ -304,7 +306,7 @@ This takes longer (10 tasks × ~5 min max each). At the end you'll get an aggreg
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent agent.agent:BaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -n 2
 ```
 
@@ -320,7 +322,7 @@ The sample set is just 10 tasks for setup verification. The public subset is wha
 ./scripts/run_subset.sh
 ```
 
-This reads the task names from `eval/public_subset.txt` and runs your agent against each one from the full Terminal-Bench 2.0 dataset. The aggregate score at the end is what you post in the Kaggle Discussion tab (the live leaderboard is for full 89-task runs).
+This reads the task names from `eval/public_subset.txt` and runs your agent against each one from the full Terminal-Bench 2.1 dataset. The aggregate score at the end is what you post in the Kaggle Discussion tab (the live leaderboard is for full 89-task runs).
 
 ---
 
@@ -397,7 +399,7 @@ Now re-run the same task:
 
 ```bash
 harbor run -d terminal-bench-sample@2.0 \
-  --agent agent.agent:BaselineAgent \
+  --agent-import-path agent.agent:BaselineAgent \
   -i regex-log
 ```
 
@@ -418,7 +420,7 @@ This is the development loop for the competition:
 |---|---|
 | Verify Docker works | `docker run hello-world` |
 | Verify Harbor works | `harbor run -d terminal-bench-sample@2.0 -a oracle` |
-| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent agent.agent:BaselineAgent -i <task-name>` |
+| Run your agent on one task | `harbor run -d terminal-bench-sample@2.0 --agent-import-path agent.agent:BaselineAgent -i <task-name>` |
 | Run your agent on all sample tasks | `./scripts/run_baseline.sh` |
 | Run the public subset | `./scripts/run_subset.sh` |
 | Run tasks in parallel | Add `-n 4` (or however many your RAM supports) |
