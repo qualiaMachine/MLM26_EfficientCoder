@@ -210,7 +210,7 @@ curl http://localhost:11434/v1/models
 
 You should see a JSON response listing your pulled model(s). If you get "connection refused," start the server with `ollama serve`.
 
-Using the provided UW–Madison endpoint instead? See the verification check in [uw_madison_endpoint.md](uw_madison_endpoint.md).
+Using the provided UW–Madison endpoint instead? See the verification check in [uw_madison_endpoint.md](uw_madison_endpoint.md). On our team, the hosted URL and key are loaded from 1Password (`starter/.env.op`, launched via `op run`) rather than written into `.env` — see [1password.md](1password.md).
 
 ### Configure the agent
 

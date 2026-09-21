@@ -45,6 +45,12 @@ curl $LLM_BASE_URL/models -H "Authorization: Bearer $LLM_API_KEY"
 
 If that fails, fix the endpoint before debugging the agent. Ollama default is `http://localhost:11434/v1` (note the `/v1`).
 
+**401 from the hosted endpoint, and you use `.env.op`**
+The agent probably got the literal `op://...` string instead of the real key. `op://` references only resolve through `op run` — launch with `op run --env-file=starter/.env.op -- <command>`, and keep references out of `starter/.env`. See [1password.md](1password.md).
+
+**Launched with `op run` but the agent still hits Ollama / the wrong model**
+`starter/.env` has an active `LLM_BASE_URL`, `LLM_MODEL` or `LLM_API_KEY` (e.g. the Ollama defaults from `.env.example`). `llm.py` loads `.env` with `override=True`, so those values replace what `op run` injected. Comment them out in `starter/.env`.
+
 **`No model configured`**
 Set `LLM_MODEL` in `.env`, or pass `-m` to `harbor run`.
 
