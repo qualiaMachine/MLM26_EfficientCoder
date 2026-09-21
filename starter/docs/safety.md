@@ -15,7 +15,7 @@
 
 - Use a throwaway key created for this event, never a personal or work key. If an agent may have read it, treat it as burned and rotate it.
 - Keep `.env` out of any directory you point a dev agent at — the agent needs the key *in its process environment* to call the endpoint, not on disk where it explores.
-- If you already use a secrets manager, inject at runtime instead of keeping a plaintext file: e.g. `op run --env-file .env.tpl -- ./scripts/run_baseline.sh` (1Password CLI). 
+- Inject the key at runtime instead of keeping a plaintext file. Our team standard is 1Password: `op run --env-file=starter/.env.op -- ./starter/scripts/run_baseline.sh` — setup in [1password.md](1password.md).
 
 **If your agent does something unexpected and concerning, tell us.** Novel failure modes are findings, not embarrassments — they're also great writeup material.
 

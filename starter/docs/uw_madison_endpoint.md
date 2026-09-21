@@ -20,7 +20,11 @@ your agent (llm.py)  ──HTTP──▶  LLM_BASE_URL  (the model server)
 
 The URLs and the key are distributed at the in-person kickoff — they are deliberately not published in this repo.
 
-## Configure `.env`
+## Recommended: load them from 1Password (`.env.op`)
+
+Our team standard is to keep the URL and key in 1Password and inject them at launch with `op run --env-file=starter/.env.op -- <command>`, so no real key sits in a file. Setup, run commands, the verify step and an FAQ (including "do I approve every call?" — no, once per launch) are in **[1password.md](1password.md)**. If you use that, skip the plaintext `.env` section below except for non-secret settings like `LLM_MAX_TOKENS`.
+
+## Configure `.env` (plaintext fallback)
 
 The `.env` file lives in the `starter/` directory. When Harbor starts your agent, `agent/llm.py` loads `starter/.env` automatically (via `python-dotenv`) — you never pass these values on the command line. Create the file from the template, then fill in the values from kickoff:
 
@@ -48,7 +52,7 @@ LLM_MAX_TOKENS=8192
 
 ## Verify the connection
 
-One command checks the VPN, the URL, your key, and tells you the exact `LLM_MODEL` string. But note: `.env` is read by the *agent*, not by your terminal — so for this one-off check you first have to load the file into your shell. Run both lines from the repo root:
+One command checks the VPN, the URL, your key, and tells you the exact `LLM_MODEL` string. (Using 1Password? Use the `op run` version in [1password.md](1password.md#verify-the-connection) instead.) Note: `.env` is read by the *agent*, not by your terminal — so for this one-off check you first have to load the file into your shell. Run both lines from the repo root:
 
 ```bash
 set -a; source starter/.env; set +a    # load .env values into this shell session
