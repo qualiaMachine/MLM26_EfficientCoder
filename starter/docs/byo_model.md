@@ -10,7 +10,7 @@ LLM_API_KEY=...    # anything non-empty for local endpoints
 
 ## Provided endpoint (UW–Madison participants)
 
-A hosted `Qwen/Qwen3.6-27B-FP8` endpoint is provided — setup, verification, and usage notes in [uw_madison_endpoint.md](uw_madison_endpoint.md).
+UW–Madison participants can use the provided hosted gateway — setup, verification, and usage notes in [uw_madison_endpoint.md](uw_madison_endpoint.md).
 
 ## Ollama (easiest local option)
 
