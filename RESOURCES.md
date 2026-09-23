@@ -21,7 +21,7 @@ The model server is independent. Any endpoint your agent code can HTTP-POST to w
 
 **Self-hosted on your own GPU or a rented one:**
 
-- Any GPU large enough to fit the reported VRAM of your chosen approved model. The anchor (`Qwen3.6-27B-FP8`, 37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; the smaller rows cover 12–24 GB cards. Ollama or vLLM setup in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md).
+- Any GPU large enough to fit the reported VRAM of your chosen approved model. The anchor (`Qwen3.8-27B-FP8`, ~37 GB) wants a 48 GB card (RTX A6000, L40S) or an A100; the smaller rows cover 12–24 GB cards. Ollama or vLLM setup in [`starter/docs/byo_model.md`](https://github.com/qualiaMachine/MLM26_EfficientCoder/blob/main/starter/docs/byo_model.md).
 
 
 

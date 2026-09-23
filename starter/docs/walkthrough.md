@@ -198,7 +198,7 @@ This downloads a 14B parameter coding model (~9 GB). It's the recommended starti
 > - **8 GB VRAM:** `qwen2.5-coder:7b` (counts as the approved 7B AWQ row)
 > - **16+ GB VRAM:** `qwen2.5-coder:14b` (recommended starting point; approved 14B AWQ row)
 > - **24+ GB VRAM:** `qwen2.5-coder:32b` (~20 GB; approved 32B AWQ row) or `qwen3-coder:30b`
-> - **48+ GB VRAM:** the anchor `Qwen3.6-27B-FP8` under vLLM
+> - **48+ GB VRAM:** the anchor `Qwen3.8-27B-FP8` under vLLM
 
 ### Verify the endpoint
 
